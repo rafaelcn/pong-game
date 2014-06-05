@@ -11,16 +11,22 @@ You do <b>need</b> of:
   * <a href="https://www.libsdl.org/projects/SDL_ttf/">SDL2 TTF</a>
  
 
-<b>Remind:</b> The res folder has to be on the *.exe folder, otherwise, it will give you a segmentation fault.
+<b>Remind:</b> The res folder has to be on the *.exe folder, otherwise, it will give you a segmentation fault, or you can change the path to the images and fonts in the main.cpp.
+
+
+This project is licensee on <b><a href="http://www.apache.org/licenses/LICENSE-2.0.html">Apache v2</a></b>!
 
 ===
 <b>Roadmap:</b> 
+  * Over each "init state" of the game, a random direction for the ball.
+  * Ball speed increases over the course of hits in the paddles.
+  * Better collision detection.
   * A GUI menu.
   * AI
   * Lua Script.
 
 ===
 Contributors
- * Me(Rafael Campos Nunes).
+ * Me (Rafael Campos Nunes).
 
 

@@ -67,8 +67,8 @@ int main(int argc, char* argv[])
             /* Windows only works with absolute paths! At least here only works
              * with absolute paths.
              */
-            std::string paddle("D:\\SDLTest\\bin\\Debug\\res\\icons\\paddle.bmp");
-            std::string ball("D:\\SDLTest\\bin\\Debug\\res\\icons\\ball.bmp");
+            std::string paddle("D:\\pong-game\\res\\icons\\paddle.bmp");
+            std::string ball("D:\\pong-game\\res\\icons\\ball.bmp");
         #else //LINUX like.
             std::string paddle("res/icons/paddle.bmp");
             std::string ball("res/icons/ball.bmp");
@@ -255,16 +255,29 @@ bool initFont(TTF_Font** font, SDL_Color* fontColor)
         std::cout << "LOG: TTF Font initialized perfectly! :)" << std::endl;
 
         #ifdef __WINDOWS__
-            std::string fonts[3] = {"D:\\SDLTest\\bin\\Debug\\res\\fonts\\OpenSans-Regular.ttf",
-                               "D:\\SDLTest\\bin\\Debug\\res\\fonts\\OpenSans-Bold.ttf",
-                               "D:\\SDLTest\\bin\\Debug\\res\\fonts\\OpenSans-ExtraBold.ttf"};
+            std::string fonts[3] =
+            {
+                "D:\\pong-game\\res\\fonts\\OpenSans-Regular.ttf",
+                "D:\\pong-game\\res\\fonts\\OpenSans-Bold.ttf",
+                "D:\\pong-game\\res\\fonts\\OpenSans-ExtraBold.ttf"
+            };
         #else
-            std::string fonts[3] = {"res/fonts/OpenSans-Regular.ttf",
-                                    "res/fonts/OpenSans-Bold.ttf",
-                                    "res/fonts/OpenSans-ExtraBold.ttf"};
+            std::string fonts[3] =
+            {
+                "res/fonts/OpenSans-Regular.ttf",
+                "res/fonts/OpenSans-Bold.ttf",
+                "res/fonts/OpenSans-ExtraBold.ttf"
+            };
         #endif
 
         *font = TTF_OpenFont(fonts[1].c_str(), 400);
+
+        if(*font == NULL)
+            std::cout << "LOG_ERR: Loading the font: " << fonts[1] << " failed!"
+                      << "\nLOG_ERR: error: " << TTF_GetError() << std::endl;
+        else
+            std::cout << "LOG: Font: " << fonts[1] << " loaded perfectly! :)"
+                      << std::endl;
 
         //setting the font color.
         fontColor->r = 200;

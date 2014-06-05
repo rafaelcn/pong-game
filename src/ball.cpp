@@ -7,22 +7,23 @@
 
 /**
  * @brief Ball::Ball The Ball implementation of the class Ball.
- * @param ballImage
- * @param ballRenderer
- * @param xVelocity
- * @param yVelocity
- * @param xCor
- * @param yCor
- * @param width
- * @param height
+ * @param ballSurface The surface that carries the image of the ball.
+ * @param ballRenderer The renderer which will be used to render the ball
+ * texture on the screen.
+ * @param xVelocity The velocity in the X axis of the ball.
+ * @param yVelocity The velocity in the Y axis of the ball.
+ * @param xCor The actual position in X axis of the ball.
+ * @param yCor The actual position in Y axis of the ball.
+ * @param width The width size of the ball.
+ * @param height The height size of the ball.
  */
 Ball::Ball(SDL_Surface* ballSurface, SDL_Renderer** ballRenderer,
            double xVelocity, double yVelocity, float xCor, float yCor,
            int width, int height)
 {
     if(ballSurface == NULL || ballRenderer == NULL)
-        std::cout << "\nThe ball surface or the ball renderer passed, is null."
-                  << std::endl;
+        std::cout << "\nLOG_ERR: The ball surface or the ball renderer passed,"
+                  << "is null." << std::endl;
 
     //Arguments initialization
     this->ballRect = new SDL_Rect();
@@ -51,7 +52,8 @@ Ball::Ball(SDL_Surface* ballSurface, SDL_Renderer** ballRenderer,
 
     SDL_FreeSurface(ballSurface);
 
-    std::cout << "LOG: Ball created perfectly! :)" << std::endl;
+    if(this->ballTexture != NULL)
+        std::cout << "LOG: Ball created perfectly! :)" << std::endl;
 }
 
 Ball::~Ball()
@@ -99,10 +101,10 @@ void Ball::move(SDL_Rect* player1, SDL_Rect* player2)
 }
 
 /**
- * @brief Ball::collision A function to test the collision between to SDL_Rect
- * @param rect1 The first rect that we wanna to test the collision
- * @param rect2 The second rect that we wanna to test the collision
- * @return If a collision occurs or not
+ * @brief Ball::collision A function to test the collision between to SDL_Rect.
+ * @param rect1 The first rect that we wanna to test the collision.
+ * @param rect2 The second rect that we wanna to test the collision.
+ * @return If a collision occurs or not.
  */
 bool Ball::collision(SDL_Rect* rect1, SDL_Rect* rect2)
 {
@@ -122,7 +124,6 @@ SDL_Rect* Ball::getBallRect()
 {
     return this->ballRect;
 }
-
 
 float Ball::getXVelocity()
 {

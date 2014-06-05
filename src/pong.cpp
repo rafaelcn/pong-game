@@ -117,7 +117,7 @@ void Pong::renderScore()
 }
 
 /**
- * @brief Pong::getWidth
+ * @brief Pong::getWidth Function that gets the width size of the screen.
  * @return
  */
 int Pong::getWidth()
@@ -126,7 +126,7 @@ int Pong::getWidth()
 }
 
 /**
- * @brief Pong::getHeight
+ * @brief Pong::getHeight Function that gets the width size of the screen.
  * @return
  */
 int Pong::getHeight()
@@ -143,11 +143,18 @@ int Pong::getHits()
     return this->hits;
 }
 
+/**
+ * @brief Pong::getFPS A function to get the desired FPS for the game.
+ * @return the desired FPS for the game.
+ */
 unsigned int Pong::getFPS() const
 {
     return this->FPS;
 }
 
+/**
+ * @brief Pong::addHit I gonna implement the use of this function later.
+ */
 void Pong::addHit()
 {
     this->hits++;
@@ -155,10 +162,11 @@ void Pong::addHit()
 
 
 /**
- * @brief Pong::updateGameState
- * @param player1
- * @param player2
- * @param ballObject
+ * @brief Pong::updateGameState Function that sets all components of the game
+ * for the default positions.
+ * @param player1 A pointer to a paddle which is the player1.
+ * @param player2 A pointer to a paddle which is the player2.
+ * @param ballObject Pointer that carries the object of the ball.
  */
 void Pong::updateGameState(Paddle* player1, Paddle* player2, Ball* ballObject)
 {

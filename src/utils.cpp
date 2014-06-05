@@ -9,8 +9,8 @@ SDL_Surface* loadBMP(std::string path, int32_t colorKey[3])
 
     if(imageSurface == NULL)
     {
-        std::cout << "\nFailed to load the image: "
-             << "\nDue to: " << SDL_GetError() << std::endl;
+        std::cout << "\nLOG_ERR: Failed to load the image! "
+             << "\nLOG_ERR: Due to: " << SDL_GetError() << std::endl;
     }
     else
     {

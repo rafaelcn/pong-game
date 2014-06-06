@@ -3,7 +3,6 @@
 #include "paddle.hpp"
 
 #include <iostream>
-#include <stdio.h>
 #include <string>
 
 #include <SDL2/SDL.h>
@@ -84,7 +83,8 @@ Pong::~Pong()
  */
 void Pong::renderScore()
 {
-    //to_string available only in c++11. Flag: -std=c++11
+    //to_string available only in c++11. Flag: -std=c++11, -std=c++0x probably
+    //will work too.
    std::string score = std::to_string(this->player->getScore());
 
    this->fontSurface = TTF_RenderText_Solid(this->font, score.c_str(),
@@ -109,10 +109,11 @@ void Pong::renderScore()
    SDL_DestroyTexture(this->fontTexture);
    /*
     *                           ~EXPLANATION~
-    * Destroy the texture and then create other, because if  when you call this
-    * function it recreate the texture, and it allocate more RAM, over and over
-    * again,  resulting  in swapping all your memory, and after  that I stopped
-    * the application, so I can't tell what happens next. :p
+    * Destroy the  texture  and then create  other,  because  when you call this
+    * function inside the main loop of the game, it recreate the texture, and it
+    * allocate more  RAM, over and over again,  resulting  in swapping all  your
+    * memory,  and  after  that I stopped the application,  so I can't tell what
+    * happens next. :p
     */
 }
 

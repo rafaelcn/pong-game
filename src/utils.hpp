@@ -26,4 +26,16 @@
   */
 SDL_Surface* loadBMP(std::string path, int32_t colorKey[3]);
 
+/**
+ * @brief loadBMP A function to load BMP images and then return a pointer
+ * to the surface that contains the image.
+ * @param path path the path to where the image is located.
+ * @return a pointer to a surface which contains the image.
+ */
+SDL_Surface* loadBMP(std::string path);
+
+//not ready yet, memory leak and other stuff.
+void renderTexture(SDL_Surface* surface, SDL_Renderer** renderer,
+                   int width, int height, int xCord, int yCord);
+
 #endif

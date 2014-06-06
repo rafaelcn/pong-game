@@ -39,12 +39,13 @@ int main(int argc, char* argv[])
     SDL_Renderer* windowRenderer = NULL;
 
     TTF_Font* font;
-
     SDL_Color fontColor;
 
     int32_t ticksCount;
 
     Pong pong;
+
+
 
     if(!initSDL(&window, &windowRenderer, pong.getWidth(), pong.getHeight()))
     {
@@ -65,10 +66,11 @@ int main(int argc, char* argv[])
 
         #ifdef __WINDOWS__
             /* Windows only works with absolute paths! At least here only works
-             * with absolute paths.
+             * with absolute paths, or it is just me.
+             *
              */
-            std::string paddle("D:\\pong-game\\res\\icons\\paddle.bmp");
-            std::string ball("D:\\pong-game\\res\\icons\\ball.bmp");
+            std::string paddle("res\\icons\\paddle.bmp");
+            std::string ball("res\\icons\\ball.bmp");
         #else //LINUX like.
             std::string paddle("res/icons/paddle.bmp");
             std::string ball("res/icons/ball.bmp");
@@ -79,10 +81,10 @@ int main(int argc, char* argv[])
         Ball ball1(loadBMP(ball, ballColorKey), &windowRenderer,
                    2, 2, pong.getWidth()/2, pong.getHeight()/2, 10, 10);
 
-        Paddle player1(loadBMP(paddle, ballColorKey), &windowRenderer, 20,
+        Paddle player1(loadBMP(paddle), &windowRenderer, 6,
                        1, pong.getHeight()/2-(50/2), 10, 50);
 
-        Paddle player2(loadBMP(paddle, ballColorKey), &windowRenderer, 20,
+        Paddle player2(loadBMP(paddle), &windowRenderer, 6,
                        pong.getWidth()-11, pong.getHeight()/2-(50/2), 10, 50);
 
         Pong pongPlayer1(&player1, &font, &windowRenderer, fontColor,
@@ -91,9 +93,26 @@ int main(int argc, char* argv[])
         Pong pongPlayer2(&player2, &font, &windowRenderer, fontColor,
                          pong.getWidth()/2+100, pong.getWidth()/2-300);
 
+        const Uint8* keyState;
+
         while(!exit)
         {
             ticksCount = SDL_GetTicks();
+
+            keyState = SDL_GetKeyboardState(NULL);
+
+            /* SDL_GetKeyboardState it's async. that solved the problem of the
+             * paddles moving at the same time.
+             * Thanks to veQue on IRC!
+             */
+            if(keyState[SDL_SCANCODE_W])
+                playerKeys[0] = true;
+            if(keyState[SDL_SCANCODE_S])
+                playerKeys[1] = true;
+            if(keyState[SDL_SCANCODE_UP])
+                playerKeys[2] = true;
+            if(keyState[SDL_SCANCODE_DOWN])
+                playerKeys[3] = true;
 
             while(SDL_PollEvent(&event)) {
                 switch(event.type) {
@@ -106,21 +125,22 @@ int main(int argc, char* argv[])
                 case SDL_KEYDOWN:
                     switch (event.key.keysym.sym) {
 
-                    case SDLK_w:
-                        playerKeys[0] = true;
-                        break;
+//                    I gonna take this code on further versions.
+//                    case SDLK_w:
+//                        playerKeys[0] = true;
+//                        break;
 
-                    case SDLK_s:
-                        playerKeys[1] = true;
-                        break;
+//                    case SDLK_s:
+//                        playerKeys[1] = true;
+//                        break;
 
-                    case SDLK_UP:
-                        playerKeys[2] = true;
-                        break;
+//                    case SDLK_UP:
+//                        playerKeys[2] = true;
+//                        break;
 
-                    case SDLK_DOWN:
-                        playerKeys[3] = true;
-                        break;
+//                    case SDLK_DOWN:
+//                        playerKeys[3] = true;
+//                        break;
 
                     case SDLK_ESCAPE:
                         exit = true;
@@ -166,6 +186,9 @@ int main(int argc, char* argv[])
             SDL_RenderClear(windowRenderer);
             pongPlayer1.renderScore();
             pongPlayer2.renderScore();
+            //renderTexture(loadBMP(paddle), &windowRenderer, 10,
+            //              pong.getHeight(), pong.getWidth()/2-(10/2),
+            //              0);
             player1.show();
             player2.show();
             ball1.show();
@@ -257,9 +280,9 @@ bool initFont(TTF_Font** font, SDL_Color* fontColor)
         #ifdef __WINDOWS__
             std::string fonts[3] =
             {
-                "D:\\pong-game\\res\\fonts\\OpenSans-Regular.ttf",
-                "D:\\pong-game\\res\\fonts\\OpenSans-Bold.ttf",
-                "D:\\pong-game\\res\\fonts\\OpenSans-ExtraBold.ttf"
+                "res\\fonts\\OpenSans-Regular.ttf",
+                "res\\fonts\\OpenSans-Bold.ttf",
+                "res\\fonts\\OpenSans-ExtraBold.ttf"
             };
         #else
             std::string fonts[3] =

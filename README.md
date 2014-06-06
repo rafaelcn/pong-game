@@ -11,7 +11,7 @@ You do <b>need</b> of:
   * <a href="https://www.libsdl.org/projects/SDL_ttf/">SDL2 TTF</a>
  
 
-<b>Remind:</b> The res folder has to be on the *.exe folder, otherwise, it will give you a segmentation fault, or you can change the path to the images and fonts in the main.cpp.
+<b>Remind:</b> The res folder has to be on the sae folder as the *.exe , otherwise, it will give you a segmentation fault, or you can change the path to the images and fonts in the main.cpp and recompile the game. If you are having problems executing the game is probably because you don't have the runtime libraries of the SDL2, SDL2_image, SDL2_ttf, so just look at the links above and download them.
 
 
 This project is licensee on <b><a href="http://www.apache.org/licenses/LICENSE-2.0.html">Apache v2</a></b>!

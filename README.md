@@ -18,9 +18,10 @@ This project is licensee on <b><a href="http://www.apache.org/licenses/LICENSE-2
 
 ===
 <b>Roadmap:</b> 
-  * Over each "init state" of the game, a random direction for the ball.
-  * Ball speed increases over the course of hits in the paddles.
   * Better collision detection.
+  * Over each "init state" of the game, a random direction for the ball.
+  * <s>Ball speed increases over the course of hits in the paddles.</s> (Already done, but it generates other problem, so I'll take a little bit of time to commit the changes)
+  * Pause game
   * A GUI menu.
   * AI
   * Lua Script.

@@ -10,10 +10,10 @@
  * Also you can contact me on IRC(freenode.net server) my nickname is: ranu.
  */
 
+#include <SDL2/SDL.h>
+
 #ifndef PADDLE_H
 #define PADDLE_H
-
-#include <SDL2/SDL.h>
 
 class Paddle
 {

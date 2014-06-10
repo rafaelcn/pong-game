@@ -1,9 +1,7 @@
 #include "utils.hpp"
 
 #include <iostream>
-#include <stdexcept>
 #include <stdint.h>
-
 
 SDL_Surface* loadBMP(std::string path, int32_t colorKey[3])
 {

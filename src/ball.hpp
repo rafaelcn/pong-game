@@ -10,23 +10,17 @@
  * Also you can contact me on IRC(freenode.net server) my nickname is: ranu.
  */
 
-#ifndef BALL_H
-#define BALL_H
-
 #include <SDL2/SDL.h>
 
 #include "paddle.hpp"
-#include "sdl_audio.h"
 
-/*Forward class declaration because of the circular #include(The header guard
- * was not working in this case).
- */
-class Pong;
+#ifndef BALL_H
+#define BALL_H
 
 class Ball
 {
     //Velocity of the ball on the screen.
-    double xVelocity, yVelocity;
+    int xVelocity, yVelocity;
 
     /* The surface that will be used to be filled with the image of the ball
      * (ball.bmp).
@@ -47,17 +41,16 @@ public:
      * hight number of arguments  passed  to  the  constructor,  so  it will be
      * initialized on the ball.cpp */
     Ball();
-    Ball(SDL_Surface* ballImage, SDL_Renderer** ballRenderer, float xCor,
-         float yCor, int width, int height);
+    Ball(SDL_Surface* ballImage, SDL_Renderer** ballRenderer, double xVelocity,
+         double yVelocity, float xCor, float yCor, int width, int height);
     ~Ball();
 
     void show();
-    void move(SDL_Rect* player1, SDL_Rect* player2, Pong* pongObject,
-              AudioWrapper* audio);
+    void move(SDL_Rect* player1, SDL_Rect* player2);
     void updateGameScore(Paddle* player1, Paddle* player2);
 
-    double getXVelocity();
-    double getYVelocity();
+    float getXVelocity();
+    float getYVelocity();
 
     void setXVelocity(double xVelocity);
     void setYVelocity(double yVelocity);

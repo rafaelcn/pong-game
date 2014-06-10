@@ -3,7 +3,9 @@ CONFIG += console
 CONFIG -= app_bundle
 CONFIG -= qt
 
-CONFIG += c++11
+#Flags
+QMAKE_CXXFLAGS +=   -std=c++11 \
+                    -O0 #-O0 for 0 level of optimization and better debugging.
 
 #Windows Config.
 win32 {
@@ -15,23 +17,29 @@ LIBS += -lmingw32       \
         -lSDL2          \
         -lSDL2_ttf      \
         -lSDL2_image    \
+        -lSDL2_mixer    \
         -static-libgcc
 }
 
 #Linux like config.
 LIBS+= -lSDL2 \
        -lSDL2_image \
-       -lSDL2_ttf
+       -lSDL2_ttf \
+       -lSDL2_mixer
 
 SOURCES += main.cpp \
+    paddle.cpp \
+    ball.cpp \
     utils.cpp \
     pong.cpp \
-    paddle.cpp \
-    ball.cpp
+    debug.cpp \
+    sdl_audio.cpp
 
 HEADERS += \
     utils.hpp \
-    pong.hpp \
     paddle.hpp \
-    ball.hpp
+    ball.hpp \
+    pong.hpp \
+    debug.hpp \
+    sdl_audio.h
 

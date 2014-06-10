@@ -116,7 +116,7 @@ void Ball::move(SDL_Rect* player1, SDL_Rect* player2, Pong* pongObject,
     }
 
     //The fun begins when the speed gets higher :3
-    if(pongObject->getHits() == 1) {
+    if(pongObject->getHits() == 4) {
         std::cout << "Actual speed: " << getXVelocity() << std::endl;
         if(getXVelocity() < 0.0)
             setXVelocity(getXVelocity() + (-0.5));

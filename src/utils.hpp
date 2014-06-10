@@ -10,12 +10,13 @@
  * Also you can contact me on IRC(freenode.net server) my nickname is: ranu.
  */
 
-#include <SDL2/SDL.h>
-#include <iostream>
-#include <stdint.h>
-
 #ifndef UTILS_HPP
 #define UTILS_HPP
+
+#include <SDL2/SDL.h>
+#include <random>
+#include <iostream>
+#include <stdint.h>
 
 /**
   * @brief loadBMP A function to load BMP images and then return a pointer
@@ -34,8 +35,10 @@ SDL_Surface* loadBMP(std::string path, int32_t colorKey[3]);
  */
 SDL_Surface* loadBMP(std::string path);
 
-//not ready yet, memory leak and other stuff.
+//not ready yet, memory leak and other stuff, probably it will be moved to some
+//class wrapper.
 void renderTexture(SDL_Surface* surface, SDL_Renderer** renderer,
                    int width, int height, int xCord, int yCord);
+
 
 #endif

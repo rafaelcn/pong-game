@@ -15,17 +15,19 @@
   * Also you can contact me on IRC(freenode.net server) my nickname is: ranu.
   */
 
+
 #include <iostream>
 #include <stdint.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
-//I gonna implement audio later.
-#include <SDL2/SDL_audio.h>
+#include <SDL2/SDL_mixer.h>
 
+#include "sdl_audio.h"
 #include "pong.hpp"
 #include "ball.hpp"
 #include "paddle.hpp"
 #include "utils.hpp"
+#include "debug.hpp"
 
 bool initSDL(SDL_Window** window, SDL_Renderer** windowRenderer,
              const int width,
@@ -41,11 +43,12 @@ int main(int argc, char* argv[])
     TTF_Font* font;
     SDL_Color fontColor;
 
+    Mix_Chunk* effect;
+    Mix_Music* music;
+
     int32_t ticksCount;
 
     Pong pong;
-
-
 
     if(!initSDL(&window, &windowRenderer, pong.getWidth(), pong.getHeight()))
     {
@@ -67,19 +70,22 @@ int main(int argc, char* argv[])
         #ifdef __WINDOWS__
             /* Windows only works with absolute paths! At least here only works
              * with absolute paths, or it is just me.
-             *
+             * When you compile your game, change the absolute paths to a
+             * relative one, and put on the folder of your *.exe, it will work.
              */
-            std::string paddle("res\\icons\\paddle.bmp");
-            std::string ball("res\\icons\\ball.bmp");
+            std::string paddle("D:\\pong-game\\res\\icons\\paddle.bmp");
+            std::string ball("D:\\pong-game\\res\\icons\\ball.bmp");
+            std::string ballSound("D:\\pong-game\\res\\sounds\\ballHit.wav");
         #else //LINUX like.
             std::string paddle("res/icons/paddle.bmp");
             std::string ball("res/icons/ball.bmp");
+            std::string ballSound("res/sounds/ballHit.wav");
         #endif
 
         int32_t ballColorKey[3] = {0x20, 0x20, 0x20};
 
         Ball ball1(loadBMP(ball, ballColorKey), &windowRenderer,
-                   2, 2, pong.getWidth()/2, pong.getHeight()/2, 10, 10);
+                   pong.getWidth()/2, pong.getHeight()/2, 10, 10);
 
         Paddle player1(loadBMP(paddle), &windowRenderer, 6,
                        1, pong.getHeight()/2-(50/2), 10, 50);
@@ -92,6 +98,12 @@ int main(int argc, char* argv[])
 
         Pong pongPlayer2(&player2, &font, &windowRenderer, fontColor,
                          pong.getWidth()/2+100, pong.getWidth()/2-300);
+
+        AudioWrapper gameSound(&effect, &music);
+
+        //works only on linux.
+        if(!gameSound.loadEffect(ballSound))
+            return 1;
 
         const Uint8* keyState;
 
@@ -118,29 +130,12 @@ int main(int argc, char* argv[])
                 switch(event.type) {
 
                 case SDL_QUIT:
-                    std::cout << "SDL has quited perfectly! :)" << std::endl;
+                    log("SDL has quited perfectly! :)");
                     exit = true;
                     break;
 
                 case SDL_KEYDOWN:
                     switch (event.key.keysym.sym) {
-
-//                    I gonna take this code on further versions.
-//                    case SDLK_w:
-//                        playerKeys[0] = true;
-//                        break;
-
-//                    case SDLK_s:
-//                        playerKeys[1] = true;
-//                        break;
-
-//                    case SDLK_UP:
-//                        playerKeys[2] = true;
-//                        break;
-
-//                    case SDLK_DOWN:
-//                        playerKeys[3] = true;
-//                        break;
 
                     case SDLK_ESCAPE:
                         exit = true;
@@ -172,11 +167,10 @@ int main(int argc, char* argv[])
             if(playerKeys[3])
                 player2.moveDown();
 
-            ball1.move(player1.getRect(), player2.getRect());
+            ball1.move(player1.getRect(), player2.getRect(), &pong, &gameSound);
 
             pong.updateGameState(&player1, &player2, &ball1);
 
-            //little hack
             for(int i = 0; i < 4; i++) {
                 if(playerKeys[i] == true)
                     playerKeys[i] = false;
@@ -226,13 +220,12 @@ bool initSDL(SDL_Window** window, SDL_Renderer** windowRenderer,
 {
 
     if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) != 0) {
-        std::cout << "LOG_ERR: Could not initialize the video|audio dude :("
-             << "\nDue to: " << SDL_GetError() << std::endl;
+        logerr("Could not initialize the video | audio dude :(");
+        logerr(SDL_GetError());
         return false;
     }
     else {
-        std::cout << "LOG: SDL Initialized perfectly. :)" << std::endl;
-
+        log("SDL Initialized perfectly. :)");
         *window = SDL_CreateWindow("Pong Game", SDL_WINDOWPOS_CENTERED,
                                   SDL_WINDOWPOS_CENTERED, width, height,
                                   SDL_WINDOW_SHOWN);
@@ -241,8 +234,8 @@ bool initSDL(SDL_Window** window, SDL_Renderer** windowRenderer,
 
         //Is the window filled?
         if(window == NULL) {
-            std::cerr << "LOG_ERR: Could not create window dude :(\nDue to:"
-                 << SDL_GetError() << std::endl;
+            logerr("Could not create window dude :(");
+            logerr(SDL_GetError());
             return false;
         }
         else {
@@ -253,12 +246,10 @@ bool initSDL(SDL_Window** window, SDL_Renderer** windowRenderer,
                                                  SDL_RENDERER_PRESENTVSYNC);
 
             if(windowRenderer == NULL)
-                std::cout << "LOG_ERR: Window Renderer could not be created :("
-                << std::endl;
+                logerr("Window Renderer could not be created :(");
             //Clear the renderer with a drawing color
             else {
-                std::cout << "LOG: Window Renderer created perfectly. :)"
-                << std::endl;
+                log("Window Renderer created perfectly. :)");
                 SDL_SetRenderDrawColor(*windowRenderer, 0x20, 0x20, 0x20, 1);
             }
         }
@@ -280,9 +271,9 @@ bool initFont(TTF_Font** font, SDL_Color* fontColor)
         #ifdef __WINDOWS__
             std::string fonts[3] =
             {
-                "res\\fonts\\OpenSans-Regular.ttf",
-                "res\\fonts\\OpenSans-Bold.ttf",
-                "res\\fonts\\OpenSans-ExtraBold.ttf"
+                "D:\\pong-game\\res\\fonts\\OpenSans-Regular.ttf",
+                "D:\\pong-game\\res\\fonts\\OpenSans-Bold.ttf",
+                "D:\\pong-game\\res\\fonts\\OpenSans-ExtraBold.ttf"
             };
         #else
             std::string fonts[3] =
@@ -296,11 +287,12 @@ bool initFont(TTF_Font** font, SDL_Color* fontColor)
         *font = TTF_OpenFont(fonts[1].c_str(), 400);
 
         if(*font == NULL)
-            std::cout << "LOG_ERR: Loading the font: " << fonts[1] << " failed!"
-                      << "\nLOG_ERR: error: " << TTF_GetError() << std::endl;
+        {
+            logerr("Loading the font: " + fonts[1] + " failed!");
+            logerr(TTF_GetError());
+        }
         else
-            std::cout << "LOG: Font: " << fonts[1] << " loaded perfectly! :)"
-                      << std::endl;
+            log("Font: " + fonts[1] + " loaded perfectly! :)");
 
         //setting the font color.
         fontColor->r = 200;

@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <string>
+#include <random>
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
@@ -161,6 +162,10 @@ void Pong::addHit()
     this->hits++;
 }
 
+void Pong::resetHitCount()
+{
+    this->hits = 0;
+}
 
 /**
  * @brief Pong::updateGameState Function that sets all components of the game
@@ -206,7 +211,7 @@ void Pong::resetGameState(Paddle* player1, Paddle* player2, Ball* ballObject)
 
     //Reseting ball to default position and velocity
     ballObject->setXVelocity(2.0);
-    ballObject->setYVelocity(2.0);
+    ballObject->setYVelocity(1.0);
     ballRect->x = Pong::getWidth()/2-(ballRect->w);
     ballRect->y = Pong::getHeight()/2-(ballRect->h);
 

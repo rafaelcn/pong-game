@@ -11,13 +11,14 @@
  * Also you can contact me on IRC(freenode.net server) my nickname is: ranu.
  */
 
-#include "paddle.hpp"
-#include "ball.hpp"
+#ifndef PONG_H
+#define PONG_H
 
 #include <SDL2/SDL_ttf.h>
 
-#ifndef PONG_H
-#define PONG_H
+#include "ball.hpp"
+#include "paddle.hpp"
+
 
 class Pong
 {
@@ -56,6 +57,7 @@ public:
     unsigned int getFPS() const;
 
     void addHit();
+    void resetHitCount();
 
     void renderScore();
     void updateGameState(Paddle* player1, Paddle* player2, Ball* ball);

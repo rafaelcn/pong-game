@@ -1,5 +1,6 @@
 #include "paddle.hpp"
 #include "pong.hpp"
+#include "debug.hpp"
 
 #include <iostream>
 
@@ -19,37 +20,42 @@ Paddle::Paddle(SDL_Surface* paddleSurface, SDL_Renderer** paddleRenderer,
                float yVelocity, float xCord, float yCord, int width, int height)
 {
     if(paddleSurface == NULL || paddleRenderer == NULL)
-        std::cout << "\nLOG_ERR: The paddle surface or paddle renderer passed,"
-                  << "is null." << std::endl;
+        logerr("The paddle surface or paddle renderer passed, is null.");
+    else
+    {
+        this->paddleRect = new SDL_Rect();
 
-    this->paddleRect = new SDL_Rect();
+        this->score = 0;
 
-    this->score = 0;
+        this->paddleSurface         = paddleSurface;
+        this->yVelocity             = yVelocity;
+        this->paddleRect->x         = xCord;
+        this->paddleRect->y         = yCord;
+        this->paddleRect->w         = width;
+        this->paddleRect->h         = height;
 
-    this->paddleSurface         = paddleSurface;
-    this->yVelocity             = yVelocity;
-    this->paddleRect->x         = xCord;
-    this->paddleRect->y         = yCord;
-    this->paddleRect->w         = width;
-    this->paddleRect->h         = height;
+        this->paddleTexture = SDL_CreateTextureFromSurface(*paddleRenderer,
+                                                     paddleSurface);
 
-    this->paddleTexture = SDL_CreateTextureFromSurface(*paddleRenderer,
-                                                 paddleSurface);
+        if(this->paddleTexture == NULL)
+        {
+            logerr("Failed to create paddleTexture!");
+            logerr(SDL_GetError());
+        }
 
-    if(this->paddleTexture == NULL)
-        std::cout << "LOG_ERR: failed to create paddleTexture, error: "
-                  << SDL_GetError() << std::endl;
+        this->paddleRenderer = *paddleRenderer;
 
-    this->paddleRenderer = *paddleRenderer;
+        if(this->paddleRenderer == NULL)
+        {
+            logerr("Failed to create paddleRenderer!");
+            logerr(SDL_GetError());
+        }
 
-    if(this->paddleRenderer == NULL)
-        std::cout << "LOG_ERR: failed to create paddleRenderer, error: "
-                  << SDL_GetError() << std::endl;
+        SDL_FreeSurface(paddleSurface);
 
-    SDL_FreeSurface(paddleSurface);
-
-    if(this->paddleTexture != NULL)
-        std::cout << "LOG: Paddle created perfectly! :)" << std::endl;
+        if(this->paddleTexture != NULL)
+            log("Paddle created perfectly! :)");
+    }
 }
 
 Paddle::~Paddle()
@@ -59,6 +65,10 @@ Paddle::~Paddle()
     delete this->paddleRect;
 }
 
+/**
+ * @brief Paddle::show This function just "blit"(SDL 1.2) the texture on the
+ * renderer.
+ */
 void Paddle::show()
 {
     SDL_RenderCopy(this->paddleRenderer, this->paddleTexture, NULL,
@@ -101,7 +111,7 @@ SDL_Rect* Paddle::getRect()
 
 /**
  * @brief Paddle::getScore Function to get the actual score of the player.
- * @return
+ * @return the actual score of the player.
  */
 int Paddle::getScore()
 {

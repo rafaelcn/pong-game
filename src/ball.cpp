@@ -1,59 +1,64 @@
 #include "ball.hpp"
 #include "utils.hpp"
 #include "pong.hpp"
-#include "paddle.hpp"
+#include "debug.hpp"
+#include "sdl_audio.h"
 
 #include <iostream>
+#include <cmath>
 
 /**
  * @brief Ball::Ball The Ball implementation of the class Ball.
  * @param ballSurface The surface that carries the image of the ball.
  * @param ballRenderer The renderer which will be used to render the ball
  * texture on the screen.
- * @param xVelocity The velocity in the X axis of the ball.
- * @param yVelocity The velocity in the Y axis of the ball.
  * @param xCor The actual position in X axis of the ball.
  * @param yCor The actual position in Y axis of the ball.
  * @param width The width size of the ball.
  * @param height The height size of the ball.
  */
-Ball::Ball(SDL_Surface* ballSurface, SDL_Renderer** ballRenderer,
-           double xVelocity, double yVelocity, float xCor, float yCor,
-           int width, int height)
+Ball::Ball(SDL_Surface* ballSurface, SDL_Renderer** ballRenderer, float xCor,
+           float yCor, int width, int height)
 {
     if(ballSurface == NULL || ballRenderer == NULL)
-        std::cout << "\nLOG_ERR: The ball surface or the ball renderer passed,"
-                  << "is null." << std::endl;
+        logerr("The ball surface or the ball renderer passed is null.");
+    else
+    {
+        //Arguments initialization
+        this->ballRect = new SDL_Rect();
 
-    //Arguments initialization
-    this->ballRect = new SDL_Rect();
+        this->ballSurface   = ballSurface;
 
-    this->ballSurface   = ballSurface;
+        setXVelocity(2.0);
+        setYVelocity(0.0);
 
-    setXVelocity(xVelocity);
-    setYVelocity(yVelocity);
+        this->ballRect->x   = xCor;
+        this->ballRect->y   = yCor;
+        this->ballRect->w   = width;
+        this->ballRect->h   = height;
 
-    this->ballRect->x   = xCor;
-    this->ballRect->y   = yCor;
-    this->ballRect->w   = width;
-    this->ballRect->h   = height;
+        this->ballTexture = SDL_CreateTextureFromSurface(*ballRenderer,
+                                                         ballSurface);
 
-    this->ballTexture = SDL_CreateTextureFromSurface(*ballRenderer, ballSurface);
+        if(this->ballTexture == NULL)
+        {
+            logerr("Failed to create ballTexture!");
+            logerr(SDL_GetError());
+        }
 
-    if(this->ballTexture == NULL)
-        std::cout << "LOG_ERR: failed to create ballTexture, error: " << SDL_GetError()
-                  << std::endl;
+        this->ballRenderer = *ballRenderer;
 
-    this->ballRenderer = *ballRenderer;
+        if(this->ballTexture == NULL)
+        {
+            logerr("Failed to create ballRenderer");
+            logerr(SDL_GetError());
+        }
 
-    if(this->ballTexture == NULL)
-        std::cout << "LOG_ERR: failed to create ballRenderer, error: " << SDL_GetError()
-                  << std::endl;
+        SDL_FreeSurface(ballSurface);
 
-    SDL_FreeSurface(ballSurface);
-
-    if(this->ballTexture != NULL)
-        std::cout << "LOG: Ball created perfectly! :)" << std::endl;
+        if(this->ballTexture != NULL)
+            log("Ball created perfectly! :)");
+    }
 }
 
 Ball::~Ball()
@@ -63,45 +68,69 @@ Ball::~Ball()
     delete this->ballRect;
 }
 
+/**
+ * @brief Ball::show This function just "blit"(SDL 1.2) the texture on the
+ * renderer.
+ */
 void Ball::show()
 {
     SDL_RenderCopy(this->ballRenderer, this->ballTexture, NULL, this->ballRect);
 }
 
-void Ball::move(SDL_Rect* player1, SDL_Rect* player2)
+void Ball::move(SDL_Rect* player1, SDL_Rect* player2, Pong* pongObject,
+                AudioWrapper* audio)
 {
-    Pong pong;
-    /* If the ball was moved then add the equivalent velocity of the ball to
-     * the rectangle cordinates on the screen
-     */
-    this->ballRect->x += this->xVelocity;
-    this->ballRect->y += this->yVelocity;
+    this->ballRect->x += this->getXVelocity();
+    this->ballRect->y += this->getYVelocity();
 
     //Detecting the collision on the Y axis.
     if(this->ballRect->y <= 0)
         this->yVelocity = -yVelocity;
-    if(this->ballRect->y+ballRect->h > pong.getHeight())
+    if(this->ballRect->y+ballRect->h > pongObject->getHeight())
         this->yVelocity = -yVelocity;
     //Detecting the collision with the paddles.
     if(collision(ballRect, player1)) {
-        //almost fixed the freaking bug
-        //4 pixel to added due to the speed of the ball in pixel/frame
-        if(ballRect->x+3 < player1->x + player1->w)
+        /* Still need to fix the collision detection, it looks like the
+         * collision with the player 1 doesn't work at  21.5 of  speed.
+         * The bug is not only in the player1, it does so in the player 2
+         * as well.
+         */
+        if(ballRect->x+abs(this->getXVelocity()) < player1->x + player1->w)
             this->yVelocity = -yVelocity;
         else
             this->xVelocity = -xVelocity;
+        audio->playEffect();
+
+        log(pongObject->getHits());
+        pongObject->addHit();
     }
     if(collision(ballRect, player2)) {
-        //amost fixed the freaking bug
-        if((ballRect->x + ballRect->w)-4 > player2->x)
+        if((ballRect->x + ballRect->w)-xVelocity > player2->x)
             this->yVelocity = -yVelocity;
         else
             this->xVelocity = -xVelocity;
+        audio->playEffect();
+
+        log(pongObject->getHits());
+        pongObject->addHit();
+    }
+
+    //The fun begins when the speed gets higher :3
+    if(pongObject->getHits() == 1) {
+        std::cout << "Actual speed: " << getXVelocity() << std::endl;
+        if(getXVelocity() < 0.0)
+            setXVelocity(getXVelocity() + (-0.5));
+        else
+            setXVelocity(getXVelocity() + 0.5);
+
+        pongObject->resetHitCount();
+        std::cout << "New speed is: x(" << this->getXVelocity() << ") y("
+                  << this->getYVelocity() << ")" << std::endl;
     }
 }
 
 /**
- * @brief Ball::collision A function to test the collision between to SDL_Rect.
+ * @brief Ball::collision A function to test the collision between two SDL_Rects.
  * @param rect1 The first rect that we wanna to test the collision.
  * @param rect2 The second rect that we wanna to test the collision.
  * @return If a collision occurs or not.
@@ -119,27 +148,40 @@ bool Ball::collision(SDL_Rect* rect1, SDL_Rect* rect2)
     return true;
 }
 
-
+/**
+  * @brief Ball::getBallRect() Function to return the SDL_Rect* of the ball.
+  * @return the
+  */
 SDL_Rect* Ball::getBallRect()
 {
     return this->ballRect;
 }
 
-float Ball::getXVelocity()
+double Ball::getXVelocity()
 {
     return this->xVelocity;
 }
 
-float Ball::getYVelocity()
+double Ball::getYVelocity()
 {
     return this->yVelocity;
 }
 
+/**
+ * @brief Ball::setXVelocity Function to set the velocity on the X axis of the
+ * ball.
+ * @param xVelocity The velocity on X axis.
+ */
 void Ball::setXVelocity(double xVelocity)
 {
     this->xVelocity = xVelocity;
 }
 
+/**
+ * @brief Ball::setYVelocity Function to set the velocity on the Y axis of the
+ * ball.
+ * @param yVelocity The velocity on Y axis.
+ */
 void Ball::setYVelocity(double yVelocity)
 {
     this->yVelocity = yVelocity;

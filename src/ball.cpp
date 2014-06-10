@@ -150,18 +150,26 @@ bool Ball::collision(SDL_Rect* rect1, SDL_Rect* rect2)
 
 /**
   * @brief Ball::getBallRect() Function to return the SDL_Rect* of the ball.
-  * @return the
+  * @return the SDL_Rect that represent the ball.
   */
 SDL_Rect* Ball::getBallRect()
 {
     return this->ballRect;
 }
 
+/**
+  * @brief A function that returns the xVelocity.
+  * @return the velocity of the ball on the X axis.
+  */
 double Ball::getXVelocity()
 {
     return this->xVelocity;
 }
 
+/**
+  * @brief A function that returns the yVelocity.
+  * @return the velocity of the ball on the Y axis.
+  */
 double Ball::getYVelocity()
 {
     return this->yVelocity;

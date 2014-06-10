@@ -11,7 +11,8 @@
 
 
 /**
- * @brief Pong::Pong
+ * @brief Pong::Pong default constructor of the class pong, it just
+ * initializes the class private members with default values.
  */
 Pong::Pong()
 {
@@ -28,6 +29,12 @@ Pong::Pong()
     this->fontRenderer = NULL;
 }
 
+/**
+ * @brief Pong::Pong default constructor of the class pong, it just
+ * initializes the class private members with default values.
+ * @param player1
+ * @param player2
+ */
 Pong::Pong(Paddle *player1, Paddle *player2)
 {
     this->WIDTH   = 800;

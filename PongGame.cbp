@@ -34,11 +34,15 @@
 		</Compiler>
 		<Unit filename="ball.cpp" />
 		<Unit filename="ball.hpp" />
+		<Unit filename="debug.cpp" />
+		<Unit filename="debug.hpp" />
 		<Unit filename="main.cpp" />
 		<Unit filename="paddle.cpp" />
 		<Unit filename="paddle.hpp" />
 		<Unit filename="pong.cpp" />
 		<Unit filename="pong.hpp" />
+		<Unit filename="sdl_audio.cpp" />
+		<Unit filename="sdl_audio.h" />
 		<Unit filename="utils.cpp" />
 		<Unit filename="utils.hpp" />
 		<Extensions>

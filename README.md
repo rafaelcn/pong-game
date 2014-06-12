@@ -3,6 +3,8 @@
 
 A remake of the <b>Pong Game</b> of Atari(1972) with SDL2! The game has better graphics, but yet, is not so GOOD.
 
+<img src="PongGame.png" alt="game image">
+
 This game was compiled in Linux with G++ and in Windows if MingW32, using the Qt and Code::Blocks, so you may have no problems with these IDEs.
 
 You do <b>need</b> of:

@@ -2,7 +2,7 @@
 #include "utils.hpp"
 #include "pong.hpp"
 #include "debug.hpp"
-#include "sdl_audio.h"
+#include "sdl_audio.hpp"
 
 #include <iostream>
 #include <cmath>
@@ -92,8 +92,7 @@ void Ball::move(SDL_Rect* player1, SDL_Rect* player2, Pong* pongObject,
     if(collision(ballRect, player1)) {
         /* Still need to fix the collision detection, it looks like the
          * collision with the player 1 doesn't work at  21.5 of  speed.
-         * The bug is not only in the player1, it does so in the player 2
-         * as well.
+         * The bug is not only in the player1, it does so in the player 2.
          */
         if(ballRect->x+abs(this->getXVelocity()) < player1->x + player1->w)
             this->yVelocity = -yVelocity;
@@ -101,7 +100,7 @@ void Ball::move(SDL_Rect* player1, SDL_Rect* player2, Pong* pongObject,
             this->xVelocity = -xVelocity;
         audio->playEffect();
 
-        log(pongObject->getHits());
+        log("Hit count: " + pongObject->getHits());
         pongObject->addHit();
     }
     if(collision(ballRect, player2)) {
@@ -111,12 +110,12 @@ void Ball::move(SDL_Rect* player1, SDL_Rect* player2, Pong* pongObject,
             this->xVelocity = -xVelocity;
         audio->playEffect();
 
-        log(pongObject->getHits());
+        log("Hit count: " + pongObject->getHits());
         pongObject->addHit();
     }
 
     //The fun begins when the speed gets higher :3
-    if(pongObject->getHits() == 4) {
+    if(pongObject->getHits() == 3) {
         std::cout << "Actual speed: " << getXVelocity() << std::endl;
         if(getXVelocity() < 0.0)
             setXVelocity(getXVelocity() + (-0.5));
@@ -150,7 +149,7 @@ bool Ball::collision(SDL_Rect* rect1, SDL_Rect* rect2)
 
 /**
   * @brief Ball::getBallRect() Function to return the SDL_Rect* of the ball.
-  * @return the SDL_Rect that represent the ball.
+  * @return A pointer to the ballRect.
   */
 SDL_Rect* Ball::getBallRect()
 {
@@ -158,18 +157,20 @@ SDL_Rect* Ball::getBallRect()
 }
 
 /**
-  * @brief A function that returns the xVelocity.
-  * @return the velocity of the ball on the X axis.
-  */
+ * @brief Ball::getYVelocity A function to get the velocity of the ball on the X
+ * axis.
+ * @return the velocity of the ball on the X axis.
+ */
 double Ball::getXVelocity()
 {
     return this->xVelocity;
 }
 
 /**
-  * @brief A function that returns the yVelocity.
-  * @return the velocity of the ball on the Y axis.
-  */
+ * @brief Ball::getYVelocity A function to get the velocity of the ball on the Y
+ * axis.
+ * @return the velocity of the ball on the Y axis.
+ */
 double Ball::getYVelocity()
 {
     return this->yVelocity;

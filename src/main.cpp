@@ -22,12 +22,12 @@
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_mixer.h>
 
-#include "sdl_audio.h"
 #include "pong.hpp"
 #include "ball.hpp"
 #include "paddle.hpp"
 #include "utils.hpp"
 #include "debug.hpp"
+#include "sdl_audio.hpp"
 
 bool initSDL(SDL_Window** window, SDL_Renderer** windowRenderer,
              const int width,
@@ -43,8 +43,8 @@ int main(int argc, char* argv[])
     TTF_Font* font;
     SDL_Color fontColor;
 
-    Mix_Chunk* effect;
-    Mix_Music* music;
+    Mix_Chunk* effect = NULL;
+    Mix_Music* music = NULL;
 
     int32_t ticksCount;
 
@@ -142,14 +142,23 @@ int main(int argc, char* argv[])
                         break;
 
                     case SDLK_F11:
-                        int fullscreenFlag = SDL_GetWindowFlags(window);
+                        {
+                            //cannot declare variables in switch statement.
+                            int fullscreenFlag = SDL_GetWindowFlags(window);
 
-                        if((fullscreenFlag & SDL_WINDOW_FULLSCREEN) ==
-                            SDL_WINDOW_FULLSCREEN)
-                            SDL_SetWindowFullscreen(window, 0);
-                        else
-                            SDL_SetWindowFullscreen(window,
-                                                    SDL_WINDOW_FULLSCREEN);
+                            if((fullscreenFlag & SDL_WINDOW_FULLSCREEN) ==
+                                SDL_WINDOW_FULLSCREEN)
+                                SDL_SetWindowFullscreen(window, 0);
+                            else
+                                SDL_SetWindowFullscreen(window,
+                                                        SDL_WINDOW_FULLSCREEN);
+                            break;
+                        }
+
+                    case SDLK_p:
+                        //pause game stuff
+                        pong.pauseGame(&ball1, &player1, &player2);
+
                         break;
                     }
                 }

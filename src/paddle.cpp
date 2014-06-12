@@ -110,6 +110,25 @@ SDL_Rect* Paddle::getRect()
 }
 
 /**
+ * @brief Paddle::getYVelocity a getter for the paddle velocity.
+ * @return the current velocity on the Y axis.
+ */
+double Paddle::getYVelocity()
+{
+    return this->yVelocity;
+}
+
+/**
+ * @brief Paddle::setYVelocity a setter for the paddle velocity.
+ * @param yVelocity the velocity of the paddle on the Y axis.
+ */
+void Paddle::setYVelocity(double yVelocity)
+{
+    this->yVelocity = yVelocity;
+}
+
+
+/**
  * @brief Paddle::getScore Function to get the actual score of the player.
  * @return the actual score of the player.
  */

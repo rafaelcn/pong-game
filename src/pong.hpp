@@ -28,6 +28,8 @@ class Pong
     int hits;
     //The desired FPS for the game.
     unsigned  int FPS;
+    //If the game is paused or no.
+    bool pause;
     //The player.
     Paddle* player;
     //The SDL_Rect that represents where and in which size the font will be
@@ -58,6 +60,8 @@ public:
 
     void addHit();
     void resetHitCount();
+
+    void pauseGame(Ball* ball, Paddle* player1, Paddle* player2);
 
     void renderScore();
     void updateGameState(Paddle* player1, Paddle* player2, Ball* ball);

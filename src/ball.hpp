@@ -16,7 +16,7 @@
 #include <SDL2/SDL.h>
 
 #include "paddle.hpp"
-#include "sdl_audio.h"
+#include "sdl_audio.hpp"
 
 /*Forward class declaration because of the circular #include(The header guard
  * was not working in this case).

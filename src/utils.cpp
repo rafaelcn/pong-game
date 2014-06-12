@@ -16,11 +16,6 @@ SDL_Surface* loadBMP(std::string path, int32_t colorKey[3])
     }
     else
     {
-        /* On this specific game the background is 0x20 so, the implementation
-         * follows the background, in the future I'll be implementing one to
-         * ~any~ color key.
-         */
-
         SDL_SetColorKey(imageSurface, SDL_TRUE, SDL_MapRGB(imageSurface->format,
                                                            colorKey[0],
                                                            colorKey[1],

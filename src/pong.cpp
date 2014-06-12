@@ -11,8 +11,7 @@
 
 
 /**
- * @brief Pong::Pong default constructor of the class pong, it just
- * initializes the class private members with default values.
+ * @brief Pong::Pong
  */
 Pong::Pong()
 {
@@ -23,18 +22,14 @@ Pong::Pong()
 
     this->FPS = 60;
 
+    this->pause = false;
+
     this->fontRect = NULL;
     this->fontSurface = NULL;
     this->fontTexture = NULL;
     this->fontRenderer = NULL;
 }
 
-/**
- * @brief Pong::Pong default constructor of the class pong, it just
- * initializes the class private members with default values.
- * @param player1
- * @param player2
- */
 Pong::Pong(Paddle *player1, Paddle *player2)
 {
     this->WIDTH   = 800;
@@ -43,6 +38,8 @@ Pong::Pong(Paddle *player1, Paddle *player2)
     this->hits = 0;
 
     this->FPS = 60;
+
+    this->pause = false;
 
     this->fontRect = NULL;
     this->fontSurface = NULL;
@@ -162,16 +159,52 @@ unsigned int Pong::getFPS() const
 }
 
 /**
- * @brief Pong::addHit I gonna implement the use of this function later.
+ * @brief Pong::addHit Function to add a hit count, when the hit gets 4 the ball
+ * velocity speed up.
  */
 void Pong::addHit()
 {
     this->hits++;
 }
 
+/**
+ * @brief Pong::resetHitCount Function to reset the hit count before it reaches
+ * the desired value(which is 4).
+ */
 void Pong::resetHitCount()
 {
     this->hits = 0;
+}
+
+/**
+ * Uow, so much many hacks in this class. >.>
+ * @brief Pong::pauseGame A function to pause the game.
+ * @param Bll the ball which is on the game.
+ * @param player1 The player 1 which is on the game.
+ * @param player2 The player 2 which is on the game.
+ */
+void Pong::pauseGame(Ball* ball, Paddle* player1, Paddle* player2)
+{
+    double const lastBallVelocity[2] = {ball->getXVelocity(),
+                                       ball->getYVelocity()};
+
+    if(!this->pause)
+    {
+        ball->setXVelocity(0.0);
+        ball->setYVelocity(0.0);
+        player1->setYVelocity(0.0);
+        player2->setYVelocity(0.0);
+        this->pause = true;
+        //I'll have to render a texture which says: GAME PAUSED!
+    }
+    else
+    {
+        ball->setXVelocity(lastBallVelocity[0]);
+        ball->setYVelocity(lastBallVelocity[1]);
+        player1->setYVelocity(6.0);
+        player2->setYVelocity(6.0);
+        this->pause = false;
+    }
 }
 
 /**

@@ -41,7 +41,9 @@ public:
     void moveUp();
     void moveDown();
 
-    //Getter and an score "adder".
+    double getYVelocity();
+    void setYVelocity(double yVelocity);
+
     int getScore();
     void addScore();
 };

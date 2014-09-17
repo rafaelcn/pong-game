@@ -26,7 +26,7 @@ This project is licensee on __[Apache v2](http://www.apache.org/licenses/LICENSE
   - [ ] AI
   - [ ] Pause game
   - [ ] A GUI menu.
-  - [ ] Lua Script.
+
 
 ===
 Contributors

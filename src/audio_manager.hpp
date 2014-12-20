@@ -4,26 +4,27 @@
 #include <SDL2/SDL_mixer.h>
 #include <iostream>
 
-class AudioWrapper
+class AudioManager
 {
     //An little chunk(effect).
     Mix_Chunk* effect;
     //A music.
     Mix_Music* music;
     //A boolean to let us know if the audio is opened or not.
-    bool audioOpened;
+    bool audio_opened;
 
 public:
-    AudioWrapper(Mix_Chunk** effect, Mix_Music** music);
-    ~AudioWrapper();
+    AudioManager(Mix_Chunk** effect, Mix_Music** music);
+    ~AudioManager();
 
-    bool loadMusic(const std::string& musicName);
-    bool loadEffect(const std::string& effectName);
+    bool load_music(const std::string& musicName);
+    bool load_effect(const std::string& effectName);
+    bool isOpen();
 
     void playMusic(const int& loopFlag);
     void playEffect();
 
-    void showAudioDriversAvailable();
+    void show_audio_drivers();
 
 };
 

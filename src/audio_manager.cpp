@@ -1,10 +1,15 @@
-#include "sdl_audio.hpp"
-#include "debug.hpp"
-
-#include <SDL2/SDL_mixer.h>
+//C++
 #include <iostream>
 
-AudioWrapper::AudioWrapper(Mix_Chunk** effect, Mix_Music** music)
+// SDL2
+#include <SDL2/SDL_mixer.h>
+
+
+// Pong Game
+#include "audio_manager.hpp"
+#include "debug.hpp"
+
+AudioManager::AudioManager(Mix_Chunk** effect, Mix_Music** music)
 {
     /* There's no problem if the *music or the *effect be NULL, actually we have
      * to initialize the variables effect and music with NULL on main, otherwise
@@ -12,47 +17,52 @@ AudioWrapper::AudioWrapper(Mix_Chunk** effect, Mix_Music** music)
      * effect on this class, due that the *music and *effect should be NULL.
      */
     //if(*effect == NULL || *music == NULL)
-    //    logerr("The music or the effect passed is null!");
+    //    Debug::logerr("The music or the effect passed is null!");
     //else
     //{
+        // Bug detected on Xubuntu
+        Debug::log(effect);
+        Debug::log(music);
+
         if(Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) != 0)
         {
-            logerr("Could not initialize the audio dude :(");
-            logerr(Mix_GetError());
-            showAudioDriversAvailable();
-            this->audioOpened = false;
+            Debug::logerr("Audio system couldn't be initialized, check the \
+                          logs.");
+            Debug::logerr(Mix_GetError());
+            show_audio_drivers();
+            this->audio_opened = false;
         }
         else
         {
-            log("SDL_Audio initialized perfectly :)");
-            showAudioDriversAvailable();
+            Debug::log("Audio system initialized.");
+
             this->effect        = *effect;
             this->music         = *music;
-            this->audioOpened   = true;
+            this->audio_opened   = true;
         }
     //}
 }
 
-AudioWrapper::~AudioWrapper()
+AudioManager::~AudioManager()
 {
-    if(this->effect != NULL && this->audioOpened)
+    if(this->effect != NULL && this->audio_opened)
         Mix_FreeChunk(this->effect);
-    if(this->music != NULL && this->audioOpened)
+    if(this->music != NULL && this->audio_opened)
         Mix_FreeMusic(this->music);
-    if(this->audioOpened)
+    if(this->audio_opened)
         Mix_CloseAudio();
 }
 
-bool AudioWrapper::loadMusic(const std::string& musicName)
+bool AudioManager::load_music(const std::string& musicName)
 {
-    if(audioOpened)
+    if(audio_opened)
     {
         this->music = Mix_LoadMUS(musicName.c_str());
 
         if(this->music == NULL)
         {
-            logerr("Loading the music " + musicName + " has failed. :(");
-            logerr(Mix_GetError());
+            Debug::logerr("Loading the music " + musicName + " has failed. :(");
+            Debug::logerr(Mix_GetError());
             return false;
         }
         else
@@ -64,16 +74,16 @@ bool AudioWrapper::loadMusic(const std::string& musicName)
     }
 }
 
-bool AudioWrapper::loadEffect(const std::string& effectName)
+bool AudioManager::load_effect(const std::string& effectName)
 {
-    if(audioOpened)
+    if(audio_opened)
     {
         this->effect = Mix_LoadWAV(effectName.c_str());
 
         if(this->effect == NULL)
         {
-            logerr("Loading the effect " + effectName + " has failed. :(");
-            logerr(Mix_GetError());
+            Debug::logerr("Loading the effect " + effectName + " has failed. :(");
+            Debug::logerr(Mix_GetError());
             return false;
         }
         else
@@ -85,7 +95,7 @@ bool AudioWrapper::loadEffect(const std::string& effectName)
     }
 }
 
-void AudioWrapper::playEffect()
+void AudioManager::playEffect()
 {
     if(Mix_PlayChannel(-1, this->effect, 0) != -1)
     {
@@ -93,13 +103,13 @@ void AudioWrapper::playEffect()
     }
     else
     {
-        logerr("Cannot reproduce the effect.");
-        logerr(Mix_GetError());
+        Debug::logerr("Cannot reproduce the effect.");
+        Debug::logerr(Mix_GetError());
     }
 }
 
 //going to make an enum to be accepted as a flag.
-void AudioWrapper::playMusic(const int& loopFlag)
+void AudioManager::playMusic(const int& loopFlag)
 {
     if(Mix_PlayMusic(this->music, loopFlag) != -1)
     {
@@ -107,17 +117,24 @@ void AudioWrapper::playMusic(const int& loopFlag)
     }
     else
     {
-        logerr("Cannot reproduce the music.");
-        logerr(Mix_GetError());
+        Debug::logerr("Cannot reproduce the music.");
+        Debug::logerr(Mix_GetError());
     }
 }
 
 
-void AudioWrapper::showAudioDriversAvailable()
+bool AudioManager::isOpen()
+{
+    return this->audio_opened;
+}
+
+void AudioManager::show_audio_drivers()
 {
     std::cout << "A list of the audio drivers available:" << std::endl;
 
     for(int i = 0; i < 10; i++)
         std::cout << "Available on index[" << i << "]: "
                   <<  SDL_GetAudioDriver(i) << std::endl;
+
+    std::cout << "\n" << std::endl;
 }

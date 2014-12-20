@@ -5,7 +5,7 @@ A remake of the __Pong Game__ of Atari(1972) with SDL2! The game has better grap
 
 ![Game Image](PongGame.png)
 
-This game was compiled in Linux with G++ and in Windows if MingW32, using the Qt and Code::Blocks, so you may have no problems with these IDEs.
+This game was compiled in Linux with G++ and in Windows with MingW32, using the Qt and Code::Blocks, so you may have no problems with these IDEs. If you have any issue with the compiler saying that to_string is not a member of std you problaby is not compiling with -std=c++11 or you are compiling with MingW32 that has this _[problem](https://gcc.gnu.org/bugzilla/show_bug.cgi?id=52015)_! But is easy to solve, so good luck!
 
 You do <b>need</b> of:
   * [SDL2](http://www.libsdl.org/download-2.0.php)
@@ -26,7 +26,7 @@ This project is licensee on __[Apache v2](http://www.apache.org/licenses/LICENSE
   - [ ] AI
   - [ ] Pause game
   - [ ] A GUI menu.
-  - [ ] Lua Script.
+
 
 ===
 Contributors

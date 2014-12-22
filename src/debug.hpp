@@ -3,18 +3,39 @@
 
 #include <iostream>
 
-bool logw(const std::string& filename, const std::string& message);
 
-template<typename T>
-void log(T const& message)
-{
-    std::cout << "LOG: " << message << std::endl;
-}
+/**
+ * @brief The Debug class
+ */
+class Debug {
 
-template<typename T>
-void logerr(T const& message)
-{
-    std::cout << "LOG_ERR: " << message << std::endl;
-}
+public:
+    /**
+     * @brief logf
+     * @param filename
+     * @param message
+     * @return
+     */
+    static bool logf(const std::string& filename, const std::string& message);
 
+
+    template<typename... Ts>
+    static void log(Ts const&... args)
+    {
+        std::cout << "Debug::log: ";
+
+        int expanded[] = { (std::cout << args << std::endl, 0)... };
+        (void)expanded;
+    }
+
+    template<typename... Ts>
+    static void logerr(Ts const&... args)
+    {
+        std::cout << "Debug::logerr";
+
+        int expanded[] = { (std::cout << args, 0)... };
+        (void)expanded;
+    }
+private:
+};
 #endif // DEBUG_H

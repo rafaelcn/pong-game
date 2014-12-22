@@ -3,11 +3,11 @@
 #include <iostream>
 #include <fstream>
 
-bool logw(const std::string& filename, const std::string& message)
+static bool logf(const std::string& filename, const std::string& message)
 {
     std::ofstream file(filename);
 
-    file << "--------- LOG ----------" << std::endl;
+    file << "PongGame log file" << std::endl;
 
     file << message;
 

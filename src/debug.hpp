@@ -1,8 +1,7 @@
-#ifndef DEBUG_H
-#define DEBUG_H
+#ifndef DEBUG_HPP
+#define DEBUG_HPP
 
 #include <iostream>
-
 
 /**
  * @brief The Debug class
@@ -24,18 +23,21 @@ public:
     {
         std::cout << "Debug::log: ";
 
-        int expanded[] = { (std::cout << args << std::endl, 0)... };
+        int expanded[] = { (std::cout << args << "", 0)... };
         (void)expanded;
+
+        std::cout << std::endl;
     }
 
     template<typename... Ts>
     static void logerr(Ts const&... args)
     {
-        std::cout << "Debug::logerr";
+        std::cout << "Debug::logerr: ";
 
         int expanded[] = { (std::cout << args, 0)... };
         (void)expanded;
+
+        std::cout << std::endl;
     }
-private:
 };
 #endif // DEBUG_H

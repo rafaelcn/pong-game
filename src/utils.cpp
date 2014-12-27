@@ -1,21 +1,18 @@
 #include "utils.hpp"
+#include "debug.hpp"
 
 #include <iostream>
-#include <stdexcept>
-#include <stdint.h>
+#include <stdint-gcc.h>
 
 
-SDL_Surface* loadBMP(std::string path, int32_t colorKey[3])
+SDL_Surface* Utils::load_bmp(std::string path, int32_t colorKey[3])
 {
     SDL_Surface* imageSurface = SDL_LoadBMP(path.c_str());
 
-    if(imageSurface == NULL)
-    {
-        std::cout << "\nLOG_ERR: Failed to load the image! "
-             << "\nLOG_ERR: Due to: " << SDL_GetError() << std::endl;
+    if(imageSurface == nullptr) {
+        Debug::logerr("Failed to load the image! Due to: ", SDL_GetError());
     }
-    else
-    {
+    else {
         SDL_SetColorKey(imageSurface, SDL_TRUE, SDL_MapRGB(imageSurface->format,
                                                            colorKey[0],
                                                            colorKey[1],
@@ -24,42 +21,39 @@ SDL_Surface* loadBMP(std::string path, int32_t colorKey[3])
     return imageSurface;
 }
 
-SDL_Surface* loadBMP(std::string path)
+SDL_Surface* Utils::load_bmp(std::string path)
 {
-    SDL_Surface* imageSurface = SDL_LoadBMP(path.c_str());
+    SDL_Surface* image_surface = SDL_LoadBMP(path.c_str());
 
-    if(imageSurface == NULL)
-    {
-        std::cout << "\nLOG_ERR: Failed to load the image! "
-             << "\nLOG_ERR: Due to: " << SDL_GetError() << std::endl;
+    if(image_surface == nullptr) {
+        Debug::logerr("Failed to load the image! Due to: ", SDL_GetError());
     }
 
-    return imageSurface;
+    return image_surface;
 }
 
-void renderTexture(SDL_Surface* imageSurface, SDL_Renderer** renderer,
-                   int width, int height, int xCord, int yCord)
+void Utils::render_texture(SDL_Surface* imageSurface, SDL_Renderer** renderer,
+                   int width, int height, int coordinate_x, int coordinate_y)
 {
-    SDL_Rect* imageRect = new SDL_Rect();
+    SDL_Rect* image_rect = new SDL_Rect();
 
-    imageRect->h = height;
-    imageRect->w = width;
-    imageRect->x = xCord;
-    imageRect->y = yCord;
+    image_rect->h = height;
+    image_rect->w = width;
+    image_rect->x = coordinate_x;
+    image_rect->y = coordinate_y;
 
-    SDL_Texture* imageTexture = NULL;
+    SDL_Texture* image_texture = nullptr;
 
-    imageTexture = SDL_CreateTextureFromSurface(*renderer, imageSurface);
+    image_texture = SDL_CreateTextureFromSurface(*renderer, imageSurface);
 
-    if(imageTexture == NULL)
-        std::cout << "LOG_ERR: imageTexture is null, error: " << SDL_GetError()
-                  << std::endl;
+    if(image_texture == nullptr)
+       Debug::logerr("image texture is null! error: ", SDL_GetError());
 
-    SDL_RenderCopy(*renderer, imageTexture, NULL, imageRect);
+    SDL_RenderCopy(*renderer, image_texture, nullptr, image_rect);
     //probably a memory leak when calling the function by copying the
     //parameters: width, height, xCord, and yCord.
 
     //trying to solve that...
-    SDL_DestroyTexture(imageTexture);
-    delete imageRect;
+    SDL_DestroyTexture(image_texture);
+    delete image_rect;
 }

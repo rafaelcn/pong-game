@@ -13,32 +13,42 @@
 #ifndef UTILS_HPP
 #define UTILS_HPP
 
-#include <SDL2/SDL.h>
-#include <random>
 #include <iostream>
 #include <stdint.h>
+#include <memory>
 
-/**
-  * @brief loadBMP A function to load BMP images and then return a pointer
+#include <SDL2/SDL.h>
+
+class Utils {
+public:
+    /**
+  * @brief load_bmp A function to load BMP images and then return a pointer
   * to the surface that contains the image.
   * @param path the path to where the image is located.
   * @param colorKey the color key of the image.
   * @return a pointer to a surface which contains the image.
   */
-SDL_Surface* loadBMP(std::string path, int32_t colorKey[3]);
+    static SDL_Surface* load_bmp(std::string path, int32_t colorKey[3]);
 
-/**
- * @brief loadBMP A function to load BMP images and then return a pointer
+    /**
+ * @brief load_bmp A function to load BMP images and then return a pointer
  * to the surface that contains the image.
  * @param path path the path to where the image is located.
  * @return a pointer to a surface which contains the image.
  */
-SDL_Surface* loadBMP(std::string path);
+    static SDL_Surface* load_bmp(std::string path);
 
-//not ready yet, memory leak and other stuff, probably it will be moved to some
-//class wrapper.
-void renderTexture(SDL_Surface* surface, SDL_Renderer** renderer,
-                   int width, int height, int xCord, int yCord);
+    //not ready yet, memory leak and other stuff, probably it will be moved to some
+    //class wrapper.
+    void render_texture(SDL_Surface* imageSurface, SDL_Renderer** renderer,
+                        int width, int height, int coordinate_x,
+                        int coordinate_y);
 
+    template<typename T, typename... Args>
+    static std::unique_ptr<T> make_unique(Args&&... args)
+    {
+        return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
+    }
+};
 
-#endif
+#endif // UTILS_HPP

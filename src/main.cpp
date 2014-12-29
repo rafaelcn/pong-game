@@ -15,9 +15,6 @@
   * Also you can contact me on IRC(freenode.net server) my nickname is: ranu.
   */
 
-
-#include <iostream>
-
 #include "game.hpp"
 
 int main(int argc, char* argv[])

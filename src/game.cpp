@@ -34,10 +34,10 @@ Game::Game()
                                            SDL_WINDOW_SHOWN);
 
     player1 = std::make_shared<Paddle>(Utils::load_bmp(paddle),
-                                            0, Window::get_height()/2-(50/2));
+                                            1, Window::get_height()/2-(50/2));
 
     player2 = std::make_shared<Paddle>(Utils::load_bmp(paddle),
-                                            Window::get_width()-10,
+                                            Window::get_width()-12,
                                             Window::get_height()/2-(50/2));
 
     this->ball = std::make_shared<Ball>(Utils::load_bmp(ball, ball_color_key),

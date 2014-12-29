@@ -1,68 +1,54 @@
 #include "paddle.hpp"
-#include "pong.hpp"
+#include "window.hpp"
 #include "debug.hpp"
 
 #include <iostream>
 
+int Paddle::m_hits;
+
 /**
  * @brief Paddle::Paddle Constructor of the class that initializes the values
  * of the private variables with the given parameters for the class.
- * @param paddleSurface The surface that carries the image of the paddle.
- * @param paddleRenderer The renderer which will be used to render the paddle.
- * texture on the screen.
- * @param yVelocity The velocity in the Y axis of the paddle.
- * @param xCor The actual position in X axis of the paddle.
- * @param yCor The actual position in Y axis of the paddle.
- * @param width The width size of the paddle.
- * @param height The height size of the paddle.
+ * @param paddle_image The surface that carries the image of the paddle.
  */
-Paddle::Paddle(SDL_Surface* paddleSurface, SDL_Renderer** paddleRenderer,
-               float yVelocity, float xCord, float yCord, int width, int height)
+Paddle::Paddle(SDL_Surface* paddle_image, float coordinate_x,
+               float coordinate_y)
 {
-    if(paddleSurface == NULL || paddleRenderer == NULL)
-        logerr("The paddle surface or paddle renderer passed, is null.");
-    else
-    {
-        this->paddleRect = new SDL_Rect();
+    if(paddle_image == nullptr) {
+        Debug::logerr("The paddle surface is nullptr.");
+    }
+    else {
+         m_pPRect = new SDL_Rect();
 
-        this->score = 0;
+         m_score = 0;
 
-        this->paddleSurface         = paddleSurface;
-        this->yVelocity             = yVelocity;
-        this->paddleRect->x         = xCord;
-        this->paddleRect->y         = yCord;
-        this->paddleRect->w         = width;
-        this->paddleRect->h         = height;
+         m_pPSurface         = paddle_image;
+         m_pPRect->x         = coordinate_x;
+         m_pPRect->y         = coordinate_y;
+         m_pPRect->w         = paddle_characteristics.width;
+         m_pPRect->h         = paddle_characteristics.height;
 
-        this->paddleTexture = SDL_CreateTextureFromSurface(*paddleRenderer,
-                                                     paddleSurface);
+         m_pPTexture = SDL_CreateTextureFromSurface(Window::get_renderer(),
+                                                    paddle_image);
 
-        if(this->paddleTexture == NULL)
-        {
-            logerr("Failed to create paddleTexture!");
-            logerr(SDL_GetError());
+        if( m_pPTexture == nullptr) {
+            Debug::logerr("Failed to create paddleTexture!", SDL_GetError());
         }
 
-        this->paddleRenderer = *paddleRenderer;
+        SDL_FreeSurface(paddle_image);
 
-        if(this->paddleRenderer == NULL)
-        {
-            logerr("Failed to create paddleRenderer!");
-            logerr(SDL_GetError());
+        if( m_pPTexture != nullptr) {
+            Debug::log("Paddle created perfectly.");
         }
-
-        SDL_FreeSurface(paddleSurface);
-
-        if(this->paddleTexture != NULL)
-            log("Paddle created perfectly! :)");
     }
 }
 
 Paddle::~Paddle()
 {
-    SDL_DestroyTexture(this->paddleTexture);
-    SDL_DestroyRenderer(this->paddleRenderer);
-    delete this->paddleRect;
+    if(m_pPTexture != nullptr) {
+        SDL_DestroyTexture( m_pPTexture);
+    }
+    delete  m_pPRect;
 }
 
 /**
@@ -71,11 +57,10 @@ Paddle::~Paddle()
  */
 void Paddle::show()
 {
-    SDL_RenderCopy(this->paddleRenderer, this->paddleTexture, NULL,
-                   this->paddleRect);
+    SDL_RenderCopy(Window::get_renderer(), m_pPTexture, nullptr, m_pPRect);
 }
 
-void Paddle::moveUp()
+void Paddle::move_up()
 {
     /* The minus sign it's because the top left corner of the screen  is like
      * (0,0), so we have to subtract the value  of the  paddleRect->y  by the
@@ -84,19 +69,20 @@ void Paddle::moveUp()
      * the screen, I'm limiting the up movement of the paddle by doing the
      * following statement.
      */
-    if(this->paddleRect->y > 0)
-        this->paddleRect->y -= this->yVelocity;
+    if( m_pPRect->y > 0) {
+         m_pPRect->y -=  paddle_characteristics.velocity_y;
+    }
 }
 
-void Paddle::moveDown()
+void Paddle::move_down()
 {
-    Pong pong;
     /* Same thing here, but the bottom left corner of the screen is like (0, 1)
      * for (x, y) values, so we have to add (...).
-     * The if statement is the same logic used on moveUp(); but here has a POG.
+     * The if statement is the same Debug::logic used on moveUp(); but here has a POG.
      */
-    if(this->paddleRect->y+this->paddleRect->h < pong.getHeight())
-        this->paddleRect->y += this->yVelocity;
+    if(m_pPRect->y + m_pPRect->h < Window::get_height()) {
+        m_pPRect->y +=  paddle_characteristics.velocity_y;
+    }
 }
 
 /**
@@ -104,43 +90,67 @@ void Paddle::moveDown()
  * paddle.
  * @return the current SDL_Rect* used to represent the paddle
  */
-SDL_Rect* Paddle::getRect()
+SDL_Rect* Paddle::get_rect()
 {
-    return this->paddleRect;
+    return m_pPRect;
 }
 
 /**
  * @brief Paddle::getYVelocity a getter for the paddle velocity.
  * @return the current velocity on the Y axis.
  */
-double Paddle::getYVelocity()
+double Paddle::velocity_y()
 {
-    return this->yVelocity;
+    return paddle_characteristics.velocity_y;
 }
 
 /**
- * @brief Paddle::setYVelocity a setter for the paddle velocity.
+ * @brief Paddle::velocity_y a setter for the paddle velocity.
  * @param yVelocity the velocity of the paddle on the Y axis.
  */
-void Paddle::setYVelocity(double yVelocity)
+void Paddle::velocity_y(double velocity_y)
 {
-    this->yVelocity = yVelocity;
+     paddle_characteristics.velocity_y = velocity_y;
 }
 
-
 /**
- * @brief Paddle::getScore Function to get the actual score of the player.
+ * @brief Paddle::score get the actual score of the player.
  * @return the actual score of the player.
  */
-int Paddle::getScore()
+int Paddle::score()
 {
-    return this->score;
+    return m_score;
 }
 
 /**
  * @brief Paddle::addScore Function to add 1 point to the player score.
  */
-void Paddle::addScore()
+void Paddle::add_score()
 {
-    this->score++;
+    m_score++;
+}
+
+/**
+ * @brief Paddle::get_hits
+ * @return
+ */
+int Paddle::get_hits()
+{
+    return m_hits;
+}
+
+/**
+ * @brief Paddle::add_hit
+ */
+void Paddle::add_hit()
+{
+    m_hits += 1;
+}
+
+/**
+ * @brief Paddle::reset_hit_count
+ */
+void Paddle::reset_hit_count()
+{
+    m_hits = 0;
 }

@@ -11,61 +11,90 @@
  * Also you can contact me on IRC(freenode.net server) my nickname is: ranu.
  */
 
-#ifndef PONG_H
-#define PONG_H
+#ifndef GAME_HPP
+#define GAME_HPP
+
+#include <memory>
+#include <cstdint>
 
 #include <SDL2/SDL_ttf.h>
+#include <SDL2/SDL_mixer.h>
 
 #include "ball.hpp"
 #include "paddle.hpp"
+#include "window.hpp"
+#include "font.hpp"
+#include "audio.hpp"
 
+class Game
+{   
+private:
+    struct players_score {
+        // Fonts used to render the score
+        std::shared_ptr<Font> font_player1;
+        std::shared_ptr<Font> font_player2;
+        SDL_Rect* player1_rect;
+        SDL_Rect* player2_rect;
+    } players_score;
 
-class Pong
-{
-    //The size of the window(in windowed mode).
-    int WIDTH, HEIGHT;
-    //The hit counter by the paddles.
-    int hits;
-    //The desired FPS for the game.
-    unsigned  int FPS;
-    //If the game is paused or no.
-    bool pause;
-    //The player.
-    Paddle* player;
-    //The SDL_Rect that represents where and in which size the font will be
-    //rendered.
-    SDL_Rect* fontRect;
-    //The renderer for where it will be rendered.
-    SDL_Renderer* fontRenderer;
-    //A surface that will be loading the font via TTF_RenderText_Solid(...);
-    SDL_Surface* fontSurface;
-    //The texture of the font.
-    SDL_Texture* fontTexture;
-    //The color of the font.
-    SDL_Color fontColor;
-    //The font itself.
-    TTF_Font* font;
+    struct game_audio {
+        Mix_Chunk* hit_paddle_effect;
+        Mix_Chunk* hit_walls_effect;
+        Mix_Chunk* score_up_effect;
+        Mix_Music* game_music;
+    } game_audio;
+
+    SDL_Event event;
+    //
+    u_int32_t current_time;
+
+    // The desired FPS for the game.
+    static unsigned int m_fps;
+    // Represents the state of the game
+    static bool m_is_running;
+    // If the game is paused or no.
+    static bool m_pause;
+    //
+    std::shared_ptr<Audio> audio;
+    // The players.
+    std::shared_ptr<Paddle> player1;
+    std::shared_ptr<Paddle> player2;
+    // The ball
+    std::shared_ptr<Ball> ball;
+    // The window of the game
+    std::shared_ptr<Window> window;
 
 public:
-    Pong();
-    Pong(Paddle* player1, Paddle* player2);
-    Pong(Paddle* player, TTF_Font** font, SDL_Renderer** fontRenderer,
-         SDL_Color& fontColor, int xCord, int yCord);
-    ~Pong();
+    Game();
+    ~Game();
 
-    int getWidth();
-    int getHeight();
-    int getHits();
-    unsigned int getFPS() const;
+    void update_game();
+    void render_game();
+    void handle_events();
 
-    void addHit();
-    void resetHitCount();
+    static unsigned int get_fps();
 
-    void pauseGame(Ball* ball, Paddle* player1, Paddle* player2);
-
-    void renderScore();
-    void updateGameState(Paddle* player1, Paddle* player2, Ball* ball);
-    void resetGameState(Paddle* player1, Paddle* player2, Ball* ball);
+    static bool is_running();
+    /**
+     * @brief pause
+     */
+    void pause();
+    /**
+     * @brief render_score
+     */
+    void render_score();
+    /**
+     * @brief update_game_state
+     */
+    void update_game_state();
+    /**
+     * @brief reset_state
+     */
+    void reset_state();
+    /**
+     * @brief reset_game
+     */
+    void reset_game();
 };
 
-#endif
+#endif // GAME_HPP

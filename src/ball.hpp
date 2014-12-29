@@ -10,59 +10,56 @@
  * Also you can contact me on IRC(freenode.net server) my nickname is: ranu.
  */
 
-#ifndef BALL_H
-#define BALL_H
+#ifndef BALL_HPP
+#define BALL_HPP
 
 #include <SDL2/SDL.h>
 
 #include "paddle.hpp"
-#include "sdl_audio.hpp"
+#include "audio.hpp"
 
 /*Forward class declaration because of the circular #include(The header guard
  * was not working in this case).
  */
-class Pong;
+class Game;
 
 class Ball
 {
-    //Velocity of the ball on the screen.
-    double xVelocity, yVelocity;
+    struct ball_characteristics {
+        //Velocity of the ball on the screen.
+        float velocity_x;
+        float velocity_y;
+        int width   = 10;
+        int heigth  = 10;
+    } ball_characteristics;
 
     /* The surface that will be used to be filled with the image of the ball
      * (ball.bmp).
      */
-    SDL_Surface* ballSurface;
+    SDL_Surface* m_pBSurface;
     //The texture of the ball(ball.bmp).
-    SDL_Texture* ballTexture;
-    //The renderer that the ballTexture will use to draw on the screen.
-    SDL_Renderer* ballRenderer;
+    SDL_Texture* m_pBTexture;
     //SDL_Rect that will represent the size of the ball on the screen.
-    SDL_Rect* ballRect;
+    SDL_Rect* m_pBRect;
 
     bool collision(SDL_Rect* rectangle1, SDL_Rect* rectangle2);
 
-
 public:
-    /* I'll do not use the member initialization to the constructors due to the
-     * hight number of arguments  passed  to  the  constructor,  so  it will be
-     * initialized on the ball.cpp */
-    Ball();
-    Ball(SDL_Surface* ballImage, SDL_Renderer** ballRenderer, float xCor,
-         float yCor, int width, int height);
+    Ball(SDL_Surface* ball_surface,
+         float coordinate_x, float coordinate_y);
     ~Ball();
 
     void show();
-    void move(SDL_Rect* player1, SDL_Rect* player2, Pong* pongObject,
-              AudioWrapper* audio);
-    void updateGameScore(Paddle* player1, Paddle* player2);
+    void move(SDL_Rect* player1, SDL_Rect* player2);
+    void update_score(Paddle* player1, Paddle* player2);
 
-    double getXVelocity();
-    double getYVelocity();
+    double velocity_x();
+    double velocity_y();
 
-    void setXVelocity(double xVelocity);
-    void setYVelocity(double yVelocity);
+    void velocity_x(double velocity_x);
+    void velocity_y(double velocity_y);
 
-    SDL_Rect* getBallRect();
+    SDL_Rect* get_rect();
 };
 
-#endif
+#endif // BALL_HPP

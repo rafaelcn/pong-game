@@ -1,71 +1,62 @@
 #include "ball.hpp"
 #include "utils.hpp"
-#include "pong.hpp"
+#include "game.hpp"
+#include "window.hpp"
 #include "debug.hpp"
-#include "sdl_audio.hpp"
 
 #include <iostream>
 #include <cmath>
 
 /**
  * @brief Ball::Ball The Ball implementation of the class Ball.
- * @param ballSurface The surface that carries the image of the ball.
- * @param ballRenderer The renderer which will be used to render the ball
+ * @param ball_surface The surface that carries the image of the ball.
+ * @param window_renderer The renderer which will be used to render the ball
  * texture on the screen.
- * @param xCor The actual position in X axis of the ball.
- * @param yCor The actual position in Y axis of the ball.
- * @param width The width size of the ball.
- * @param height The height size of the ball.
+ * @param coordinate_x The actual position in X axis of the ball.
+ * @param coordinate_y The actual position in Y axis of the ball.
  */
-Ball::Ball(SDL_Surface* ballSurface, SDL_Renderer** ballRenderer, float xCor,
-           float yCor, int width, int height)
+Ball::Ball(SDL_Surface* ball_surface, float coordinate_x, float coordinate_y)
 {
-    if(ballSurface == NULL || ballRenderer == NULL)
-        logerr("The ball surface or the ball renderer passed is null.");
-    else
-    {
-        //Arguments initialization
-        this->ballRect = new SDL_Rect();
+    if(ball_surface == nullptr) {
+        Debug::logerr("The ball surface is null.");
+    }
+    else {
+        m_pBRect = new SDL_Rect();
+        m_pBSurface     = ball_surface;
 
-        this->ballSurface   = ballSurface;
+        velocity_x(2.0);
+        velocity_y(1.0);
 
-        setXVelocity(2.0);
-        setYVelocity(0.0);
+        m_pBRect->x   = coordinate_x;
+        m_pBRect->y   = coordinate_y;
+        m_pBRect->w   = ball_characteristics.width;
+        m_pBRect->h   = ball_characteristics.heigth;
 
-        this->ballRect->x   = xCor;
-        this->ballRect->y   = yCor;
-        this->ballRect->w   = width;
-        this->ballRect->h   = height;
+        m_pBTexture = SDL_CreateTextureFromSurface(Window::get_renderer(),
+                                                   ball_surface);
 
-        this->ballTexture = SDL_CreateTextureFromSurface(*ballRenderer,
-                                                         ballSurface);
-
-        if(this->ballTexture == NULL)
-        {
-            logerr("Failed to create ballTexture!");
-            logerr(SDL_GetError());
+        if(m_pBTexture == nullptr) {
+            Debug::logerr("Failed to create ball texture!", SDL_GetError());
         }
 
-        this->ballRenderer = *ballRenderer;
-
-        if(this->ballTexture == NULL)
-        {
-            logerr("Failed to create ballRenderer");
-            logerr(SDL_GetError());
+        if(m_pBTexture == nullptr) {
+            Debug::logerr("Failed to create ball renderer", SDL_GetError());
         }
 
-        SDL_FreeSurface(ballSurface);
+        SDL_FreeSurface(ball_surface);
 
-        if(this->ballTexture != NULL)
-            log("Ball created perfectly! :)");
+        if(m_pBTexture != nullptr) {
+            Debug::log("Ball created perfectly!");
+        }
     }
 }
 
 Ball::~Ball()
 {
-    SDL_DestroyTexture(this->ballTexture);
-    SDL_DestroyRenderer(this->ballRenderer);
-    delete this->ballRect;
+    if(m_pBTexture != nullptr) {
+        SDL_DestroyTexture(m_pBTexture);
+    }
+    delete m_pBRect;
 }
 
 /**
@@ -74,58 +65,73 @@ Ball::~Ball()
  */
 void Ball::show()
 {
-    SDL_RenderCopy(this->ballRenderer, this->ballTexture, NULL, this->ballRect);
+    SDL_RenderCopy(Window::get_renderer(), m_pBTexture, nullptr, m_pBRect);
 }
 
-void Ball::move(SDL_Rect* player1, SDL_Rect* player2, Pong* pongObject,
-                AudioWrapper* audio)
+void Ball::move(SDL_Rect* player1, SDL_Rect* player2)
 {
-    this->ballRect->x += this->getXVelocity();
-    this->ballRect->y += this->getYVelocity();
+    m_pBRect->x += velocity_x();
+    m_pBRect->y += velocity_y();
 
     //Detecting the collision on the Y axis.
-    if(this->ballRect->y <= 0)
-        this->yVelocity = -yVelocity;
-    if(this->ballRect->y+ballRect->h > pongObject->getHeight())
-        this->yVelocity = -yVelocity;
-    //Detecting the collision with the paddles.
-    if(collision(ballRect, player1)) {
+    if(m_pBRect->y <= 0) {
+        velocity_y(-ball_characteristics.velocity_y);
+    }
+    if(m_pBRect->y+m_pBRect->h > Window::get_height()) {
+        velocity_y(-ball_characteristics.velocity_y);
+    }
+    //Detecting the collision with the players.
+    if(collision(m_pBRect, player1))
+    {
         /* Still need to fix the collision detection, it looks like the
          * collision with the player 1 doesn't work at  21.5 of  speed.
          * The bug is not only in the player1, it does so in the player 2.
          */
-        if(ballRect->x+abs(this->getXVelocity()) < player1->x + player1->w)
-            this->yVelocity = -yVelocity;
-        else
-            this->xVelocity = -xVelocity;
-        audio->playEffect();
+        if(m_pBRect->x+abs(velocity_x()) < player1->x + player1->w) {
+            velocity_y(-ball_characteristics.velocity_y);
+        }
+        else {
+            velocity_x(-ball_characteristics.velocity_x);
+        }
 
-        log("Hit count: " + pongObject->getHits());
-        pongObject->addHit();
+        //if(audio->is_open()) {
+        //    audio->play_effect();
+        //}
+
+        //Debug::log("Hit count: " + game->get_hits());
+        //game->add_hit();
     }
-    if(collision(ballRect, player2)) {
-        if((ballRect->x + ballRect->w)-xVelocity > player2->x)
-            this->yVelocity = -yVelocity;
-        else
-            this->xVelocity = -xVelocity;
-        audio->playEffect();
+    if(collision(m_pBRect, player2)) {
+        if((m_pBRect->x + m_pBRect->w)-velocity_x() > player2->x) {
+            velocity_y(-ball_characteristics.velocity_y);
+        }
+        else  {
+            velocity_x(-ball_characteristics.velocity_x);
+        }
 
-        log("Hit count: " + pongObject->getHits());
-        pongObject->addHit();
+        //if(audio->is_open()) {
+        //    audio->play_effect();
+        //}
+
+        //Debug::log("Hit count: " + game->get_hits());
+        //Paddle::add_hit();
     }
 
     //The fun begins when the speed gets higher :3
-    if(pongObject->getHits() == 3) {
-        std::cout << "Actual speed: " << getXVelocity() << std::endl;
-        if(getXVelocity() < 0.0)
-            setXVelocity(getXVelocity() + (-0.5));
-        else
-            setXVelocity(getXVelocity() + 0.5);
+//    if(Paddle::get_hits() == 3)
+//    {
+//        Debug::log("Actual speed: ", velocity_x());
 
-        pongObject->resetHitCount();
-        std::cout << "New speed is: x(" << this->getXVelocity() << ") y("
-                  << this->getYVelocity() << ")" << std::endl;
-    }
+//        if(velocity_x() < 0.0) {
+//            velocity_x(velocity_x() + (-0.5));
+//        }
+//        else {
+//            velocity_x(velocity_x() + 0.5);
+//        }
+
+//        Paddle::reset_hit_count();
+//        Debug::log("New speed is: x(", velocity_x(), ") y(", velocity_y(), ")");
+//    }
 }
 
 /**
@@ -136,62 +142,66 @@ void Ball::move(SDL_Rect* player1, SDL_Rect* player2, Pong* pongObject,
  */
 bool Ball::collision(SDL_Rect* rect1, SDL_Rect* rect2)
 {
-    if(rect1->y >= rect2->y + rect2->h)
+    if(rect1->y >= rect2->y + rect2->h) {
         return false;
-    if(rect1->x >= rect2->x + rect2->w)
+    }
+    if(rect1->x >= rect2->x + rect2->w) {
         return false;
-    if(rect1->y + rect1->h <= rect2->y)
+    }
+    if(rect1->y + rect1->h <= rect2->y) {
         return false;
-    if(rect1->x + rect1->w <= rect2->x)
+    }
+    if(rect1->x + rect1->w <= rect2->x) {
         return false;
+    }
     return true;
 }
 
 /**
-  * @brief Ball::getBallRect() Function to return the SDL_Rect* of the ball.
+  * @brief Ball::get_rect() Function to return the SDL_Rect* of the ball.
   * @return A pointer to the ballRect.
   */
-SDL_Rect* Ball::getBallRect()
+SDL_Rect* Ball::get_rect()
 {
-    return this->ballRect;
+    return m_pBRect;
 }
 
 /**
- * @brief Ball::getYVelocity A function to get the velocity of the ball on the X
+ * @brief Ball::velocity_x A function to get the velocity of the ball on the X
  * axis.
  * @return the velocity of the ball on the X axis.
  */
-double Ball::getXVelocity()
+double Ball::velocity_x()
 {
-    return this->xVelocity;
+    return ball_characteristics.velocity_x;
 }
 
 /**
- * @brief Ball::getYVelocity A function to get the velocity of the ball on the Y
+ * @brief Ball::velocity_y A function to get the velocity of the ball on the Y
  * axis.
  * @return the velocity of the ball on the Y axis.
  */
-double Ball::getYVelocity()
+double Ball::velocity_y()
 {
-    return this->yVelocity;
+    return ball_characteristics.velocity_y;
 }
 
 /**
- * @brief Ball::setXVelocity Function to set the velocity on the X axis of the
+ * @brief Ball::velocity_x Function to set the velocity on the X axis of the
  * ball.
- * @param xVelocity The velocity on X axis.
+ * @param x_velocity The velocity on X axis.
  */
-void Ball::setXVelocity(double xVelocity)
+void Ball::velocity_x(double velocity_x)
 {
-    this->xVelocity = xVelocity;
+    ball_characteristics.velocity_x = velocity_x;
 }
 
 /**
- * @brief Ball::setYVelocity Function to set the velocity on the Y axis of the
+ * @brief Ball::velocity_y Function to set the velocity on the Y axis of the
  * ball.
- * @param yVelocity The velocity on Y axis.
+ * @param velocity_y The velocity on Y axis.
  */
-void Ball::setYVelocity(double yVelocity)
+void Ball::velocity_y(double velocity_y)
 {
-    this->yVelocity = yVelocity;
+    ball_characteristics.velocity_y = velocity_y;
 }

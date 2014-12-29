@@ -1,179 +1,220 @@
-#include "pong.hpp"
-#include "ball.hpp"
-#include "paddle.hpp"
-
 #include <iostream>
 #include <string>
-#include <random>
+#include <memory>
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 
+#include "game.hpp"
+#include "debug.hpp"
+#include "window.hpp"
+#include "font.hpp"
+#include "utils.hpp"
+
+unsigned int Game::m_fps;
+bool Game::m_is_running;
+bool Game::m_pause;
 
 /**
  * @brief Pong::Pong
  */
-Pong::Pong()
+Game::Game()
 {
-    this->WIDTH   = 800;
-    this->HEIGHT  = 600;
+    m_fps = 60;
+    m_pause = false;
+    m_is_running = true;
 
-    this->hits = 0;
+    // TODO: Take out this from here.
+    std::string paddle("res/icons/paddle.bmp");
+    std::string ball("res/icons/ball.bmp");
+    std::string ballSound("res/sounds/ballHit.wav");
+    int32_t ball_color_key[3] = { 0x20, 0x20, 0x20 };
 
-    this->FPS = 60;
+    window = std::make_shared<Window>("Pong Game", 800, 600,
+                                           SDL_WINDOW_SHOWN);
 
-    this->pause = false;
+    player1 = std::make_shared<Paddle>(Utils::load_bmp(paddle),
+                                            0, Window::get_height()/2-(50/2));
 
-    this->fontRect = NULL;
-    this->fontSurface = NULL;
-    this->fontTexture = NULL;
-    this->fontRenderer = NULL;
+    player2 = std::make_shared<Paddle>(Utils::load_bmp(paddle),
+                                            Window::get_width()-10,
+                                            Window::get_height()/2-(50/2));
+
+    this->ball = std::make_shared<Ball>(Utils::load_bmp(ball, ball_color_key),
+                                        Window::get_width()/2,
+                                        Window::get_height()/2);
+
+
+
+    audio = std::make_shared<Audio>(game_audio.hit_paddle_effect,
+                                       game_audio.game_music);
+
+    players_score.player1_rect = new SDL_Rect();
+    players_score.player2_rect = new SDL_Rect();
+
+    players_score.player1_rect->h = 120;
+    players_score.player1_rect->w = 50;
+    players_score.player1_rect->x = Window::get_width()/2-200;
+    players_score.player1_rect->y = Window::get_height()/2-230;
+
+    players_score.player2_rect->h = 120;
+    players_score.player2_rect->w = 50;
+    players_score.player2_rect->x = Window::get_width()/2+150;
+    players_score.player2_rect->y = Window::get_height()/2-230;
+
+    players_score.font_player1 = std::make_shared<Font>(
+                Window::get_renderer(), players_score.player1_rect);
+
+    players_score.font_player2 = std::make_shared<Font>(
+                Window::get_renderer(), players_score.player2_rect);
+
+    players_score.font_player1->open_font(Font::FontType::font_bold, 400);
+    players_score.font_player2->open_font(Font::FontType::font_bold, 400);
+
 }
 
-Pong::Pong(Paddle *player1, Paddle *player2)
+Game::~Game()
 {
-    this->WIDTH   = 800;
-    this->HEIGHT  = 600;
 
-    this->hits = 0;
+}
 
-    this->FPS = 60;
+void Game::update_game()
+{
+    current_time = SDL_GetTicks();
 
-    this->pause = false;
+    ball->move(player1->get_rect(), player2->get_rect());
+    update_game_state();
 
-    this->fontRect = NULL;
-    this->fontSurface = NULL;
-    this->fontTexture = NULL;
-    this->fontRenderer = NULL;
+    if(1000/get_fps() > (SDL_GetTicks() - current_time)) {
+        SDL_Delay(1000/get_fps()-(SDL_GetTicks() - current_time));
+    }
+}
+
+void Game::handle_events()
+{
+    player1->paddle_moviment.key_state = SDL_GetKeyboardState(nullptr);
+    player2->paddle_moviment.key_state = SDL_GetKeyboardState(nullptr);
+
+    /* SDL_GetKeyboardState it's async. that solved the problem of the paddles
+     * moving at the same time.
+     * Thanks to veQue on IRC!
+     */
+    if(player1->paddle_moviment.key_state[SDL_SCANCODE_W]) {
+        player1->paddle_moviment.player_keys[0] = true;
+    }
+    if(player1->paddle_moviment.key_state[SDL_SCANCODE_S]) {
+        player1->paddle_moviment.player_keys[1] = true;
+    }
+    if(player2->paddle_moviment.key_state[SDL_SCANCODE_UP]) {
+        player2->paddle_moviment.player_keys[0] = true;
+    }
+    if(player2->paddle_moviment.key_state[SDL_SCANCODE_DOWN]) {
+        player2->paddle_moviment.player_keys[1] = true;
+    }
+
+    while(SDL_PollEvent(&event)) {
+        switch(event.type) {
+
+        case SDL_QUIT:
+            Debug::log("SDL has quit normally.");
+            m_is_running = false;
+            break;
+
+        case SDL_KEYDOWN:
+            switch (event.key.keysym.sym) {
+
+            case SDLK_ESCAPE:
+                Debug::log("SDL has quit normally.");
+                m_is_running = false;
+                break;
+
+            case SDLK_ASTERISK:
+                // active debug stuff.
+                break;
+
+            case SDLK_F11:
+            {
+                int fullscreenFlag = \
+                        SDL_GetWindowFlags(Window::get_window());
+
+                if((fullscreenFlag & SDL_WINDOW_FULLSCREEN) ==
+                        SDL_WINDOW_FULLSCREEN)
+                    SDL_SetWindowFullscreen(Window::get_window(),
+                                            0);
+                else
+                    SDL_SetWindowFullscreen(Window::get_window(),
+                                            SDL_WINDOW_FULLSCREEN);
+                break;
+            }
+
+            case SDLK_p:
+                //pause game stuff
+                //pause();
+
+                break;
+            }
+        }
+    }
+
+    if(player1->paddle_moviment.player_keys[0]) {
+        player1->move_up();
+    }
+    if(player1->paddle_moviment.player_keys[1]) {
+        player1->move_down();
+    }
+    if(player2->paddle_moviment.player_keys[0]) {
+        player2->move_up();
+    }
+    if(player2->paddle_moviment.player_keys[1]) {
+        player2->move_down();
+    }
+
+    for(int i = 0; i < 2; i++) {
+        player1->paddle_moviment.player_keys[i] = false;
+        player2->paddle_moviment.player_keys[i] = false;
+    }
+}
+
+void Game::render_game()
+{
+    SDL_RenderClear(Window::get_renderer());
+    //memory leak on renderTexture
+    //renderTexture(loadBMP(paddle), &windowRenderer, 10,
+    //              pong.get_height(), pong.getWidth()/2-(10/2),
+    //              0);
+    player1->show();
+    player2->show();
+    ball->show();
+    render_score();
+
+    SDL_RenderPresent(Window::get_renderer());
 }
 
 /**
- * @brief Pong::Pong This constructor is intend to render the score to my game
- * view.
- * @param player a pointer to a Paddle which is the player to get the score.
- * @param font the TTF_Font that will be used.
- * @param fontRenderer the renderer which the font will be rendered
- * @param fontColor the SDL_Color of the font as the name says.
- * @param xCord where in X axis the font will be rendered.
- * @param yCord where in Y axis the font will be rendered.
+ * @brief Pong::renderScore This function renders the score of the game on the
+ * screen.
  */
-Pong::Pong(Paddle* player, TTF_Font** font, SDL_Renderer** fontRenderer,
-           SDL_Color &fontColor, int xCord, int yCord)
+void Game::render_score()
 {
-    this->fontRect      = new SDL_Rect();
-    this->fontRenderer  = *fontRenderer;
-    this->player        = player;
-    this->font          = *font;
-    this->fontColor     = fontColor;
+    std::string player1_score = std::to_string(player1->score());
+    std::string player2_score = std::to_string(player2->score());
 
-    if(this->fontRenderer == NULL)
-        std::cout << "LOG_ERR: font renderer is NULL! " << std::endl;
-
-    this->fontRect->h = 100;
-    this->fontRect->w = 50;
-    this->fontRect->x = xCord;
-    this->fontRect->y = yCord;
+    players_score.font_player1->render_text_solid(player1_score);
+    players_score.font_player2->render_text_solid(player2_score);
 }
 
-Pong::~Pong()
+bool Game::is_running()
 {
-    SDL_DestroyTexture(this->fontTexture);
-    SDL_DestroyRenderer(this->fontRenderer);
-    delete this->fontRect;
-
-}
-
-/**
- * @brief Pong::renderScore This function renders the score on the screen.
- */
-void Pong::renderScore()
-{
-    //to_string available only in c++11. Flag: -std=c++11, -std=c++0x probably
-    //will work too.
-   std::string score = std::to_string(this->player->getScore());
-
-   this->fontSurface = TTF_RenderText_Solid(this->font, score.c_str(),
-                                            this->fontColor);
-
-   if(this->fontSurface == NULL)
-       std::cout << "LOG_ERR: font surface is NULL, error: " << TTF_GetError()
-                 << std::endl;
-
-   this->fontTexture = SDL_CreateTextureFromSurface(this->fontRenderer,
-                                                    this->fontSurface);
-
-   SDL_FreeSurface(this->fontSurface);
-
-   if(this->fontTexture == NULL)
-       std::cout << "LOG_ERR: font texture is NULL, error: " << SDL_GetError()
-                 << std::endl;
-
-   SDL_RenderCopy(this->fontRenderer, this->fontTexture, NULL, this->fontRect);
-
-   //delete this line and your computer goes wild! (REALLY, DON'T DO THAT).
-   SDL_DestroyTexture(this->fontTexture);
-   /*
-    *                           ~EXPLANATION~
-    * Destroy the  texture  and then create  other,  because  when you call this
-    * function inside the main loop of the game, it recreate the texture, and it
-    * allocate more  RAM, over and over again,  resulting  in swapping all  your
-    * memory,  and  after  that I stopped the application,  so I can't tell what
-    * happens next. :p
-    */
-}
-
-/**
- * @brief Pong::getWidth Function that gets the width size of the screen.
- * @return
- */
-int Pong::getWidth()
-{
-    return this->WIDTH;
-}
-
-/**
- * @brief Pong::getHeight Function that gets the width size of the screen.
- * @return
- */
-int Pong::getHeight()
-{
-    return this->HEIGHT;
-}
-
-/**
- * @brief Pong::getHits
- * @return
- */
-int Pong::getHits()
-{
-    return this->hits;
+    return m_is_running;
 }
 
 /**
  * @brief Pong::getFPS A function to get the desired FPS for the game.
  * @return the desired FPS for the game.
  */
-unsigned int Pong::getFPS() const
+unsigned int Game::get_fps()
 {
-    return this->FPS;
-}
-
-/**
- * @brief Pong::addHit Function to add a hit count, when the hit gets 4 the ball
- * velocity speed up.
- */
-void Pong::addHit()
-{
-    this->hits++;
-}
-
-/**
- * @brief Pong::resetHitCount Function to reset the hit count before it reaches
- * the desired value(which is 4).
- */
-void Pong::resetHitCount()
-{
-    this->hits = 0;
+    return  m_fps;
 }
 
 /**
@@ -183,28 +224,27 @@ void Pong::resetHitCount()
  * @param player1 The player 1 which is on the game.
  * @param player2 The player 2 which is on the game.
  */
-void Pong::pauseGame(Ball* ball, Paddle* player1, Paddle* player2)
+void Game::pause()
 {
-    double const lastBallVelocity[2] = {ball->getXVelocity(),
-                                       ball->getYVelocity()};
+//    double ball_velocity[2] = { ball->velocity_x(), ball->velocity_y() };
 
-    if(!this->pause)
-    {
-        ball->setXVelocity(0.0);
-        ball->setYVelocity(0.0);
-        player1->setYVelocity(0.0);
-        player2->setYVelocity(0.0);
-        this->pause = true;
-        //I'll have to render a texture which says: GAME PAUSED!
-    }
-    else
-    {
-        ball->setXVelocity(lastBallVelocity[0]);
-        ball->setYVelocity(lastBallVelocity[1]);
-        player1->setYVelocity(6.0);
-        player2->setYVelocity(6.0);
-        this->pause = false;
-    }
+//    if(! m_pause)
+//    {
+//        ball->velocity_x(0.0);
+//        ball->velocity_y(0.0);
+//        player1->velocity_y(0.0);
+//        player2->velocity_y(0.0);
+//        m_pause = true;
+//        //TODO: have to render a texture which says: GAME PAUSED!
+//    }
+//    else
+//    {
+//        ball->velocity_x(ball_velocity[0]);
+//        ball->velocity_y(ball_velocity[1]);
+//        player1->velocity_y(6.0);
+//        player2->velocity_y(6.0);
+//        m_pause = false;
+//    }
 }
 
 /**
@@ -214,21 +254,21 @@ void Pong::pauseGame(Ball* ball, Paddle* player1, Paddle* player2)
  * @param player2 A pointer to a paddle which is the player2.
  * @param ballObject Pointer that carries the object of the ball.
  */
-void Pong::updateGameState(Paddle* player1, Paddle* player2, Ball* ballObject)
+void Game::update_game_state()
 {
-    SDL_Rect* ballRect = ballObject->getBallRect();
+    SDL_Rect* ball_rect = ball->get_rect();
 
-    if(ballRect->x+ballRect->w > Pong::getWidth())
+    if(ball_rect->x+ball_rect->w > Window::get_width())
     {
-        player1->addScore();
-        resetGameState(player1, player2, ballObject);
-        std::cout << "Player 1 score: " << player1->getScore() << std::endl;
+        player1->add_score();
+        reset_game();
+        Debug::log("Player 1 score: ", player1->score());
     }
-    if(ballRect->x+ballRect->w < 0)
+    if(ball_rect->x+ball_rect->w < 0)
     {
-        player2->addScore();
-        resetGameState(player1, player2, ballObject);
-        std::cout << "Player 2 score: " << player2->getScore() << std::endl;
+        player2->add_score();
+        reset_game();
+        Debug::log("Player 1 score: ", player2->score());
     }
 }
 
@@ -239,24 +279,23 @@ void Pong::updateGameState(Paddle* player1, Paddle* player2, Ball* ballObject)
  * @param player2 A pointer to the player2 object(paddle).
  * @param ballObject A pointer to the ball.
  */
-void Pong::resetGameState(Paddle* player1, Paddle* player2, Ball* ballObject)
+void Game::reset_game()
 {
-    SDL_Rect* ballRect = ballObject->getBallRect();
+    SDL_Rect* ball_rect = ball->get_rect();
 
-    SDL_Rect* player1Rect = player1->getRect();
-    SDL_Rect* player2Rect = player2->getRect();
+    SDL_Rect* player1_rect = player1->get_rect();
+    SDL_Rect* player2_rect = player2->get_rect();
 
     //reseting hits on the paddle
-    this->hits = 0;
+    Paddle::reset_hit_count();
 
     //Reseting ball to default position and velocity
-    ballObject->setXVelocity(2.0);
-    ballObject->setYVelocity(1.0);
-    ballRect->x = Pong::getWidth()/2-(ballRect->w);
-    ballRect->y = Pong::getHeight()/2-(ballRect->h);
+    ball->velocity_x(2.0);
+    ball->velocity_y(1.0);
+    ball_rect->x = Window::get_width()/2-(ball_rect->w);
+    ball_rect->y = Window::get_height()/2-(ball_rect->h);
 
     //Reseting the paddles to default position
-    player1Rect->y = Pong::getHeight()/2-(player1Rect->h/2);
-    player2Rect->y = Pong::getHeight()/2-(player2Rect->h/2);
-
+    player1_rect->y = Window::get_height()/2-(player1_rect->h/2);
+    player2_rect->y = Window::get_height()/2-(player2_rect->h/2);
 }

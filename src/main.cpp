@@ -18,10 +18,6 @@
 
 #include <iostream>
 
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_ttf.h>
-#include <SDL2/SDL_mixer.h>
-
 #include "game.hpp"
 
 int main(int argc, char* argv[])
@@ -33,10 +29,6 @@ int main(int argc, char* argv[])
         pong_game.update_game();
         pong_game.handle_events();
         pong_game.render_game();
-        //ball1.move(player1.getRect(), player2.getRect(), &pong, &gameSound);
-
-        //pong.updateGameState(&player1, &player2, &ball1);
-
     }
 
     return 0;

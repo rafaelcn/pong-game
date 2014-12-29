@@ -1,7 +1,8 @@
 __Pong Game__
 ===
 
-A remake of the __Pong Game__ of Atari(1972) with SDL2! The game has better graphics, but yet, is not so GOOD.
+A remake of the __Pong Game__ of Atari(1972) with SDL2! The game has better graphics, but yet, is not so GOOD.    
+**NOTE: This software is alpha, not all features are ready.**
 
 ![Game Image](PongGame.png)
 

@@ -13,9 +13,9 @@ FontManager::FontManager()
     m_color.a = 1;
 
     // Default font shade color is white and alpha channel set to 1.
-    m_color_shaded.r = 0xff;
-    m_color_shaded.b = 0xff;
-    m_color_shaded.g = 0xff;
+    m_color_shaded.r = 0x00;
+    m_color_shaded.b = 0x00;
+    m_color_shaded.g = 0x00;
     m_color_shaded.a = 1;
 
     m_ttf_opened = initialize_sdl_ttf();

@@ -13,17 +13,17 @@ class Font : protected FontManager
 private:
     // The rect which will contain information about where the font will be
     // rendered.
-    SDL_Rect m_pFRect;
+    SDL_Rect font_rect;
     // Surface used to carry the result of TTF_RenderText...
     SDL_Surface* m_pFSurface;
     // The texture that will be printed on the screen.
     SDL_Texture* m_pFTexture;
     // The renderer used by the font.
     SDL_Renderer* m_pFRenderer;
-    //
+    // The name of the font used.
     std::string font_name;
 public:
-    Font(SDL_Renderer *font_renderer, SDL_Rect &font_rect);
+    Font(SDL_Rect &font_rect_);
     ~Font();
 
     /**

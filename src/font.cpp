@@ -6,8 +6,6 @@
 
 Font::Font(SDL_Rect& font_rect_) : FontManager()
 {
-    assert(font_rect_ != nullptr);
-
     font_rect       = font_rect_;
 
     m_pFSurface     = nullptr;
@@ -15,7 +13,6 @@ Font::Font(SDL_Rect& font_rect_) : FontManager()
     m_pFRenderer    = Window::get_renderer();
 
     assert(m_pFRenderer != nullptr);
-    assert(font_rect != nullptr);
 }
 
 Font::~Font()

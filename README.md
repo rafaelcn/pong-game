@@ -15,6 +15,15 @@ One    |      S      |   Down
 Two    |  Up arrow   |    Up
 Two    |  Down arrow |   Down
 
+__There's also action keys!__
+
+ Key  |      Action      |
+------| -----------------
+ F11  |  Fullscreen mode |
+ F5   |     Debug mode   |
+
+
+
 This game was compiled in Linux with G++ and in Windows with MingW32, using the Qt and Code::Blocks, so you may have no problems with these IDEs. If you have any issue with the compiler saying that to_string is not a member of std you problaby is not compiling with -std=c++11 or you are compiling with MingW32 that has this _[problem](https://gcc.gnu.org/bugzilla/show_bug.cgi?id=52015)_! But is easy to solve, so good luck!
 
 You do <b>need</b> of:

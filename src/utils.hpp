@@ -22,33 +22,21 @@
 class Utils {
 public:
     /**
-  * @brief load_bmp A function to load BMP images and then return a pointer
-  * to the surface that contains the image.
-  * @param path the path to where the image is located.
-  * @param colorKey the color key of the image.
-  * @return a pointer to a surface which contains the image.
-  */
-    static SDL_Surface* load_bmp(std::string path, int32_t colorKey[3]);
+      * @brief load_bmp A function to load BMP images and then return a pointer
+      * to the surface that contains the image.
+      * @param path the path to where the image is located.
+      * @param colorKey the color key of the image.
+      * @return a pointer to a surface which contains the image.
+      */
+    static SDL_Surface* load_bmp(std::string path, int32_t color_key[3]);
 
     /**
- * @brief load_bmp A function to load BMP images and then return a pointer
- * to the surface that contains the image.
- * @param path path the path to where the image is located.
- * @return a pointer to a surface which contains the image.
- */
+      * @brief load_bmp A function to load BMP images and then return a pointer
+      * to the surface that contains the image.
+      * @param path path the path to where the image is located.
+      * @return a pointer to a surface which contains the image.
+      */
     static SDL_Surface* load_bmp(std::string path);
-
-    //not ready yet, memory leak and other stuff, probably it will be moved to some
-    //class wrapper.
-    void render_texture(SDL_Surface* imageSurface, SDL_Renderer** renderer,
-                        int width, int height, int coordinate_x,
-                        int coordinate_y);
-
-    template<typename T, typename... Args>
-    static std::unique_ptr<T> make_unique(Args&&... args)
-    {
-        return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
-    }
 };
 
 #endif // UTILS_HPP

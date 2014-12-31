@@ -4,10 +4,9 @@
 #include <iostream>
 
 /**
- * @brief The Debug class
+ * @brief The Debug class is where debug functions are defined.
  */
 class Debug {
-
 public:
     /**
      * @brief logf

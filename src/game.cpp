@@ -7,13 +7,12 @@
 
 #include "game.hpp"
 #include "debug.hpp"
-#include "window.hpp"
-#include "font.hpp"
 #include "utils.hpp"
 
 unsigned int Game::m_fps;
 bool Game::m_is_running;
 bool Game::m_pause;
+bool Game::debug_mode;
 
 /**
  * @brief Pong::Pong
@@ -23,59 +22,58 @@ Game::Game()
     m_fps = 60;
     m_pause = false;
     m_is_running = true;
+    debug_mode = false;
 
-    // TODO: Take out this from here.
+    // TODO: Take out this from herestd::shared_ptr<Texture> .
     std::string paddle("res/icons/paddle.bmp");
     std::string ball("res/icons/ball.bmp");
-    std::string ballSound("res/sounds/ballHit.wav");
-    int32_t ball_color_key[3] = { 0x20, 0x20, 0x20 };
 
     window = std::make_shared<Window>("Pong Game", 800, 600,
                                            SDL_WINDOW_SHOWN);
 
-    player1 = std::make_shared<Paddle>(Utils::load_bmp(paddle),
-                                            1, Window::get_height()/2-(50/2));
+    player1 = std::make_shared<Paddle>(Utils::load_bmp(paddle), 1,
+                                       Window::get_height()/2-(50/2));
 
     player2 = std::make_shared<Paddle>(Utils::load_bmp(paddle),
                                             Window::get_width()-12,
                                             Window::get_height()/2-(50/2));
 
-    this->ball = std::make_shared<Ball>(Utils::load_bmp(ball, ball_color_key),
+    this->ball = std::make_shared<Ball>(Utils::load_bmp(ball),
                                         Window::get_width()/2,
                                         Window::get_height()/2);
 
-
-
     audio = std::make_shared<Audio>(game_audio.hit_paddle_effect,
-                                       game_audio.game_music);
+                                    game_audio.game_music);
 
-    players_score.player1_rect = new SDL_Rect();
-    players_score.player2_rect = new SDL_Rect();
+    players_score.font1_rect.h = 120;
+    players_score.font1_rect.w = 50;
+    players_score.font1_rect.x = Window::get_width()/2-200;
+    players_score.font1_rect.y = Window::get_height()/2-230;
 
-    players_score.player1_rect->h = 120;
-    players_score.player1_rect->w = 50;
-    players_score.player1_rect->x = Window::get_width()/2-200;
-    players_score.player1_rect->y = Window::get_height()/2-230;
-
-    players_score.player2_rect->h = 120;
-    players_score.player2_rect->w = 50;
-    players_score.player2_rect->x = Window::get_width()/2+150;
-    players_score.player2_rect->y = Window::get_height()/2-230;
+    players_score.font2_rect.h = 120;
+    players_score.font2_rect.w = 50;
+    players_score.font2_rect.x = Window::get_width()/2+150;
+    players_score.font2_rect.y = Window::get_height()/2-230;
 
     players_score.font_player1 = std::make_shared<Font>(
-                Window::get_renderer(), players_score.player1_rect);
+                players_score.font1_rect);
 
     players_score.font_player2 = std::make_shared<Font>(
-                Window::get_renderer(), players_score.player2_rect);
+                players_score.font2_rect);
 
     players_score.font_player1->open_font(Font::FontType::font_bold, 400);
     players_score.font_player2->open_font(Font::FontType::font_bold, 400);
+
+    // I think I will be losing information passing this array to font_color(..)
+    u_int8_t colors[4] = { 200, 200, 200, 255 };
+
+    players_score.font_player1->font_color(colors);
+    players_score.font_player2->font_color(colors);
 
 }
 
 Game::~Game()
 {
-
 }
 
 void Game::update_game()
@@ -85,8 +83,16 @@ void Game::update_game()
     ball->move(player1->get_rect(), player2->get_rect());
     update_game_state();
 
-    if(1000/get_fps() > (SDL_GetTicks() - current_time)) {
-        SDL_Delay(1000/get_fps()-(SDL_GetTicks() - current_time));
+    if(1000/get_fps() > (SDL_GetTicks() - current_time))
+    {
+        int delay_time = 1000/get_fps()-(SDL_GetTicks() - current_time);
+
+        if(debug_mode)
+        {
+            // Display the delay time on the screen.
+        }
+
+        SDL_Delay(0);
     }
 }
 
@@ -128,8 +134,15 @@ void Game::handle_events()
                 m_is_running = false;
                 break;
 
-            case SDLK_ASTERISK:
+            case SDLK_r:
+                // reset the game.
+                restart_game();
+                break;
+
+            case SDLK_F5:
                 // active debug stuff.
+                if(debug_mode) { debug_mode = false; }
+                else {debug_mode = true; }
                 break;
 
             case SDLK_F11:
@@ -149,8 +162,7 @@ void Game::handle_events()
 
             case SDLK_p:
                 //pause game stuff
-                //pause();
-
+                pause();
                 break;
             }
         }
@@ -178,14 +190,21 @@ void Game::handle_events()
 void Game::render_game()
 {
     SDL_RenderClear(Window::get_renderer());
-    //memory leak on renderTexture
-    //renderTexture(loadBMP(paddle), &windowRenderer, 10,
-    //              pong.get_height(), pong.getWidth()/2-(10/2),
-    //              0);
+
     player1->show();
     player2->show();
     ball->show();
     render_score();
+
+    if(m_pause)
+    {
+        game_paused.render_texture("res/icons/pause.bmp", 188, 34,
+                                   Window::get_width()/2-(188/2),
+                                   Window::get_height()/2-(34/2));
+
+        game_paused.render_texture("res/icons/pause-background.bmp", 800, 600,
+                                   0, 0);
+    }
 
     SDL_RenderPresent(Window::get_renderer());
 }
@@ -218,41 +237,35 @@ unsigned int Game::get_fps()
 }
 
 /**
- * Uow, so much many hacks in this class. >.>
- * @brief Pong::pauseGame A function to pause the game.
- * @param Bll the ball which is on the game.
- * @param player1 The player 1 which is on the game.
- * @param player2 The player 2 which is on the game.
+ * @brief Pong::pauseGame is a function to pause the game.
  */
 void Game::pause()
 {
-//    double ball_velocity[2] = { ball->velocity_x(), ball->velocity_y() };
+    // whenever the player press p, this function is called, that's why this
+    // line below doesn't work.
+    double ball_velocity[2] = { ball->velocity_x(), ball->velocity_y() };
 
-//    if(! m_pause)
-//    {
-//        ball->velocity_x(0.0);
-//        ball->velocity_y(0.0);
-//        player1->velocity_y(0.0);
-//        player2->velocity_y(0.0);
-//        m_pause = true;
-//        //TODO: have to render a texture which says: GAME PAUSED!
-//    }
-//    else
-//    {
-//        ball->velocity_x(ball_velocity[0]);
-//        ball->velocity_y(ball_velocity[1]);
-//        player1->velocity_y(6.0);
-//        player2->velocity_y(6.0);
-//        m_pause = false;
-//    }
+    if(!m_pause)
+    {
+        ball->velocity_x(0.0);
+        ball->velocity_y(0.0);
+        player1->velocity_y(0.0);
+        player2->velocity_y(0.0);
+        m_pause = true;
+
+    }
+    else
+    {
+        ball->velocity_x(3.f);
+        ball->velocity_y(1.f);
+        player1->velocity_y(6.0);
+        player2->velocity_y(6.0);
+        m_pause = false;
+    }
 }
 
 /**
- * @brief Pong::updateGameState Function that sets all components of the game
- * for the default positions.
- * @param player1 A pointer to a paddle which is the player1.
- * @param player2 A pointer to a paddle which is the player2.
- * @param ballObject Pointer that carries the object of the ball.
+ * @brief Game::update_game_state
  */
 void Game::update_game_state()
 {
@@ -268,16 +281,13 @@ void Game::update_game_state()
     {
         player2->add_score();
         reset_game();
-        Debug::log("Player 1 score: ", player2->score());
+        Debug::log("Player 2 score: ", player2->score());
     }
 }
 
 /**
- * @brief Pong::resetGameState The function resets the game state, setting back
- * the ball amd the paddles position.
- * @param player1 A pointer to the player1 object(paddle).
- * @param player2 A pointer to the player2 object(paddle).
- * @param ballObject A pointer to the ball.
+ * @brief Pong::reset_game is the function which resets the game state, setting
+ * back the ball and the paddles position.
  */
 void Game::reset_game()
 {
@@ -290,12 +300,21 @@ void Game::reset_game()
     Paddle::reset_hit_count();
 
     //Reseting ball to default position and velocity
-    ball->velocity_x(2.0);
-    ball->velocity_y(1.0);
+    ball->velocity_x(3.0f);
+    ball->velocity_y(1.0f);
     ball_rect->x = Window::get_width()/2-(ball_rect->w);
     ball_rect->y = Window::get_height()/2-(ball_rect->h);
 
     //Reseting the paddles to default position
     player1_rect->y = Window::get_height()/2-(player1_rect->h/2);
     player2_rect->y = Window::get_height()/2-(player2_rect->h/2);
+}
+
+void Game::restart_game()
+{
+    // Restarting the game score
+    player1->reset_score();
+    player2->reset_score();
+
+    reset_game();
 }

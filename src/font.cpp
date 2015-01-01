@@ -4,21 +4,17 @@
 
 #include <cassert>
 
-Font::Font(SDL_Rect& font_rect_) : FontManager()
+Font::Font(SDL_Rect &font_rect_) : FontManager()
 {
     font_rect       = font_rect_;
 
     m_pFSurface     = nullptr;
     m_pFTexture     = nullptr;
-    m_pFRenderer    = Window::get_renderer();
-
-    assert(m_pFRenderer != nullptr);
 }
 
 Font::~Font()
 {
 }
-
 
 void Font::open_font(FontType font_type, int size)
 {
@@ -54,7 +50,6 @@ void Font::open_font(FontType font_type, int size)
     {
         Debug::log("Font ", font_name, " loaded successfully.");
     }
-
 }
 
 void Font::render_text_solid(std::string text)
@@ -69,12 +64,14 @@ void Font::render_text_solid(std::string text)
 
     if(m_pFSurface == nullptr)
     {
-        Debug::logerr("Failed to render the font", font_name, "onto the \
-                      screen");
+        Debug::logerr("Failed to render the font: ", font_name);
         return;
     }
 
-    m_pFTexture = SDL_CreateTextureFromSurface(m_pFRenderer, m_pFSurface);
+    m_pFTexture = SDL_CreateTextureFromSurface(Window::get_renderer(),
+                                               m_pFSurface);
+
+    SDL_FreeSurface(m_pFSurface);
 
     if(m_pFTexture == nullptr)
     {
@@ -83,9 +80,8 @@ void Font::render_text_solid(std::string text)
         return;
     }
 
-    SDL_RenderCopy(m_pFRenderer, m_pFTexture, nullptr, &font_rect);
+    SDL_RenderCopy(Window::get_renderer(), m_pFTexture, nullptr, &font_rect);
 
-    // Free memory allocated by the texture.
     SDL_DestroyTexture(m_pFTexture);
 }
 
@@ -102,11 +98,14 @@ void Font::render_text_shaded(std::string text)
 
     if(m_pFSurface == nullptr)
     {
-        Debug::logerr("");
+        Debug::logerr("Failed to render the font: ", font_name);
         return;
     }
 
-    m_pFTexture = SDL_CreateTextureFromSurface(m_pFRenderer, m_pFSurface);
+    m_pFTexture = SDL_CreateTextureFromSurface(Window::get_renderer(),
+                                               m_pFSurface);
+
+    SDL_FreeSurface(m_pFSurface);
 
     if(m_pFTexture == nullptr)
     {
@@ -115,9 +114,8 @@ void Font::render_text_shaded(std::string text)
         return;
     }
 
-    SDL_RenderCopy(m_pFRenderer, m_pFTexture, nullptr, &font_rect);
+    SDL_RenderCopy(Window::get_renderer(), m_pFTexture, nullptr, &font_rect);
 
-    // Free memory allocated by the texture.
     SDL_DestroyTexture(m_pFTexture);
 }
 

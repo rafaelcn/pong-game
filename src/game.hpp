@@ -25,36 +25,45 @@
 #include "window.hpp"
 #include "font.hpp"
 #include "audio.hpp"
+#include "texture.hpp"
 
 class Game
 {   
 private:
-    struct players_score {
-        // Fonts used to render the score
+    struct players_score
+    {
+        // Fonts used to render the score.
         std::shared_ptr<Font> font_player1;
         std::shared_ptr<Font> font_player2;
-        SDL_Rect* player1_rect;
-        SDL_Rect* player2_rect;
+        // The rect of each font.
+        SDL_Rect font1_rect;
+        SDL_Rect font2_rect;
     } players_score;
 
-    struct game_audio {
+    /**
+     * @brief The game_audio struct contains all information about the audio
+     * used in the game
+     */
+    struct game_audio
+    {
         Mix_Chunk* hit_paddle_effect;
         Mix_Chunk* hit_walls_effect;
         Mix_Chunk* score_up_effect;
         Mix_Music* game_music;
     } game_audio;
-
+    //
     SDL_Event event;
     //
     u_int32_t current_time;
-
+    //
+    Texture game_paused;
     // The desired FPS for the game.
     static unsigned int m_fps;
     // Represents the state of the game
     static bool m_is_running;
     // If the game is paused or no.
     static bool m_pause;
-    //
+    // The audio of the game
     std::shared_ptr<Audio> audio;
     // The players.
     std::shared_ptr<Paddle> player1;
@@ -63,7 +72,9 @@ private:
     std::shared_ptr<Ball> ball;
     // The window of the game
     std::shared_ptr<Window> window;
-
+public:
+    // The variable which describes if we are in the debug mode.
+    static bool debug_mode;
 public:
     Game();
     ~Game();
@@ -88,9 +99,9 @@ public:
      */
     void update_game_state();
     /**
-     * @brief reset_state
+     * @brief restart_game
      */
-    void reset_state();
+    void restart_game();
     /**
      * @brief reset_game
      */

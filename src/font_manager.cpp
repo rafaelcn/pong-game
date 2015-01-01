@@ -29,16 +29,20 @@ FontManager::~FontManager()
 
 bool FontManager::initialize_sdl_ttf()
 {
-    if(m_ttf_opened) {
+    if(m_ttf_opened)
+    {
         return true;
     }
-    else {
-        if(TTF_Init() != 0) {
+    else
+    {
+        if(TTF_Init() != 0)
+        {
             Debug::logerr("Some problem ocurred trying to initialize Font \
                           system", TTF_GetError());
             return false;
         }
-        else {
+        else
+        {
             Debug::log("Font system initialized.");
             return true;
         }

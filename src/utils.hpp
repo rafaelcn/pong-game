@@ -15,7 +15,6 @@
 
 #include <iostream>
 #include <stdint.h>
-#include <memory>
 
 #include <SDL2/SDL.h>
 
@@ -28,7 +27,8 @@ public:
       * @param colorKey the color key of the image.
       * @return a pointer to a surface which contains the image.
       */
-    static SDL_Surface* load_bmp(std::string path, int32_t color_key[3]);
+    static SDL_Surface* load_bmp(const std::string& path,
+                                 u_int32_t color_key[]);
 
     /**
       * @brief load_bmp A function to load BMP images and then return a pointer
@@ -36,7 +36,7 @@ public:
       * @param path path the path to where the image is located.
       * @return a pointer to a surface which contains the image.
       */
-    static SDL_Surface* load_bmp(std::string path);
+    static SDL_Surface* load_bmp(const std::string& path);
 };
 
 #endif // UTILS_HPP

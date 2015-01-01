@@ -5,18 +5,18 @@ SDL_Renderer* Window::m_pRenderer;
 
 int Window::m_window_size[2];
 
-
-Window::Window(const std::string& title, int width, int height, uint32_t flags)
+Window::Window(const std::string& title, int width, int height, u_int32_t flags)
 {
     m_pWindow = nullptr;
     m_pRenderer = nullptr;
 
 
-    if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) != 0) {
+    if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) != 0)
+    {
         Debug::logerr("Couldn't initialize the video | audio.", SDL_GetError());
-        //throw exception
     }
-    else {
+    else
+    {
         Debug::log("SDL Initialized.");
         m_pWindow = SDL_CreateWindow(title.c_str(),
                                            SDL_WINDOWPOS_CENTERED,
@@ -29,18 +29,20 @@ Window::Window(const std::string& title, int width, int height, uint32_t flags)
         m_window_size[1] = height;
 
 
-        if(m_pWindow == nullptr) {
+        if(m_pWindow == nullptr)
+        {
             Debug::logerr("Window couldn't be created.", SDL_GetError());
-            //throw exception
         }
-        else {
+        else
+        {
             SDL_ShowCursor(0); //don't show the cursor.
 
             m_pRenderer = SDL_CreateRenderer(m_pWindow, -1,
                                              SDL_RENDERER_ACCELERATED |
                                              SDL_RENDERER_PRESENTVSYNC);
 
-            if(m_pRenderer == nullptr) {
+            if(m_pRenderer == nullptr)
+            {
                 Debug::logerr("Window renderer couldn't be created.",
                               SDL_GetError());
             }

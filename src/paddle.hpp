@@ -13,14 +13,13 @@
 #ifndef PADDLE_HPP
 #define PADDLE_HPP
 
-#include <stdint.h>
+#include <cstdint>
 
 #include <SDL2/SDL.h>
 
 #include "window.hpp"
 
-class Paddle
-{
+class Paddle {
 private:
     /**
      * @brief The paddle_characteristcs struct is the container of almost all
@@ -43,7 +42,8 @@ private:
     //SDL_Rect that will represent the size of the paddle on the screen.
     SDL_Rect* m_pPRect;
 public:
-    Paddle(SDL_Surface* paddle_image, float coordinate_x, float coordinate_y);
+    Paddle(SDL_Surface *paddle_image, const float coordinate_x,
+           const float coordinate_y);
     ~Paddle();
 
     //getting the rect of the paddle.
@@ -62,7 +62,7 @@ public:
      * @brief velocity_y
      * @param velocity_y_
      */
-    void velocity_y(double velocity_y);
+    void velocity_y(const double velocity_y);
 
     /**
      * @brief score
@@ -73,7 +73,6 @@ public:
      * @brief add_score
      */
     void add_score();
-
     /**
      * @brief add_hit
      */
@@ -87,6 +86,10 @@ public:
      * @brief reset_hit_count
      */
     static void reset_hit_count();
+    /**
+     * @brief reset_score
+     */
+    void reset_score();
 
     /**
      * @brief The paddle_moviment struct

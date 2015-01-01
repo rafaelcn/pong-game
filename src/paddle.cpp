@@ -11,33 +11,36 @@ int Paddle::m_hits;
  * of the private variables with the given parameters for the class.
  * @param paddle_image The surface that carries the image of the paddle.
  */
-Paddle::Paddle(SDL_Surface* paddle_image, float coordinate_x,
-               float coordinate_y)
+Paddle::Paddle(SDL_Surface* paddle_image, const float coordinate_x,
+               const float coordinate_y)
 {
-    if(paddle_image == nullptr) {
+    if(paddle_image == nullptr)
+    {
         Debug::logerr("The paddle surface is nullptr.");
     }
-    else {
-         m_pPRect = new SDL_Rect();
+    else
+    {
+        m_pPRect = new SDL_Rect;
+        m_score = 0;
 
-         m_score = 0;
+        m_pPSurface         = paddle_image;
+        m_pPRect->x         = coordinate_x;
+        m_pPRect->y         = coordinate_y;
+        m_pPRect->w         = paddle_characteristics.width;
+        m_pPRect->h         = paddle_characteristics.height;
 
-         m_pPSurface         = paddle_image;
-         m_pPRect->x         = coordinate_x;
-         m_pPRect->y         = coordinate_y;
-         m_pPRect->w         = paddle_characteristics.width;
-         m_pPRect->h         = paddle_characteristics.height;
+        m_pPTexture = SDL_CreateTextureFromSurface(Window::get_renderer(),
+                                                   paddle_image);
 
-         m_pPTexture = SDL_CreateTextureFromSurface(Window::get_renderer(),
-                                                    paddle_image);
-
-        if( m_pPTexture == nullptr) {
+        if( m_pPTexture == nullptr)
+        {
             Debug::logerr("Failed to create paddleTexture!", SDL_GetError());
         }
 
         SDL_FreeSurface(paddle_image);
 
-        if( m_pPTexture != nullptr) {
+        if( m_pPTexture != nullptr)
+        {
             Debug::log("Paddle created perfectly.");
         }
     }
@@ -45,10 +48,11 @@ Paddle::Paddle(SDL_Surface* paddle_image, float coordinate_x,
 
 Paddle::~Paddle()
 {
-    if(m_pPTexture != nullptr) {
-        SDL_DestroyTexture( m_pPTexture);
+    if(m_pPTexture != nullptr)
+    {
+        SDL_DestroyTexture(m_pPTexture);
     }
-    delete  m_pPRect;
+    delete m_pPRect;
 }
 
 /**
@@ -69,7 +73,8 @@ void Paddle::move_up()
      * the screen, I'm limiting the up movement of the paddle by doing the
      * following statement.
      */
-    if( m_pPRect->y > 0) {
+    if( m_pPRect->y > 0)
+    {
          m_pPRect->y -=  paddle_characteristics.velocity_y;
     }
 }
@@ -80,7 +85,8 @@ void Paddle::move_down()
      * for (x, y) values, so we have to add (...).
      * The if statement is the same Debug::logic used on moveUp(); but here has a POG.
      */
-    if(m_pPRect->y + m_pPRect->h < Window::get_height()) {
+    if(m_pPRect->y + m_pPRect->h < Window::get_height())
+    {
         m_pPRect->y +=  paddle_characteristics.velocity_y;
     }
 }
@@ -108,7 +114,7 @@ double Paddle::velocity_y()
  * @brief Paddle::velocity_y a setter for the paddle velocity.
  * @param yVelocity the velocity of the paddle on the Y axis.
  */
-void Paddle::velocity_y(double velocity_y)
+void Paddle::velocity_y(const double velocity_y)
 {
      paddle_characteristics.velocity_y = velocity_y;
 }
@@ -120,6 +126,14 @@ void Paddle::velocity_y(double velocity_y)
 int Paddle::score()
 {
     return m_score;
+}
+
+/**
+ * @brief Paddle::reset_score
+ */
+void Paddle::reset_score()
+{
+    m_score = 0;
 }
 
 /**

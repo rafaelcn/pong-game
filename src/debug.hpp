@@ -18,7 +18,7 @@ public:
 
 
     template<typename... Ts>
-    static void log(Ts const&... args)
+    static void log(const Ts&... args)
     {
         std::cout << "Debug::log: ";
 
@@ -29,7 +29,7 @@ public:
     }
 
     template<typename... Ts>
-    static void logerr(Ts const&... args)
+    static void logerr(const Ts&... args)
     {
         std::cout << "Debug::logerr: ";
 

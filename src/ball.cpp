@@ -15,17 +15,20 @@
  * @param coordinate_x The actual position in X axis of the ball.
  * @param coordinate_y The actual position in Y axis of the ball.
  */
-Ball::Ball(SDL_Surface* ball_surface, float coordinate_x, float coordinate_y)
+Ball::Ball(SDL_Surface* ball_surface, const float coordinate_x,
+           const float coordinate_y)
 {
-    if(ball_surface == nullptr) {
+    if(ball_surface == nullptr)
+    {
         Debug::logerr("The ball surface is null.");
     }
-    else {
-        m_pBRect = new SDL_Rect();
+    else
+    {
+        m_pBRect        = new SDL_Rect();
         m_pBSurface     = ball_surface;
 
-        velocity_x(2.0);
-        velocity_y(1.0);
+        velocity_x(3.0f);
+        velocity_y(1.0f);
 
         m_pBRect->x   = coordinate_x;
         m_pBRect->y   = coordinate_y;
@@ -35,17 +38,20 @@ Ball::Ball(SDL_Surface* ball_surface, float coordinate_x, float coordinate_y)
         m_pBTexture = SDL_CreateTextureFromSurface(Window::get_renderer(),
                                                    ball_surface);
 
-        if(m_pBTexture == nullptr) {
+        if(m_pBTexture == nullptr)
+        {
             Debug::logerr("Failed to create ball texture!", SDL_GetError());
         }
 
-        if(m_pBTexture == nullptr) {
+        if(m_pBTexture == nullptr)
+        {
             Debug::logerr("Failed to create ball renderer", SDL_GetError());
         }
 
         SDL_FreeSurface(ball_surface);
 
-        if(m_pBTexture != nullptr) {
+        if(m_pBTexture != nullptr)
+        {
             Debug::log("Ball created perfectly!");
         }
     }
@@ -53,14 +59,15 @@ Ball::Ball(SDL_Surface* ball_surface, float coordinate_x, float coordinate_y)
 
 Ball::~Ball()
 {
-    if(m_pBTexture != nullptr) {
+    if(m_pBTexture != nullptr)
+    {
         SDL_DestroyTexture(m_pBTexture);
     }
     delete m_pBRect;
 }
 
 /**
- * @brief Ball::show This function just "blit"(SDL 1.2) the texture on the
+ * @brief Ball::show This function just "blit" (SDL 1.2) the texture on the
  * renderer.
  */
 void Ball::show()
@@ -73,13 +80,16 @@ void Ball::move(SDL_Rect* player1, SDL_Rect* player2)
     m_pBRect->x += velocity_x();
     m_pBRect->y += velocity_y();
 
-    //Detecting the collision on the Y axis.
-    if(m_pBRect->y <= 0) {
+    //Detecting the collision in the Y axis.
+    if(m_pBRect->y <= 0)
+    {
         velocity_y(-ball_characteristics.velocity_y);
     }
-    if(m_pBRect->y+m_pBRect->h > Window::get_height()) {
+    if(m_pBRect->y+m_pBRect->h > Window::get_height())
+    {
         velocity_y(-ball_characteristics.velocity_y);
     }
+
     //Detecting the collision with the players.
     if(collision(m_pBRect, player1))
     {
@@ -91,6 +101,10 @@ void Ball::move(SDL_Rect* player1, SDL_Rect* player2)
             velocity_y(-ball_characteristics.velocity_y);
         }
         else {
+            if(Paddle::get_hits() == 3)
+            {
+                add_speed();
+            }
             velocity_x(-ball_characteristics.velocity_x);
         }
 
@@ -98,14 +112,21 @@ void Ball::move(SDL_Rect* player1, SDL_Rect* player2)
         //    audio->play_effect();
         //}
 
-        //Debug::log("Hit count: " + game->get_hits());
-        //game->add_hit();
+        Debug::log("Hit count: ", Paddle::get_hits());
+        Paddle::add_hit();
     }
-    if(collision(m_pBRect, player2)) {
-        if((m_pBRect->x + m_pBRect->w)-velocity_x() > player2->x) {
+    if(collision(m_pBRect, player2))
+    {
+        if((m_pBRect->x + m_pBRect->w)-velocity_x() > player2->x)
+        {
             velocity_y(-ball_characteristics.velocity_y);
         }
-        else  {
+        else
+        {
+            if(Paddle::get_hits() == 3)
+            {
+                add_speed();
+            }
             velocity_x(-ball_characteristics.velocity_x);
         }
 
@@ -113,25 +134,26 @@ void Ball::move(SDL_Rect* player1, SDL_Rect* player2)
         //    audio->play_effect();
         //}
 
-        //Debug::log("Hit count: " + game->get_hits());
-        //Paddle::add_hit();
+        Debug::log("Hit count: ", Paddle::get_hits());
+        Paddle::add_hit();
+    }
+}
+
+void Ball::add_speed()
+{
+    // play some fancy effect when speeding up.
+    if(velocity_x() < 0.0f)
+    {
+        ball_characteristics.velocity_x =  velocity_x() + (-0.5f);
+    }
+    else
+    {
+        ball_characteristics.velocity_x =  velocity_x() + 0.5f;
     }
 
-    //The fun begins when the speed gets higher :3
-//    if(Paddle::get_hits() == 3)
-//    {
-//        Debug::log("Actual speed: ", velocity_x());
+    Paddle::reset_hit_count();
+    Debug::log("New speed is: x(", velocity_x(), ") y(", velocity_y(), ")");
 
-//        if(velocity_x() < 0.0) {
-//            velocity_x(velocity_x() + (-0.5));
-//        }
-//        else {
-//            velocity_x(velocity_x() + 0.5);
-//        }
-
-//        Paddle::reset_hit_count();
-//        Debug::log("New speed is: x(", velocity_x(), ") y(", velocity_y(), ")");
-//    }
 }
 
 /**
@@ -142,16 +164,20 @@ void Ball::move(SDL_Rect* player1, SDL_Rect* player2)
  */
 bool Ball::collision(SDL_Rect* rect1, SDL_Rect* rect2)
 {
-    if(rect1->y >= rect2->y + rect2->h) {
+    if(rect1->y >= rect2->y + rect2->h)
+    {
         return false;
     }
-    if(rect1->x >= rect2->x + rect2->w) {
+    if(rect1->x >= rect2->x + rect2->w)
+    {
         return false;
     }
-    if(rect1->y + rect1->h <= rect2->y) {
+    if(rect1->y + rect1->h <= rect2->y)
+    {
         return false;
     }
-    if(rect1->x + rect1->w <= rect2->x) {
+    if(rect1->x + rect1->w <= rect2->x)
+    {
         return false;
     }
     return true;
@@ -171,7 +197,7 @@ SDL_Rect* Ball::get_rect()
  * axis.
  * @return the velocity of the ball on the X axis.
  */
-double Ball::velocity_x()
+float Ball::velocity_x()
 {
     return ball_characteristics.velocity_x;
 }
@@ -181,7 +207,7 @@ double Ball::velocity_x()
  * axis.
  * @return the velocity of the ball on the Y axis.
  */
-double Ball::velocity_y()
+float Ball::velocity_y()
 {
     return ball_characteristics.velocity_y;
 }
@@ -191,7 +217,7 @@ double Ball::velocity_y()
  * ball.
  * @param x_velocity The velocity on X axis.
  */
-void Ball::velocity_x(double velocity_x)
+void Ball::velocity_x(float velocity_x)
 {
     ball_characteristics.velocity_x = velocity_x;
 }
@@ -201,7 +227,7 @@ void Ball::velocity_x(double velocity_x)
  * ball.
  * @param velocity_y The velocity on Y axis.
  */
-void Ball::velocity_y(double velocity_y)
+void Ball::velocity_y(float velocity_y)
 {
     ball_characteristics.velocity_y = velocity_y;
 }

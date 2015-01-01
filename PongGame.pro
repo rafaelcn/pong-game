@@ -6,7 +6,6 @@ CONFIG -= qt
 # Flags
 QMAKE_CXXFLAGS +=   -std=c++11
 
-
 # Optimization flags depends on the build type.
 CONFIG(debug, debug|release)
 {
@@ -47,17 +46,27 @@ SOURCES += src/main.cpp \
     src/paddle.cpp \
     src/ball.cpp \
     src/utils.cpp \
-    src/pong.cpp \
     src/debug.cpp \
     src/ai.cpp \
-    src/audio_manager.cpp
+    src/window.cpp \
+    src/game.cpp \
+    src/font_manager.cpp \
+    src/font.cpp \
+    src/audio.cpp \
+    src/texture.cpp \
+    src/vector2d.cpp
 
 HEADERS += \
     src/utils.hpp \
     src/paddle.hpp \
     src/ball.hpp \
-    src/pong.hpp \
     src/debug.hpp \
     src/ai.hpp \
-    src/audio_manager.hpp
+    src/window.hpp \
+    src/game.hpp \
+    src/font_manager.hpp \
+    src/font.hpp \
+    src/audio.hpp \
+    src/texture.hpp \
+    src/vector2d.hpp
 

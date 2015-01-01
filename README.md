@@ -18,9 +18,12 @@ Two    |  Down arrow |   Down
 __There's also action keys!__
 
  Key  |      Action      |
-------| -----------------
+------| -----------------|
  F11  |  Fullscreen mode |
- F5   |     Debug mode   |
+ ESC  |  Exit game	 |
+ F5   |  Debug mode      |
+ P    |	 Pause game	 |
+ R    |	 Reset game      |
 
 
 

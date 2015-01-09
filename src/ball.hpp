@@ -17,11 +17,7 @@
 
 #include "paddle.hpp"
 #include "audio.hpp"
-
-/*Forward class declaration because of the circular #include (The header guard
- * was not working in this case).
- */
-class Game;
+#include "vector2d.hpp"
 
 class Ball {
 private:
@@ -30,12 +26,12 @@ private:
 
 private:
     struct ball_characteristics {
-        //Velocity of the ball on the screen.
-        float velocity_x;
-        float velocity_y;
         int width   = 10;
         int heigth  = 10;
     } ball_characteristics;
+
+    //
+    Vector2D ball_speed;
 
     /* The surface that will be used to be filled with the image of the ball
      * (ball.bmp).

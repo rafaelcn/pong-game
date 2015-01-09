@@ -16,7 +16,7 @@
  * @param coordinate_y The actual position in Y axis of the ball.
  */
 Ball::Ball(SDL_Surface* ball_surface, const float coordinate_x,
-           const float coordinate_y)
+           const float coordinate_y) : ball_speed(3.0f, 1.0f)
 {
     if(ball_surface == nullptr)
     {
@@ -26,9 +26,6 @@ Ball::Ball(SDL_Surface* ball_surface, const float coordinate_x,
     {
         m_pBRect        = new SDL_Rect();
         m_pBSurface     = ball_surface;
-
-        velocity_x(3.0f);
-        velocity_y(1.0f);
 
         m_pBRect->x   = coordinate_x;
         m_pBRect->y   = coordinate_y;
@@ -83,11 +80,11 @@ void Ball::move(SDL_Rect* player1, SDL_Rect* player2)
     //Detecting the collision in the Y axis.
     if(m_pBRect->y <= 0)
     {
-        velocity_y(-ball_characteristics.velocity_y);
+        velocity_y(-ball_speed.y());
     }
     if(m_pBRect->y+m_pBRect->h > Window::get_height())
     {
-        velocity_y(-ball_characteristics.velocity_y);
+        velocity_y(-ball_speed.y());
     }
 
     //Detecting the collision with the players.
@@ -98,14 +95,14 @@ void Ball::move(SDL_Rect* player1, SDL_Rect* player2)
          * The bug is not only in the player1, it does so in the player 2.
          */
         if(m_pBRect->x+abs(velocity_x()) < player1->x + player1->w) {
-            velocity_y(-ball_characteristics.velocity_y);
+            velocity_y(-ball_speed.y());
         }
         else {
+            velocity_x(-ball_speed.x());
             if(Paddle::get_hits() == 3)
             {
                 add_speed();
             }
-            velocity_x(-ball_characteristics.velocity_x);
         }
 
         //if(audio->is_open()) {
@@ -119,15 +116,15 @@ void Ball::move(SDL_Rect* player1, SDL_Rect* player2)
     {
         if((m_pBRect->x + m_pBRect->w)-velocity_x() > player2->x)
         {
-            velocity_y(-ball_characteristics.velocity_y);
+            velocity_y(-ball_speed.y());
         }
         else
         {
+            velocity_x(-ball_speed.x());
             if(Paddle::get_hits() == 3)
             {
                 add_speed();
             }
-            velocity_x(-ball_characteristics.velocity_x);
         }
 
         //if(audio->is_open()) {
@@ -141,14 +138,15 @@ void Ball::move(SDL_Rect* player1, SDL_Rect* player2)
 
 void Ball::add_speed()
 {
-    // play some fancy effect when speeding up.
+    // TODO: play some fancy effect when speeding up. And take a random number
+    // to mutiply with the speed.
     if(velocity_x() < 0.0f)
     {
-        ball_characteristics.velocity_x =  velocity_x() + (-0.5f);
+        ball_speed += ball_speed() * 0.2;
     }
     else
     {
-        ball_characteristics.velocity_x =  velocity_x() + 0.5f;
+        ball_speed += ball_speed() * 0.2;
     }
 
     Paddle::reset_hit_count();
@@ -199,7 +197,7 @@ SDL_Rect* Ball::get_rect()
  */
 float Ball::velocity_x()
 {
-    return ball_characteristics.velocity_x;
+    return ball_speed.x();
 }
 
 /**
@@ -209,7 +207,7 @@ float Ball::velocity_x()
  */
 float Ball::velocity_y()
 {
-    return ball_characteristics.velocity_y;
+    return ball_speed.y();
 }
 
 /**
@@ -219,7 +217,7 @@ float Ball::velocity_y()
  */
 void Ball::velocity_x(float velocity_x)
 {
-    ball_characteristics.velocity_x = velocity_x;
+    ball_speed.x(velocity_x);
 }
 
 /**
@@ -229,5 +227,5 @@ void Ball::velocity_x(float velocity_x)
  */
 void Ball::velocity_y(float velocity_y)
 {
-    ball_characteristics.velocity_y = velocity_y;
+    ball_speed.y(velocity_y);
 }

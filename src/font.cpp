@@ -2,8 +2,6 @@
 #include "debug.hpp"
 #include "window.hpp"
 
-#include <cassert>
-
 Font::Font(SDL_Rect &font_rect_) : FontManager()
 {
     font_rect       = font_rect_;
@@ -119,7 +117,8 @@ void Font::render_text_shaded(std::string text)
     SDL_DestroyTexture(m_pFTexture);
 }
 
-void Font::font_color(u_int8_t r, u_int8_t g, u_int8_t b, u_int8_t a)
+void Font::font_color(std::uint8_t r, std::uint8_t g, std::uint8_t b,
+                      std::uint8_t a)
 {
     m_color.r = r;
     m_color.b = g;
@@ -127,7 +126,7 @@ void Font::font_color(u_int8_t r, u_int8_t g, u_int8_t b, u_int8_t a)
     m_color.a = a;
 }
 
-void Font::font_color(u_int8_t colors[3])
+void Font::font_color(std::array<std::uint8_t, 4> colors)
 {
     m_color.r = colors[0];
     m_color.b = colors[1];

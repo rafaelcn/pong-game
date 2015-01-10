@@ -1,8 +1,8 @@
 #ifndef FONT_HPP
 #define FONT_HPP
 
-#include <stdint.h>
 #include <iostream>
+#include <array>
 
 #include <SDL2/SDL.h>
 
@@ -25,7 +25,8 @@ public:
     ~Font();
 
     /**
-     * @brief The font_type enum
+     * @brief The font_type enum that describes the three kind of fonts used in
+     * the game.
      */
     enum class FontType
     {
@@ -35,9 +36,10 @@ public:
     };
 
     /**
-     * @brief open_font
-     * @param font_type
-     * @param size
+     * @brief open_font, function to initialize a font to be used with
+     * render_text_solid(...).
+     * @param font_type the type of the font, @see FontType.
+     * @param size the size of the font.
      */
     void open_font(FontType font_type, int size);
 
@@ -62,12 +64,13 @@ public:
      * @param a - alpha
      */
     void font_color(u_int8_t r, u_int8_t g, u_int8_t b, u_int8_t a);
+
     /**
      * @brief font_color is a function to set the color of the font.
      * @param colors is an array that contain information about the 3 colors,
      * plus an alpha.
      */
-    void font_color(u_int8_t colors[3]);
+    void font_color(std::array<std::uint8_t, 4> colors);
 
 
 

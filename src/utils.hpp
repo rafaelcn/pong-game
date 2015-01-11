@@ -14,7 +14,7 @@
 #define UTILS_HPP
 
 #include <iostream>
-#include <stdint.h>
+#include <array>
 
 #include <SDL2/SDL.h>
 
@@ -28,7 +28,7 @@ public:
       * @return a pointer to a surface which contains the image.
       */
     static SDL_Surface* load_bmp(const std::string& path,
-                                 u_int32_t color_key[]);
+                                 std::array<std::uint32_t, 3> color_key);
 
     /**
       * @brief load_bmp A function to load BMP images and then return a pointer

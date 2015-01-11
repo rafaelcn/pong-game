@@ -1,3 +1,15 @@
+/*
+ * Game: Pong Game.
+ * Author: Rafael Campos Nunes.
+ * License: Apache v2.
+ *
+ * Fell free to contact me on
+ * Email: rafaelnunes737@hotmail.com
+ * Github: https://github.com/rafaelcn
+ *
+ * Also you can contact me on IRC(freenode.net server) my nickname is: ranu.
+ */
+
 #ifndef FONT_HPP
 #define FONT_HPP
 

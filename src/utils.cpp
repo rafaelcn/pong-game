@@ -1,11 +1,8 @@
 #include "utils.hpp"
 #include "debug.hpp"
 
-#include <iostream>
-#include <stdint.h>
-
-
-SDL_Surface* Utils::load_bmp(const std::string& path, u_int32_t color_key[3])
+SDL_Surface* Utils::load_bmp(const std::string& path,
+                             std::array<std::uint32_t, 3> color_key)
 {
     SDL_Surface* imageSurface = SDL_LoadBMP(path.c_str());
 

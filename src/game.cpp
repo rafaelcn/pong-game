@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <memory>
+#include <array>
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
@@ -24,7 +25,6 @@ Game::Game()
     m_is_running = true;
     debug_mode = false;
 
-    // TODO: Take out this from herestd::shared_ptr<Texture> .
     std::string paddle("res/icons/paddle.bmp");
     std::string ball("res/icons/ball.bmp");
 
@@ -64,8 +64,7 @@ Game::Game()
     players_score.font_player1->open_font(Font::FontType::font_bold, 400);
     players_score.font_player2->open_font(Font::FontType::font_bold, 400);
 
-    // I think I will be losing information passing this array to font_color(..)
-    u_int8_t colors[4] = { 200, 200, 200, 255 };
+    std::array<std::uint8_t, 4> colors = { 200, 200, 200, 255 };
 
     players_score.font_player1->font_color(colors);
     players_score.font_player2->font_color(colors);
@@ -92,7 +91,7 @@ void Game::update_game()
             // Display the delay time on the screen.
         }
 
-        SDL_Delay(0);
+        SDL_Delay(delay_time);
     }
 }
 
@@ -241,9 +240,6 @@ unsigned int Game::get_fps()
  */
 void Game::pause()
 {
-    // whenever the player press p, this function is called, that's why this
-    // line below doesn't work.
-    double ball_velocity[2] = { ball->velocity_x(), ball->velocity_y() };
 
     if(!m_pause)
     {
@@ -256,8 +252,8 @@ void Game::pause()
     }
     else
     {
-        ball->velocity_x(3.f);
-        ball->velocity_y(1.f);
+        ball->velocity_x(ball->last_ball_speed.x());
+        ball->velocity_y(ball->last_ball_speed.y());
         player1->velocity_y(6.0);
         player2->velocity_y(6.0);
         m_pause = false;

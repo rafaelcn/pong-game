@@ -63,7 +63,8 @@ public:
      * @param b - blue
      * @param a - alpha
      */
-    void font_color(u_int8_t r, u_int8_t g, u_int8_t b, u_int8_t a);
+    void font_color(std::uint8_t r, std::uint8_t g, std::uint8_t b,
+                    std::uint8_t a);
 
     /**
      * @brief font_color is a function to set the color of the font.

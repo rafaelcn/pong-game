@@ -13,25 +13,28 @@
 #ifndef BALL_HPP
 #define BALL_HPP
 
+#include <memory>
+
 #include <SDL2/SDL.h>
 
 #include "paddle.hpp"
 #include "audio.hpp"
 #include "vector2d.hpp"
+#include "random.hpp"
 
 class Ball {
 private:
-    void add_speed();
-    bool collision(SDL_Rect* rectangle1, SDL_Rect* rectangle2);
-
-private:
-    struct ball_characteristics {
+    struct ball_size {
         int width   = 10;
         int heigth  = 10;
-    } ball_characteristics;
+    } ball_size;
 
     //
+    Random random_gen;
+    //
     Vector2D ball_speed;
+    //
+    //Vector2D ball_launch_direction;
 
     /* The surface that will be used to be filled with the image of the ball
      * (ball.bmp).
@@ -41,6 +44,13 @@ private:
     SDL_Texture* m_pBTexture;
     //SDL_Rect that will represent the size of the ball on the screen.
     SDL_Rect* m_pBRect;
+
+private:
+    void add_speed();
+    bool collision(SDL_Rect* rectangle1, SDL_Rect* rectangle2);
+
+public:
+    Vector2D last_ball_speed;
 
 public:
     Ball(SDL_Surface* ball_surface, const float coordinate_x,

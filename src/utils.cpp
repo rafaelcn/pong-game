@@ -3,7 +3,6 @@
 
 #include <iostream>
 #include <stdint.h>
-#include <cassert>
 
 
 SDL_Surface* Utils::load_bmp(const std::string& path, u_int32_t color_key[3])

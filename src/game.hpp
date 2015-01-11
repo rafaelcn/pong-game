@@ -15,7 +15,6 @@
 #define GAME_HPP
 
 #include <memory>
-#include <cstdint>
 
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_mixer.h>
@@ -54,7 +53,7 @@ private:
     //
     SDL_Event event;
     //
-    u_int32_t current_time;
+    std::uint32_t current_time;
     //
     Texture game_paused;
     // The desired FPS for the game.

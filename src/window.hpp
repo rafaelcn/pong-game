@@ -2,7 +2,7 @@
 #define WINDOW_HPP
 
 #include <iostream>
-#include <cstdint>
+#include <array>
 
 #include <SDL2/SDL.h>
 
@@ -17,7 +17,7 @@ private:
     // The main renderer of the window, which will be the background.
     static SDL_Renderer* m_pRenderer;
     // Array describing the window size (width, height)
-    static int m_window_size[2];
+    static std::array<int, 2> m_window_size;
 
 public:
     /**
@@ -27,7 +27,8 @@ public:
      * @param height The height of the game window.
      * @param flags The flags setted to the game window.
      */
-    Window(const std::string& title, int width, int height, u_int32_t flags);
+    Window(const std::string& title, int width, int height,
+           std::uint32_t flags);
     ~Window();
 
     /**

@@ -3,9 +3,10 @@
 SDL_Window* Window::m_pWindow;
 SDL_Renderer* Window::m_pRenderer;
 
-int Window::m_window_size[2];
+std::array<int, 2> Window::m_window_size;
 
-Window::Window(const std::string& title, int width, int height, u_int32_t flags)
+Window::Window(const std::string& title, int width, int height,
+               std::uint32_t flags)
 {
     m_pWindow = nullptr;
     m_pRenderer = nullptr;

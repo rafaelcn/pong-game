@@ -20,14 +20,13 @@ Paddle::Paddle(SDL_Surface* paddle_image, const float coordinate_x,
     }
     else
     {
-        m_pPRect = new SDL_Rect;
         m_score = 0;
 
         m_pPSurface         = paddle_image;
-        m_pPRect->x         = coordinate_x;
-        m_pPRect->y         = coordinate_y;
-        m_pPRect->w         = paddle_characteristics.width;
-        m_pPRect->h         = paddle_characteristics.height;
+        m_PRect.x         = coordinate_x;
+        m_PRect.y         = coordinate_y;
+        m_PRect.w         = paddle_characteristics.width;
+        m_PRect.h         = paddle_characteristics.height;
 
         m_pPTexture = SDL_CreateTextureFromSurface(Window::get_renderer(),
                                                    paddle_image);
@@ -52,7 +51,6 @@ Paddle::~Paddle()
     {
         SDL_DestroyTexture(m_pPTexture);
     }
-    delete m_pPRect;
 }
 
 /**
@@ -61,7 +59,7 @@ Paddle::~Paddle()
  */
 void Paddle::show()
 {
-    SDL_RenderCopy(Window::get_renderer(), m_pPTexture, nullptr, m_pPRect);
+    SDL_RenderCopy(Window::get_renderer(), m_pPTexture, nullptr, &m_PRect);
 }
 
 void Paddle::move_up()
@@ -73,9 +71,9 @@ void Paddle::move_up()
      * the screen, I'm limiting the up movement of the paddle by doing the
      * following statement.
      */
-    if( m_pPRect->y > 0)
+    if( m_PRect.y > 0)
     {
-         m_pPRect->y -=  paddle_characteristics.velocity_y;
+         m_PRect.y -=  paddle_characteristics.velocity_y;
     }
 }
 
@@ -85,9 +83,9 @@ void Paddle::move_down()
      * for (x, y) values, so we have to add (...).
      * The if statement is the same Debug::logic used on moveUp(); but here has a POG.
      */
-    if(m_pPRect->y + m_pPRect->h < Window::get_height())
+    if(m_PRect.y + m_PRect.h < Window::get_height())
     {
-        m_pPRect->y +=  paddle_characteristics.velocity_y;
+        m_PRect.y +=  paddle_characteristics.velocity_y;
     }
 }
 
@@ -98,7 +96,7 @@ void Paddle::move_down()
  */
 SDL_Rect* Paddle::get_rect()
 {
-    return m_pPRect;
+    return &m_PRect;
 }
 
 /**

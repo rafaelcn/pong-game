@@ -13,7 +13,7 @@
 #ifndef PADDLE_HPP
 #define PADDLE_HPP
 
-#include <cstdint>
+#include <array>
 
 #include <SDL2/SDL.h>
 
@@ -40,7 +40,8 @@ private:
     //The paddle itself, it's the texture of the paddleImage.
     SDL_Texture* m_pPTexture;
     //SDL_Rect that will represent the size of the paddle on the screen.
-    SDL_Rect* m_pPRect;
+    SDL_Rect m_PRect;
+
 public:
     Paddle(SDL_Surface *paddle_image, const float coordinate_x,
            const float coordinate_y);
@@ -95,8 +96,8 @@ public:
      * @brief The paddle_moviment struct
      */
     struct paddle_moviment {
-        const u_int8_t* key_state;
-        bool player_keys[2] = { false, false };
+        const std::uint8_t* key_state;
+        std::array<bool, 2> player_keys = {{ false, false }};
     } paddle_moviment;
 
 };

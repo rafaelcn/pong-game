@@ -41,6 +41,17 @@ public:
     }
 
     template<typename... Ts>
+    static void logwarn(const Ts&... args)
+    {
+        std::cout << "Debug::logwarn: ";
+
+        int expanded[] = { (std::cout << args, 0)... };
+        (void)expanded;
+
+        std::cout << std::endl;
+    }
+
+    template<typename... Ts>
     static void logerr(const Ts&... args)
     {
         std::cout << "Debug::logerr: ";

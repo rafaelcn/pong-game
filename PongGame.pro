@@ -54,7 +54,8 @@ SOURCES += src/main.cpp \
     src/font.cpp \
     src/audio.cpp \
     src/texture.cpp \
-    src/vector2d.cpp
+    src/vector2d.cpp \
+    src/random.cpp
 
 HEADERS += \
     src/utils.hpp \
@@ -68,5 +69,6 @@ HEADERS += \
     src/font.hpp \
     src/audio.hpp \
     src/texture.hpp \
-    src/vector2d.hpp
+    src/vector2d.hpp \
+    src/random.hpp
 

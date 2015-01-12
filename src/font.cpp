@@ -50,7 +50,7 @@ void Font::open_font(FontType font_type, int size)
     }
 }
 
-void Font::render_text_solid(std::string text)
+void Font::render_text_solid(const std::string &text)
 {
     if(m_pFont == nullptr)
     {
@@ -83,7 +83,7 @@ void Font::render_text_solid(std::string text)
     SDL_DestroyTexture(m_pFTexture);
 }
 
-void Font::render_text_shaded(std::string text)
+void Font::render_text_shaded(const std::string& text)
 {
     if(m_pFont == nullptr)
     {

@@ -42,8 +42,7 @@ Game::Game()
                                         Window::get_width()/2,
                                         Window::get_height()/2);
 
-    audio = std::make_shared<Audio>(game_audio.hit_paddle_effect,
-                                    game_audio.game_music);
+    audio = std::make_shared<Audio>();
 
     players_score.font1_rect.h = 120;
     players_score.font1_rect.w = 50;
@@ -252,8 +251,8 @@ void Game::pause()
     }
     else
     {
-        ball->velocity_x(ball->last_ball_speed.x());
-        ball->velocity_y(ball->last_ball_speed.y());
+        ball->velocity_x(ball->m_last_ball_speed.x());
+        ball->velocity_y(ball->m_last_ball_speed.y());
         player1->velocity_y(6.0);
         player2->velocity_y(6.0);
         m_pause = false;
@@ -292,16 +291,15 @@ void Game::reset_game()
     SDL_Rect* player1_rect = player1->get_rect();
     SDL_Rect* player2_rect = player2->get_rect();
 
-    //reseting hits on the paddle
+    // Reseting hits on the paddle
     Paddle::reset_hit_count();
 
-    //Reseting ball to default position and velocity
-    ball->velocity_x(3.0f);
-    ball->velocity_y(1.0f);
+    ball->velocity_x(ball->get_random_pos(-5, 5));
+    ball->velocity_y(ball->get_random_pos(-3, 3));
     ball_rect->x = Window::get_width()/2-(ball_rect->w);
     ball_rect->y = Window::get_height()/2-(ball_rect->h);
 
-    //Reseting the paddles to default position
+    // Reseting the paddles to default position
     player1_rect->y = Window::get_height()/2-(player1_rect->h/2);
     player2_rect->y = Window::get_height()/2-(player2_rect->h/2);
 }

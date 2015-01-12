@@ -43,11 +43,9 @@ This project is licensee on __[Apache v2](http://www.apache.org/licenses/LICENSE
 ===
 <b>Roadmap:</b> 
   - [ ] __Perfect__ collision detection.
-  - [ ] Over each "init state" of the game, a random direction for the ball.
+  - [X] Over each match of the game, a random direction for the ball.
   - [x] Ball speed increases over the course of hits in the paddles.
-  - [ ] AI
   - [X] Pause game
-  - [ ] A GUI menu.
 
 
 ===

@@ -7,17 +7,10 @@
 #include <iostream>
 #include <cmath>
 
-/**
- * @brief Ball::Ball The Ball implementation of the class Ball.
- * @param ball_surface The surface that carries the image of the ball.
- * @param window_renderer The renderer which will be used to render the ball
- * texture on the screen.
- * @param coordinate_x The actual position in X axis of the ball.
- * @param coordinate_y The actual position in Y axis of the ball.
- */
 Ball::Ball(SDL_Surface* ball_surface, const float coordinate_x,
-           const float coordinate_y) : ball_speed(3.0f, 1.0f),
-                                       last_ball_speed(ball_speed())
+           const float coordinate_y) : m_ball_speed(get_random_pos(-5, 5),
+                                                    get_random_pos(-3, 3)),
+                                       m_last_ball_speed(m_ball_speed())
 {
     if(ball_surface == nullptr)
     {
@@ -25,13 +18,17 @@ Ball::Ball(SDL_Surface* ball_surface, const float coordinate_x,
     }
     else
     {
-        m_pBRect        = new SDL_Rect();
-        m_pBSurface     = ball_surface;
+        m_ball_size[0] = 10;
+        m_ball_size[1] = 10;
 
-        m_pBRect->x   = coordinate_x;
-        m_pBRect->y   = coordinate_y;
-        m_pBRect->w   = ball_size.width;
-        m_pBRect->h   = ball_size.heigth;
+        m_pBSurface = ball_surface;
+
+        m_BRect.x   = coordinate_x;
+        m_BRect.y   = coordinate_y;
+        m_BRect.w   = m_ball_size[0];
+        m_BRect.h   = m_ball_size[1];
+
+
 
         m_pBTexture = SDL_CreateTextureFromSurface(Window::get_renderer(),
                                                    ball_surface);
@@ -61,49 +58,46 @@ Ball::~Ball()
     {
         SDL_DestroyTexture(m_pBTexture);
     }
-    delete m_pBRect;
 }
 
-/**
- * @brief Ball::show This function just "blit" (SDL 1.2) the texture on the
- * renderer.
- */
 void Ball::show()
 {
-    SDL_RenderCopy(Window::get_renderer(), m_pBTexture, nullptr, m_pBRect);
+    SDL_RenderCopy(Window::get_renderer(), m_pBTexture, nullptr, &m_BRect);
 }
 
 void Ball::move(SDL_Rect* player1, SDL_Rect* player2)
 {
-    m_pBRect->x += velocity_x();
-    m_pBRect->y += velocity_y();
+    m_BRect.x += velocity_x();
+    m_BRect.y += velocity_y();
 
     //Detecting the collision in the Y axis.
-    if(m_pBRect->y <= 0)
+    if(m_BRect.y <= 0)
     {
-        velocity_y(-ball_speed.y());
+        velocity_y(-m_ball_speed.y());
+        m_last_ball_speed = m_ball_speed;
     }
-    if(m_pBRect->y+m_pBRect->h > Window::get_height())
+    if(m_BRect.y+m_BRect.h > Window::get_height())
     {
-        velocity_y(-ball_speed.y());
+        velocity_y(-m_ball_speed.y());
+        m_last_ball_speed = m_ball_speed;
     }
 
     //Detecting the collision with the players.
-    if(collision(m_pBRect, player1))
+    if(collision(player1))
     {
-        if(m_pBRect->x+abs(velocity_x()) < player1->x + player1->w) {
-            velocity_y(-ball_speed.y());
+        if(m_BRect.x+abs(velocity_x()) < player1->x + player1->w) {
+            velocity_y(-m_ball_speed.y());
         }
         else {
             if(Paddle::get_hits() == 3)
             {
                 add_speed();
             }
-            velocity_x(-ball_speed.x());
+            velocity_x(-m_ball_speed.x());
 
         }
 
-        last_ball_speed = ball_speed;
+        m_last_ball_speed = m_ball_speed;
 
         //if(audio->is_open()) {
         //    audio->play_effect();
@@ -112,11 +106,11 @@ void Ball::move(SDL_Rect* player1, SDL_Rect* player2)
         Debug::log("Hit count: ", Paddle::get_hits());
         Paddle::add_hit();
     }
-    if(collision(m_pBRect, player2))
+    if(collision(player2))
     {
-        if((m_pBRect->x + m_pBRect->w)-velocity_x() > player2->x)
+        if((m_BRect.x + m_BRect.w)-velocity_x() > player2->x)
         {
-            velocity_y(-ball_speed.y());
+            velocity_y(-m_ball_speed.y());
         }
         else
         {
@@ -124,10 +118,10 @@ void Ball::move(SDL_Rect* player1, SDL_Rect* player2)
             {
                 add_speed();
             }
-            velocity_x(-ball_speed.x());
+            velocity_x(-m_ball_speed.x());
         }
 
-        last_ball_speed = ball_speed;
+        m_last_ball_speed = m_ball_speed;
 
         //if(audio->is_open()) {
         //    audio->play_effect();
@@ -144,13 +138,13 @@ void Ball::add_speed()
     // to mutiply with the speed.
     if(velocity_x() < 0.0f)
     {
-        ball_speed += ball_speed() * random_gen.get_real(0.1f, 0.3f);
-        last_ball_speed = ball_speed();
+        m_ball_speed += m_ball_speed() * m_random.get_real(0.1f, 0.3f);
+        m_last_ball_speed = m_ball_speed();
     }
     else
     {
-        ball_speed += ball_speed() * random_gen.get_real(0.1f, 0.2f);
-        last_ball_speed = ball_speed();
+        m_ball_speed += m_ball_speed() * m_random.get_real(0.1f, 0.15f);
+        m_last_ball_speed = m_ball_speed();
     }
 
     Paddle::reset_hit_count();
@@ -158,78 +152,63 @@ void Ball::add_speed()
 
 }
 
-/**
- * @brief Ball::collision A function to test the collision between two SDL_Rects.
- * @param rect1 The first rect that we wanna to test the collision.
- * @param rect2 The second rect that we wanna to test the collision.
- * @return If a collision occurs or not.
- */
-bool Ball::collision(SDL_Rect* rect1, SDL_Rect* rect2)
+bool Ball::collision(SDL_Rect* rectangle)
 {
-    if(rect1->y >= rect2->y + rect2->h)
+    if(m_BRect.y >= rectangle->y + rectangle->h)
     {
         return false;
     }
-    if(rect1->x >= rect2->x + rect2->w)
+    if(m_BRect.x >= rectangle->x + rectangle->w)
     {
         return false;
     }
-    if(rect1->y + rect1->h <= rect2->y)
+    if(m_BRect.y + m_BRect.h <= rectangle->y)
     {
         return false;
     }
-    if(rect1->x + rect1->w <= rect2->x)
+    if(m_BRect.x + m_BRect.w <= rectangle->x)
     {
         return false;
     }
     return true;
 }
 
-/**
-  * @brief Ball::get_rect() Function to return the SDL_Rect* of the ball.
-  * @return A pointer to the ballRect.
-  */
 SDL_Rect* Ball::get_rect()
 {
-    return m_pBRect;
+    return &m_BRect;
 }
 
-/**
- * @brief Ball::velocity_x A function to get the velocity of the ball on the X
- * axis.
- * @return the velocity of the ball on the X axis.
- */
 float Ball::velocity_x()
 {
-    return ball_speed.x();
+    return m_ball_speed.x();
 }
 
-/**
- * @brief Ball::velocity_y A function to get the velocity of the ball on the Y
- * axis.
- * @return the velocity of the ball on the Y axis.
- */
 float Ball::velocity_y()
 {
-    return ball_speed.y();
+    return m_ball_speed.y();
 }
 
-/**
- * @brief Ball::velocity_x Function to set the velocity on the X axis of the
- * ball.
- * @param x_velocity The velocity on X axis.
- */
+float Ball::get_random_pos(float a, float b)
+{
+    float position;
+
+    // I don't wanna slow speed!
+
+    do
+    {
+        position = m_random.get_real(a, b);
+    }while((position >= 0.0f && position <= 1.7f) ||
+           (position <= -0.0f && position >= -1.7f));
+
+    return position;
+}
+
 void Ball::velocity_x(float velocity_x)
 {
-    ball_speed.x(velocity_x);
+    m_ball_speed.x(velocity_x);
 }
 
-/**
- * @brief Ball::velocity_y Function to set the velocity on the Y axis of the
- * ball.
- * @param velocity_y The velocity on Y axis.
- */
 void Ball::velocity_y(float velocity_y)
 {
-    ball_speed.y(velocity_y);
+    m_ball_speed.y(velocity_y);
 }

@@ -25,6 +25,7 @@
 #include "font.hpp"
 #include "audio.hpp"
 #include "texture.hpp"
+#include "random.hpp"
 
 class Game
 {   
@@ -39,22 +40,10 @@ private:
         SDL_Rect font2_rect;
     } players_score;
 
-    /**
-     * @brief The game_audio struct contains all information about the audio
-     * used in the game
-     */
-    struct game_audio
-    {
-        Mix_Chunk* hit_paddle_effect;
-        Mix_Chunk* hit_walls_effect;
-        Mix_Chunk* score_up_effect;
-        Mix_Music* game_music;
-    } game_audio;
-    //
     SDL_Event event;
-    //
+
     std::uint32_t current_time;
-    //
+    // A texture representing the game paused.
     Texture game_paused;
     // The desired FPS for the game.
     static unsigned int m_fps;
@@ -62,6 +51,7 @@ private:
     static bool m_is_running;
     // If the game is paused or no.
     static bool m_pause;
+
     // The audio of the game
     std::shared_ptr<Audio> audio;
     // The players.
@@ -71,9 +61,11 @@ private:
     std::shared_ptr<Ball> ball;
     // The window of the game
     std::shared_ptr<Window> window;
+
 public:
     // The variable which describes if we are in the debug mode.
     static bool debug_mode;
+
 public:
     Game();
     ~Game();

@@ -32,10 +32,8 @@ private:
     SDL_Texture* m_pFTexture;
     // The name of the font used.
     std::string font_name;
-public:
-    Font(SDL_Rect& font_rect_);
-    ~Font();
 
+public:
     /**
      * @brief The font_type enum that describes the three kind of fonts used in
      * the game.
@@ -46,6 +44,10 @@ public:
         font_bold,
         font_extra_bold
     };
+
+public:
+    Font(SDL_Rect& font_rect_);
+    ~Font();
 
     /**
      * @brief open_font, function to initialize a font to be used with
@@ -60,13 +62,13 @@ public:
      * window.
      * @param text the text which will be rendered on the game window.
      */
-    void render_text_solid(std::string text);
+    void render_text_solid(const std::string& text);
 
     /**
      * @brief render_text_shaded
      * @param text
      */
-    void render_text_shaded(std::string text);
+    void render_text_shaded(const std::string& text);
 
     /**
      * @brief font_color is a function to set the color of the font.
@@ -84,9 +86,6 @@ public:
      * plus an alpha.
      */
     void font_color(std::array<std::uint8_t, 4> colors);
-
-
-
 };
 
 #endif // FONT_HPP

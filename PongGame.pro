@@ -47,7 +47,6 @@ SOURCES += src/main.cpp \
     src/ball.cpp \
     src/utils.cpp \
     src/debug.cpp \
-    src/ai.cpp \
     src/window.cpp \
     src/game.cpp \
     src/font_manager.cpp \
@@ -62,7 +61,6 @@ HEADERS += \
     src/paddle.hpp \
     src/ball.hpp \
     src/debug.hpp \
-    src/ai.hpp \
     src/window.hpp \
     src/game.hpp \
     src/font_manager.hpp \

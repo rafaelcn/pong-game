@@ -34,13 +34,13 @@ release:
 	$(CXX) $(CXXFLAGS) -c $(SOURCES) $(LIBS)
 	\mv -f *.o $(RELEASE_BUILD)/$(OBJ_DIR)
 	$(CXX) $(CXXFLAGS) -o $(EXEC) $(OBJECTS) $(LIBS)
-	\mv -f PongGame-release $(RELEASE_BUILD)/
+	\mv -f PongGame $(RELEASE_BUILD)/
 
 debug:
 	$(CXX) $(CXXFLAGS_D) -c $(SOURCES) $(LIBS)
 	\mv -f *.o $(DEBUG_BUILD)/$(OBJ_DIR)
 	$(CXX) $(CXXFLAGS_D) -o $(EXEC) $(OBJECTS_D) $(LIBS)
-	\mv -f PongGame-debug $(DEBUG_BUILD)/
+	\mv -f PongGame $(DEBUG_BUILD)/
 
 clean:
 	rm -f $(wildcard $(RELEASE_BUILD)/$(OBJ_DIR)/*.o)

@@ -15,7 +15,7 @@ Audio::Audio()
 
     if(Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) != 0)
     {
-        Debug::log_err("Audio system couldn't be initialized, check the logs.",
+        Debug::log_err("Audio system couldn't be initialized. Due to: ",
                       Mix_GetError());
 
         show_audio_drivers();

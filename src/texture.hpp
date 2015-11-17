@@ -1,5 +1,5 @@
 /*
- * Game: Pong Game.
+ * Pong Game.
  * Author: Rafael Campos Nunes.
  * License: Apache v2.
  *
@@ -14,9 +14,16 @@
 #define TEXTURE_HPP
 
 #include <iostream>
+#include <memory>
 
 #include <SDL2/SDL.h>
 
+#include "image.hpp"
+
+/**
+ * @brief This class is a wrapper the SDL_Texture and also offers a set of
+ * functions.
+ */
 class Texture {
 private:
     //
@@ -25,13 +32,24 @@ private:
     SDL_Texture* m_pTTexture;
     //
     SDL_Rect image_rect;
+    //
+    std::shared_ptr<Image> image;
 public:
     Texture();
     ~Texture();
-
-    void render_texture(const std::string& image_path, const int width,
+    
+    /**
+     * @brief
+     * 
+     */
+    void load_texture(const std::string& image_path, const int width,
                         const int height, const int coordinate_x,
                         const int coordinate_y);
+
+    /**
+     * @brief
+     */
+    void show();
 };
 
 #endif // TEXTURE_HPP

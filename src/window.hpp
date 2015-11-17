@@ -21,8 +21,7 @@
 #include "debug.hpp"
 
 /**
- * Class which has all the resources to create a window for the game by
- * providing a clear API.
+ * @brief Class which has all the resources to create a window for the game
  */
 class Window {
 private:
@@ -54,18 +53,18 @@ public:
     static SDL_Window* get_window();
     /**
      * @brief get_renderer
-     * @return the renderer of the game window.
+     * @return The renderer of the game window.
      */
     static SDL_Renderer* get_renderer();
 
     /**
      * @brief get_width
-     * @return the width of the game window.
+     * @return The width of the game window.
      */
     static int get_width();
     /**
      * @brief get_height
-     * @return the height of the game window.
+     * @return The height of the game window.
      */
     static int get_height();
 };

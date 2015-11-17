@@ -18,7 +18,7 @@
 #include "window.hpp"
 
 /**
- * @brief 
+ * @brief The Paddle class abstracts the paddle entity.
  */
 class Paddle {
 private:
@@ -67,9 +67,13 @@ public:
      * renderer.
      */
     void show();
-    
+    /**
+     * @brief move_up Moves the paddle up.
+     */
     void move_up();
-    
+    /**
+     * @brief move_down Moves the paddle down.
+     */
     void move_down();
 
     /**
@@ -89,7 +93,7 @@ public:
      */
     int score();
     /**
-     * @brief add_score
+     * @brief add_score Add an score to the paddle.
      */
     void add_score();
     /**
@@ -97,25 +101,26 @@ public:
      */
     static void add_hit();
     /**
-     * @brief get_hits
-     * @return
+     * @brief get_hits Get the total number of times that the ball has hitted
+     * the paddle.
+     * @return An integer representing the number of times that the ball has
+     * hitted the paddle.
      */
     static int get_hits();
     /**
-     * @brief reset_hit_count
+     * @brief reset_hit_count Set the number of times that the ball has hitted
+     * the paddle to zero.
      */
     static void reset_hit_count();
     /**
-     * @brief reset_score
+     * @brief reset_score Set the score of the paddle to zero.
      */
     void reset_score();
 
     /**
-     * @brief The paddle_moviment struct
+     * @brief The key_state holds the
      */
-    struct paddle_moviment {
-        const std::uint8_t* key_state;
-    } paddle_moviment;
+    const std::uint8_t* key_state;
 
 };
 

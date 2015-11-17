@@ -1,6 +1,7 @@
 #include "paddle.hpp"
 #include "window.hpp"
 #include "debug.hpp"
+#include "game.hpp"
 
 #include <iostream>
 
@@ -101,42 +102,29 @@ int Paddle::score()
     return m_score;
 }
 
-/**
- * @brief Paddle::reset_score
- */
 void Paddle::reset_score()
 {
     m_score = 0;
 }
 
-/**
- * @brief Paddle::addScore Function to add 1 point to the player score.
- */
 void Paddle::add_score()
 {
+    if (Game::audio->is_open()) {
+        Game::audio->play_effect(Audio::EffectType::score_up);
+    }
     m_score++;
 }
 
-/**
- * @brief Paddle::get_hits
- * @return
- */
 int Paddle::get_hits()
 {
     return m_hits;
 }
 
-/**
- * @brief Paddle::add_hit
- */
 void Paddle::add_hit()
 {
     m_hits += 1;
 }
 
-/**
- * @brief Paddle::reset_hit_count
- */
 void Paddle::reset_hit_count()
 {
     m_hits = 0;

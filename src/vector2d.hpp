@@ -1,5 +1,5 @@
 /*
- * Game: Pong Game.
+ * Pong Game.
  * Author: Rafael Campos Nunes.
  * License: Apache v2.
  *
@@ -13,6 +13,10 @@
 #ifndef VECTOR2D_H
 #define VECTOR2D_H
 
+/**
+ * @brief This class abstract a vector behavior, so as with their mathematical
+ * operations. 
+ */
 class Vector2D
 {
 private:
@@ -30,6 +34,7 @@ public:
     Vector2D& operator +=(const Vector2D &rhs);
 
     Vector2D cross(const Vector2D other) const;
+    Vector2D normalized() const;
 
     float x() const;
     float y() const;
@@ -43,7 +48,7 @@ public:
 
     void normalize();
 
-    Vector2D normalized() const;
+    
 };
 
-#endif // VECTOR2D_H            
+#endif // VECTOR2D_H

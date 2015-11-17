@@ -21,7 +21,8 @@
 #include "font_manager.hpp"
 
 /**
- * @brief
+ * @brief The Font class extends the FontManager and is responsible to offer
+ * a clean API to open and render fonts onto the screen.
  */
 class Font : protected FontManager
 {

@@ -19,7 +19,8 @@
 #include <SDL2/SDL_mixer.h>
 
 /**
- * @brief The Audio class
+ * @brief The Audio class is a wrapper to the sdl-mixer system and also
+ * offers an API to load an play music/effects on the game.
  */
 class Audio {
 private:
@@ -37,8 +38,15 @@ private:
 
 
 private:
-    void load_musics(); // loads all musics of the game.
-    void load_effects(); // loads all the effects of the game.
+    /**
+     * @brief Loads all musics of the game.
+     */
+    void load_musics();
+
+    /**
+     * @brief Loads all the effects of the game.
+     */
+    void load_effects();
 
 public:
     /**
@@ -63,11 +71,28 @@ public:
     Audio();
     ~Audio();
 
+    /**
+     * @brief is_open
+     * @return
+     */
     bool is_open();
 
+    /**
+     * @brief play_music
+     * @param music_type
+     * @param loop_flag
+     */
     void play_music(Music music_type, const int& loop_flag);
+
+    /**
+     * @brief play_effect Play any effect of the EffectType enum
+     * @param effect_type An enum which describes which effects are available.
+     */
     void play_effect(EffectType effect_type);
 
+    /**
+     * @brief show_audio_drivers Lists all the audio drivers available.
+     */
     void show_audio_drivers();
 };
 

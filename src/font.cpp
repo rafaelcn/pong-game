@@ -63,7 +63,8 @@ void Font::render_text_solid(const std::string &text)
 
     if(m_pFSurface == nullptr)
     {
-        Debug::log_err("Failed to render the font: ", font_name);
+        Debug::log_err("Failed to render the font: ", font_name, ". Due to:",
+                       TTF_GetError());
         return;
     }
 

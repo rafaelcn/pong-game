@@ -1,5 +1,4 @@
 #include "ball.hpp"
-#include "utils.hpp"
 #include "game.hpp"
 #include "window.hpp"
 #include "debug.hpp"
@@ -84,16 +83,18 @@ void Ball::move(SDL_Rect* player1, SDL_Rect* player2)
     //Detecting the collision with the players.
     if(collision(player1))
     {
-        if(m_BRect.x + abs(velocity_x()) < player1->x + player1->w) {
+        if (m_BRect.x + abs(velocity_x()) < player1->x + player1->w) {
             velocity_y(-m_ball_speed.y());
         }
         else {
-            if(Paddle::get_hits() == 3)
-            {
+            if (Paddle::get_hits() == 3) {
                 add_speed();
+                velocity_x(-m_ball_speed.x());
+                Paddle::reset_hit_count();
             }
-            velocity_x(-m_ball_speed.x());
-
+            else {
+                velocity_x(-m_ball_speed.x());
+            }
         }
 
         m_last_ball_speed = m_ball_speed;
@@ -107,17 +108,18 @@ void Ball::move(SDL_Rect* player1, SDL_Rect* player2)
     }
     if(collision(player2))
     {
-        if((m_BRect.x + m_BRect.w)-velocity_x() > player2->x)
-        {
+        if ((m_BRect.x + m_BRect.w)-velocity_x() > player2->x) {
             velocity_y(-m_ball_speed.y());
         }
-        else
-        {
-            if(Paddle::get_hits() == 3)
-            {
-                add_speed();
-            }
+        else {
             velocity_x(-m_ball_speed.x());
+            if(Paddle::get_hits() == 3) {
+                add_speed();
+                Paddle::reset_hit_count();
+            }
+            else {
+
+            }
         }
 
         m_last_ball_speed = m_ball_speed;
@@ -133,22 +135,16 @@ void Ball::move(SDL_Rect* player1, SDL_Rect* player2)
 
 void Ball::add_speed()
 {
-    // TODO: play some fancy effect when speeding up. And take a random number
-    // to mutiply with the speed.
-    if(velocity_x() < 0.0f)
-    {
+    if (velocity_x() < 0.0f) {
         m_ball_speed += m_ball_speed() * m_random.get_real(0.1f, 0.15f);
-        m_last_ball_speed = m_ball_speed();
+        m_last_ball_speed = m_ball_speed;
     }
-    else
-    {
+    else {
         m_ball_speed += m_ball_speed() * m_random.get_real(0.1f, 0.15f);
-        m_last_ball_speed = m_ball_speed();
+        m_last_ball_speed = m_ball_speed;
     }
 
-    Paddle::reset_hit_count();
     Debug::log("New speed is: x(", velocity_x(), ") y(", velocity_y(), ")");
-
 }
 
 bool Ball::collision(SDL_Rect* rectangle)
@@ -194,8 +190,8 @@ float Ball::get_random_pos(float a, float b)
     do
     {
         position = m_random.get_real(a, b);
-    }while((position >= 0.0f && position <= 1.7f) ||
-           (position <= -0.0f && position >= -1.7f));
+    }while((position >= 0.0f && position <= 3.0f) ||
+           (position <= -0.0f && position >= -2.0f));
 
     return position;
 }

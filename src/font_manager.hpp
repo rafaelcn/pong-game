@@ -16,6 +16,9 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 
+/**
+ * @brief The FontManager class is a wrapper to the sdl-ttf API.
+ */
 class FontManager
 {
 private:

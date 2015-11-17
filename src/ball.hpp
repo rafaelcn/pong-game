@@ -23,6 +23,9 @@
 #include "vector2d.hpp"
 #include "random.hpp"
 
+/**
+ * @brief The Ball class abstracts the ball entity.
+ */
 class Ball {
 private:
     /* An array describing the size of the ball, index 0 is width and the 1 is

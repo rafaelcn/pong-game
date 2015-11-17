@@ -4,7 +4,7 @@ CONFIG -= app_bundle
 CONFIG -= qt
 
 # Flags
-QMAKE_CXXFLAGS +=   -std=c++11
+QMAKE_CXXFLAGS += -Wall -Wextra -std=c++11
 
 # Optimization flags depends on the build type.
 CONFIG(debug, debug|release)
@@ -45,8 +45,6 @@ LIBS+= -lSDL2 \
 SOURCES += src/main.cpp \
     src/paddle.cpp \
     src/ball.cpp \
-    src/utils.cpp \
-    src/debug.cpp \
     src/window.cpp \
     src/game.cpp \
     src/font_manager.cpp \
@@ -54,13 +52,13 @@ SOURCES += src/main.cpp \
     src/audio.cpp \
     src/texture.cpp \
     src/vector2d.cpp \
-    src/random.cpp
+    src/random.cpp \
+    src/debug.cpp \
+    src/image.cpp
 
 HEADERS += \
-    src/utils.hpp \
     src/paddle.hpp \
     src/ball.hpp \
-    src/debug.hpp \
     src/window.hpp \
     src/game.hpp \
     src/font_manager.hpp \
@@ -68,5 +66,10 @@ HEADERS += \
     src/audio.hpp \
     src/texture.hpp \
     src/vector2d.hpp \
-    src/random.hpp
+    src/random.hpp \
+    src/debug.hpp \
+    src/image.hpp
+
+DISTFILES += \
+    makefile
 

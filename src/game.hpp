@@ -18,6 +18,7 @@
 
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_mixer.h>
+#include <SDL2/SDL_image.h>
 
 #include "ball.hpp"
 #include "paddle.hpp"
@@ -26,6 +27,7 @@
 #include "audio.hpp"
 #include "texture.hpp"
 #include "random.hpp"
+#include "image.hpp"
 
 /**
  * @brief The game class represent the game itself, it wrappers all the other
@@ -44,11 +46,24 @@ private:
         SDL_Rect font2_rect;
     } players_score;
 
+    /**
+     * @brief The debug_info struct
+     */
+    struct debug_info {
+        //
+        std::shared_ptr<Font> font_debug;
+        //
+        SDL_Rect font_debug_rect;
+    } debug_info;
+
     SDL_Event event;
 
     std::uint32_t current_time;
     // A texture representing the game paused.
-    Texture m_pPauseTexture;
+    std::shared_ptr<Texture> m_pause_texture;
+    std::shared_ptr<Texture> m_pause_backgroud_texture;
+    // current FPS.
+    static int m_actual_fps;
     // The desired FPS for the game.
     static unsigned int m_fps;
     // Represents the state of the game
@@ -63,6 +78,8 @@ private:
     std::shared_ptr<Ball> ball;
     // The window of the game
     std::shared_ptr<Window> window;
+    //
+    std::shared_ptr<Image> image;
 
 public:
     // The variable which describes if we are in the debug mode.

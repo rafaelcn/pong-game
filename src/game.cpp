@@ -1,16 +1,28 @@
+/**   Copyright 2014, 2015 Rafael Campos Nunes.
+ *
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+
 #include <iostream>
 #include <string>
-#include <memory>
 #include <array>
 
 #include <SDL2/SDL.h>
-#include <SDL2/SDL_ttf.h>
 
 #include "game.hpp"
-#include "debug.hpp"
-#include "utils.hpp"
 
 unsigned int Game::m_fps;
+int Game::m_actual_fps;
 bool Game::m_is_running;
 bool Game::m_pause;
 bool Game::debug_mode;
@@ -18,18 +30,20 @@ std::shared_ptr<Audio> Game::audio;
 
 Game::Game()
 {
-    m_fps = 60;
+    m_fps = 30;
     m_pause = false;
     m_is_running = true;
     debug_mode = false;
 
     std::string paddle("res/icons/paddle.bmp");
-    std::string ball("res/icons/ball.bmp");
+    std::string ball("res/icons/ball.png");
 
-    window = std::make_shared<Window>("Pong Game", 800, 600,
+    window = std::make_shared<Window>("Pong Game - Alpha 0.9.1", 800, 600,
                                            SDL_WINDOW_SHOWN);
 
+    image = std::make_shared<Image>();
     audio = std::make_shared<Audio>();
+
 
     players_score.font1_rect.h = 120;
     players_score.font1_rect.w = 50;
@@ -55,19 +69,36 @@ Game::Game()
     players_score.font_player1->font_color(colors);
     players_score.font_player2->font_color(colors);
 
-    //  Creating all game entities.
-    player1 = std::make_shared<Paddle>(Utils::load_bmp(paddle), 1,
+    debug_info.font_debug_rect.h = 30;
+    debug_info.font_debug_rect.w = 30;
+    debug_info.font_debug_rect.x = (Window::get_width() - 40);
+    debug_info.font_debug_rect.y = 10;
+
+    debug_info.font_debug = std::make_shared<Font>(debug_info.font_debug_rect);
+    debug_info.font_debug->open_font(Font::FontType::font_normal, 300);
+    debug_info.font_debug->font_color(colors);
+
+    //  Creating and loading all game entities.
+    player1 = std::make_shared<Paddle>(image->load_bmp(paddle), 1,
                                        Window::get_height()/2-(50/2));
 
-    player2 = std::make_shared<Paddle>(Utils::load_bmp(paddle),
-                                            Window::get_width()-12,
+    player2 = std::make_shared<Paddle>(image->load_bmp(paddle),
+                                            Window::get_width()-11,
                                             Window::get_height()/2-(50/2));
 
-    std::array<uint32_t, 3> color_key{{ 0, 0, 0 }};
-
-    this->ball = std::make_shared<Ball>(Utils::load_bmp(ball, color_key),
+    this->ball = std::make_shared<Ball>(image->load_png(ball),
                                         Window::get_width()/2,
                                         Window::get_height()/2);
+
+    m_pause_backgroud_texture = std::make_shared<Texture>();
+    m_pause_texture = std::make_shared<Texture>();
+
+    m_pause_backgroud_texture->load_texture("res/icons/pause-background.png",
+                                           800, 600, 0, 0);
+
+    m_pause_texture->load_texture("res/icons/pause.png", 188, 34,
+                                       Window::get_width()/2-(188/2),
+                                       Window::get_height()/2-(34/2));
 }
 
 Game::~Game()
@@ -83,36 +114,31 @@ void Game::update_game()
 
     if(1000/get_fps() > (SDL_GetTicks() - current_time))
     {
-        int delay_time = 1000/get_fps()-(SDL_GetTicks() - current_time);
+        m_actual_fps = 1000/get_fps()-(SDL_GetTicks() - current_time);
 
-        if(debug_mode)
-        {
-            // Display the delay time on the screen.
-        }
-
-        SDL_Delay(delay_time);
+        SDL_Delay(m_actual_fps);
     }
 }
 
 void Game::handle_events()
 {
-    player1->paddle_moviment.key_state = SDL_GetKeyboardState(nullptr);
-    player2->paddle_moviment.key_state = SDL_GetKeyboardState(nullptr);
+    player1->key_state = SDL_GetKeyboardState(nullptr);
+    player2->key_state = SDL_GetKeyboardState(nullptr);
 
     /* SDL_GetKeyboardState it's async. that solved the problem of the paddles
      * moving at the same time.
      * Thanks to veQue on IRC!
      */
-    if(player1->paddle_moviment.key_state[SDL_SCANCODE_W]) {
+    if(player1->key_state[SDL_SCANCODE_W]) {
         player1->move_up();
     }
-    if(player1->paddle_moviment.key_state[SDL_SCANCODE_S]) {
+    if(player1->key_state[SDL_SCANCODE_S]) {
         player1->move_down();
     }
-    if(player2->paddle_moviment.key_state[SDL_SCANCODE_UP]) {
+    if(player2->key_state[SDL_SCANCODE_UP]) {
         player2->move_up();
     }
-    if(player2->paddle_moviment.key_state[SDL_SCANCODE_DOWN]) {
+    if(player2->key_state[SDL_SCANCODE_DOWN]) {
         player2->move_down();
     }
 
@@ -139,7 +165,9 @@ void Game::handle_events()
 
             case SDLK_F5:
                 // active debug mode.
+                Debug::log("Before toggling debug mode: ", debug_mode);
                 debug_mode = !debug_mode;
+                Debug::log("After toggling debug mode: ", debug_mode);
                 break;
 
             // activate full screen mode.
@@ -176,14 +204,14 @@ void Game::render_game()
     ball->show();
     render_score();
 
-    if(m_pause)
+    if (debug_mode) {
+        debug_info.font_debug->render_text_solid(std::to_string(m_actual_fps));
+    }
+
+    if (m_pause)
     {
-//        game_paused.render_texture("res/icons/pause-background.bmp", 800, 600,
-//                                   0, 0);
-                                   
-//        game_paused.render_texture("res/icons/pause.bmp", 188, 34,
-//                                   Window::get_width()/2-(188/2),
-//                                   Window::get_height()/2-(34/2));
+          m_pause_texture->show();
+          m_pause_backgroud_texture->show();
     }
     SDL_RenderPresent(Window::get_renderer());
 }
@@ -194,11 +222,10 @@ void Game::render_game()
  */
 void Game::render_score()
 {
-    std::string player1_score = std::to_string(player1->score());
-    std::string player2_score = std::to_string(player2->score());
-
-    players_score.font_player1->render_text_solid(player1_score);
-    players_score.font_player2->render_text_solid(player2_score);
+    players_score.font_player1->render_text_solid(
+                std::to_string(player1->score()));
+    players_score.font_player2->render_text_solid(
+                std::to_string(player2->score()));
 }
 
 bool Game::is_running()

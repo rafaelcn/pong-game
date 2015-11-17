@@ -24,22 +24,29 @@
 class Utils {
 public:
     /**
-      * @brief load_bmp A function to load BMP images and then return a pointer
-      * to the surface that contains the image.
-      * @param path the path to where the image is located.
-      * @param colorKey the color key of the image.
-      * @return a pointer to a surface which contains the image.
+      * @brief Function to load BMP images and then return a pointer to the
+      * surface that contains the image.
+      * @param The path to where the image is located.
+      * @param The color to be interpreted as transparent.
+      * @return A pointer to a surface which contains the image.
       */
     static SDL_Surface* load_bmp(const std::string& path, int color_key_state,
                                  std::array<std::uint32_t, 3> color_key);
 
+    /**
+     * @brief Function to load BMP images and then return a pointer to the
+     * surface that contains the image.
+     * @param The path to where the image is located.
+     * @param The color to be interpreted as transparent.
+     * @return A pointer to a surface which contains the image.
+     */
     static SDL_Surface* load_bmp(const std::string &path,
                                 std::array<std::uint32_t, 3>& color_key);
 
     /**
-      * @brief load_bmp A function to load BMP images and then return a pointer
-      * to the surface that contains the image.
-      * @param path path the path to where the image is located.
+      * @brief Function to load BMP images and then return a pointer to the
+      * surface that contains the image.
+      * @param The path to where the image is located.
       * @return a pointer to a surface which contains the image.
       */
     static SDL_Surface* load_bmp(const std::string& path);

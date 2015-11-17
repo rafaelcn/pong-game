@@ -4,6 +4,9 @@ __Pong Game__
 A remake of the __Pong Game__ of Atari(1972) with SDL2! The game has better graphics, but yet, is not so GOOD.    
 **NOTE: This software is alpha, not all features are ready.**
 
+*Q: What looks like to play Pong?*
+*A: See with your eyes!*
+
 ![Game Image](PongGame.png)
 
 __How to play?__
@@ -20,10 +23,10 @@ __There's also action keys!__
  Key  |      Action      |
 ------| -----------------|
  F11  |  Fullscreen mode
- ESC  |  Exit game	    
- F5   |  Debug mode      
- P    |	 Pause game	     
- R    |	 Reset game      
+ ESC  |  Exit game
+ F5   |  Debug mode
+ P    |	 Pause game 
+ R    |	 Reset game
 
 
 

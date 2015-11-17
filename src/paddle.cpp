@@ -6,23 +6,19 @@
 
 int Paddle::m_hits;
 
-/**
- * @brief Paddle::Paddle Constructor of the class that initializes the values
- * of the private variables with the given parameters for the class.
- * @param paddle_image The surface that carries the image of the paddle.
- */
 Paddle::Paddle(SDL_Surface* paddle_image, const float coordinate_x,
                const float coordinate_y)
 {
     if(paddle_image == nullptr)
     {
-        Debug::logerr("The paddle surface is nullptr.");
+        Debug::log_err("The paddle surface is null. Check if res folder is  \
+         along with the executable.");
     }
     else
     {
         m_score = 0;
 
-        m_pPSurface         = paddle_image;
+        m_pPSurface       = paddle_image;
         m_PRect.x         = coordinate_x;
         m_PRect.y         = coordinate_y;
         m_PRect.w         = paddle_characteristics.width;
@@ -33,7 +29,7 @@ Paddle::Paddle(SDL_Surface* paddle_image, const float coordinate_x,
 
         if( m_pPTexture == nullptr)
         {
-            Debug::logerr("Failed to create paddleTexture!", SDL_GetError());
+            Debug::log_err("Failed to create paddle texture!", SDL_GetError());
         }
 
         SDL_FreeSurface(paddle_image);
@@ -53,10 +49,6 @@ Paddle::~Paddle()
     }
 }
 
-/**
- * @brief Paddle::show This function just "blit"(SDL 1.2) the texture on the
- * renderer.
- */
 void Paddle::show()
 {
     SDL_RenderCopy(Window::get_renderer(), m_pPTexture, nullptr, &m_PRect);
@@ -89,38 +81,21 @@ void Paddle::move_down()
     }
 }
 
-/**
- * @brief Paddle::getRect Returns the actual SDL_Rect* used to represent the
- * paddle.
- * @return the current SDL_Rect* used to represent the paddle
- */
 SDL_Rect* Paddle::get_rect()
 {
     return &m_PRect;
 }
 
-/**
- * @brief Paddle::getYVelocity a getter for the paddle velocity.
- * @return the current velocity on the Y axis.
- */
 double Paddle::velocity_y()
 {
     return paddle_characteristics.velocity_y;
 }
 
-/**
- * @brief Paddle::velocity_y a setter for the paddle velocity.
- * @param yVelocity the velocity of the paddle on the Y axis.
- */
 void Paddle::velocity_y(const double velocity_y)
 {
      paddle_characteristics.velocity_y = velocity_y;
 }
 
-/**
- * @brief Paddle::score get the actual score of the player.
- * @return the actual score of the player.
- */
 int Paddle::score()
 {
     return m_score;

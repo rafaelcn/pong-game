@@ -14,10 +14,8 @@ unsigned int Game::m_fps;
 bool Game::m_is_running;
 bool Game::m_pause;
 bool Game::debug_mode;
+std::shared_ptr<Audio> Game::audio;
 
-/**
- * @brief Pong::Pong
- */
 Game::Game()
 {
     m_fps = 60;
@@ -30,17 +28,6 @@ Game::Game()
 
     window = std::make_shared<Window>("Pong Game", 800, 600,
                                            SDL_WINDOW_SHOWN);
-
-    player1 = std::make_shared<Paddle>(Utils::load_bmp(paddle), 1,
-                                       Window::get_height()/2-(50/2));
-
-    player2 = std::make_shared<Paddle>(Utils::load_bmp(paddle),
-                                            Window::get_width()-12,
-                                            Window::get_height()/2-(50/2));
-
-    this->ball = std::make_shared<Ball>(Utils::load_bmp(ball),
-                                        Window::get_width()/2,
-                                        Window::get_height()/2);
 
     audio = std::make_shared<Audio>();
 
@@ -68,6 +55,19 @@ Game::Game()
     players_score.font_player1->font_color(colors);
     players_score.font_player2->font_color(colors);
 
+    //  Creating all game entities.
+    player1 = std::make_shared<Paddle>(Utils::load_bmp(paddle), 1,
+                                       Window::get_height()/2-(50/2));
+
+    player2 = std::make_shared<Paddle>(Utils::load_bmp(paddle),
+                                            Window::get_width()-12,
+                                            Window::get_height()/2-(50/2));
+
+    std::array<uint32_t, 3> color_key{{ 0, 0, 0 }};
+
+    this->ball = std::make_shared<Ball>(Utils::load_bmp(ball, color_key),
+                                        Window::get_width()/2,
+                                        Window::get_height()/2);
 }
 
 Game::~Game()
@@ -104,16 +104,16 @@ void Game::handle_events()
      * Thanks to veQue on IRC!
      */
     if(player1->paddle_moviment.key_state[SDL_SCANCODE_W]) {
-        player1->paddle_moviment.player_keys[0] = true;
+        player1->move_up();
     }
     if(player1->paddle_moviment.key_state[SDL_SCANCODE_S]) {
-        player1->paddle_moviment.player_keys[1] = true;
+        player1->move_down();
     }
     if(player2->paddle_moviment.key_state[SDL_SCANCODE_UP]) {
-        player2->paddle_moviment.player_keys[0] = true;
+        player2->move_up();
     }
     if(player2->paddle_moviment.key_state[SDL_SCANCODE_DOWN]) {
-        player2->paddle_moviment.player_keys[1] = true;
+        player2->move_down();
     }
 
     while(SDL_PollEvent(&event)) {
@@ -138,11 +138,11 @@ void Game::handle_events()
                 break;
 
             case SDLK_F5:
-                // active debug stuff.
-                if(debug_mode) { debug_mode = false; }
-                else {debug_mode = true; }
+                // active debug mode.
+                debug_mode = !debug_mode;
                 break;
 
+            // activate full screen mode.
             case SDLK_F11:
             {
                 int fullscreenFlag = \
@@ -159,29 +159,11 @@ void Game::handle_events()
             }
 
             case SDLK_p:
-                //pause game stuff
+                // pause game.
                 pause();
                 break;
             }
         }
-    }
-
-    if(player1->paddle_moviment.player_keys[0]) {
-        player1->move_up();
-    }
-    if(player1->paddle_moviment.player_keys[1]) {
-        player1->move_down();
-    }
-    if(player2->paddle_moviment.player_keys[0]) {
-        player2->move_up();
-    }
-    if(player2->paddle_moviment.player_keys[1]) {
-        player2->move_down();
-    }
-
-    for(int i = 0; i < 2; i++) {
-        player1->paddle_moviment.player_keys[i] = false;
-        player2->paddle_moviment.player_keys[i] = false;
     }
 }
 
@@ -196,14 +178,13 @@ void Game::render_game()
 
     if(m_pause)
     {
-        game_paused.render_texture("res/icons/pause.bmp", 188, 34,
-                                   Window::get_width()/2-(188/2),
-                                   Window::get_height()/2-(34/2));
-
-        game_paused.render_texture("res/icons/pause-background.bmp", 800, 600,
-                                   0, 0);
+//        game_paused.render_texture("res/icons/pause-background.bmp", 800, 600,
+//                                   0, 0);
+                                   
+//        game_paused.render_texture("res/icons/pause.bmp", 188, 34,
+//                                   Window::get_width()/2-(188/2),
+//                                   Window::get_height()/2-(34/2));
     }
-
     SDL_RenderPresent(Window::get_renderer());
 }
 
@@ -225,21 +206,13 @@ bool Game::is_running()
     return m_is_running;
 }
 
-/**
- * @brief Pong::getFPS A function to get the desired FPS for the game.
- * @return the desired FPS for the game.
- */
 unsigned int Game::get_fps()
 {
     return  m_fps;
 }
 
-/**
- * @brief Pong::pauseGame is a function to pause the game.
- */
 void Game::pause()
 {
-
     if(!m_pause)
     {
         ball->velocity_x(0.0);
@@ -259,9 +232,6 @@ void Game::pause()
     }
 }
 
-/**
- * @brief Game::update_game_state
- */
 void Game::update_game_state()
 {
     SDL_Rect* ball_rect = ball->get_rect();
@@ -280,10 +250,6 @@ void Game::update_game_state()
     }
 }
 
-/**
- * @brief Pong::reset_game is the function which resets the game state, setting
- * back the ball and the paddles position.
- */
 void Game::reset_game()
 {
     SDL_Rect* ball_rect = ball->get_rect();
@@ -306,6 +272,7 @@ void Game::reset_game()
 
 void Game::restart_game()
 {
+    // TODO: Ball with a minimum speed at spawn.
     // Restarting the game score
     player1->reset_score();
     player2->reset_score();

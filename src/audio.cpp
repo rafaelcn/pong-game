@@ -1,95 +1,121 @@
-#include <iostream>
-
-#include <SDL2/SDL_mixer.h>
-
 #include "debug.hpp"
 #include "audio.hpp"
 
-Audio::Audio(Mix_Chunk* effect, Mix_Music* music)
+Audio::Audio()
 {
-    if(Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) != 0) {
-        Debug::logerr("Audio system couldn't be initialized, check the logs.",
+    m_music_path[0] = "res/sounds/musics/music_1.wav";
+
+    // hit_paddle_effect
+    m_effects_paths[0] = "res/sounds/effects/hit_paddle.wav";
+    // score_up_effect
+    m_effects_paths[1] = "res/sounds/effects/score_up.wav";
+    // ball_speed_up
+    m_effects_paths[2] = "res/sounds/effects/speed_up.wav";
+
+
+    if(Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) != 0)
+    {
+        Debug::log_err("Audio system couldn't be initialized, check the logs.",
                       Mix_GetError());
 
         show_audio_drivers();
         m_audio_opened = false;
     }
-    else {
+    else
+    {
         Debug::log("Audio system initialized.");
-
-        m_pEffect        = effect;
-        m_pMusic         = music;
         m_audio_opened   = true;
+
+        load_musics();
+        load_effects();
     }
 }
 
 Audio::~Audio()
 {
-    if(m_pEffect != nullptr && m_audio_opened)
-        Mix_FreeChunk(this->m_pEffect);
-    if(m_pMusic != nullptr && m_audio_opened)
-        Mix_FreeMusic(this->m_pMusic);
     if(m_audio_opened)
         Mix_CloseAudio();
 }
 
-bool Audio::load_music(const std::string& music_name)
+void Audio::load_musics()
 {
-    if(m_audio_opened) {
-        m_pMusic = Mix_LoadMUS(music_name.c_str());
+    m_musics[0] = Mix_LoadMUS(m_music_path[0].c_str());
 
-        if(m_pMusic == nullptr) {
-            Debug::logerr("Loading the music " + music_name + " has failed. :(",
-                          Mix_GetError());
-            return false;
-        }
-        else {
-            return true;
-        }
-    }
-    else {
-        return false;
+    if(m_musics[0] == nullptr)
+    {
+        Debug::log_warn("Loading the music " + m_music_path[0] +
+                      " has failed. :(",
+                      Mix_GetError());
     }
 }
 
-bool Audio::load_effect(const std::string& effect_name)
+void Audio::load_effects()
 {
-    if(m_audio_opened) {
-        m_pEffect = Mix_LoadWAV(effect_name.c_str());
-
-        if(m_pEffect == nullptr) {
-            Debug::logerr("Loading the effect " + effect_name +
+    for(unsigned int i = 0; i < m_effects.size(); i++)
+    {
+        m_effects[i] = Mix_LoadWAV(m_effects_paths[i].c_str());
+        if(m_effects[i] == nullptr)
+        {
+            Debug::log_warn("Loading the effect " + m_effects_paths[i] +
                           " has failed. :(",
                           Mix_GetError());
-            return false;
         }
-        else {
-            return true;
-        }
-    }
-    else {
-        return false;
     }
 }
 
-void Audio::play_effect()
+void Audio::play_effect(EffectType effect_type)
 {
-    if(Mix_PlayChannel(-1, m_pEffect, 0) != -1) {
+    Mix_Chunk* effect = nullptr;
+
+    switch(effect_type)
+    {
+    case EffectType::hit_paddle:
+        effect = m_effects[0];
+        break;
+    case EffectType::score_up:
+        effect = m_effects[1];
+        break;
+    case EffectType::ball_speed:
+        effect = m_effects[2];
+        break;
+    default:
+        Debug::log_warn();
+        break;
+    }
+
+    if(Mix_PlayChannel(-1, effect, 0) != -1)
+    {
         //success
     }
-    else {
-        Debug::logerr("Cannot reproduce the effect. Due to: ", Mix_GetError());
+    else
+    {
+        Debug::log_err("Cannot reproduce the effect. Due to: ", Mix_GetError());
     }
 }
 
-//going to make an enum to be accepted as a flag.
-void Audio::play_music(const int& loop_flag)
+// Going to make an enum to be accepted as a flag.
+void Audio::play_music(Music music_type, const int& loop_flag)
 {
-    if(Mix_PlayMusic(m_pMusic, loop_flag) != -1) {
+    Mix_Music* music = nullptr;
+
+    switch(music_type)
+    {
+    case Music::music_1:
+        music = m_musics[0];
+        break;
+    default:
+        Debug::log_warn("");
+        break;
+
+    }
+
+    if(Mix_PlayMusic(music, loop_flag) != -1)
+    {
         //success
     }
-    else {
-        Debug::logerr("Cannot reproduce the music. Due to: ", Mix_GetError());
+    else
+    {
+        Debug::log_err("Cannot reproduce the music. Due to: ", Mix_GetError());
     }
 }
 

@@ -1,5 +1,5 @@
 /*
- * Game: Pong Game.
+ * Pong Game.
  * Author: Rafael Campos Nunes.
  * License: Apache v2.
  *
@@ -18,6 +18,9 @@
 
 #include <SDL2/SDL.h>
 
+/**
+ * @brief
+ */
 class Utils {
 public:
     /**
@@ -27,8 +30,11 @@ public:
       * @param colorKey the color key of the image.
       * @return a pointer to a surface which contains the image.
       */
-    static SDL_Surface* load_bmp(const std::string& path,
+    static SDL_Surface* load_bmp(const std::string& path, int color_key_state,
                                  std::array<std::uint32_t, 3> color_key);
+
+    static SDL_Surface* load_bmp(const std::string &path,
+                                std::array<std::uint32_t, 3>& color_key);
 
     /**
       * @brief load_bmp A function to load BMP images and then return a pointer

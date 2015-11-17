@@ -1,5 +1,5 @@
 /*
- * Game: Pong Game.
+ * Pong Game.
  * Author: Rafael Campos Nunes.
  * License: Apache v2.
  *
@@ -23,19 +23,20 @@ public:
     ~Random();
 
     /**
-     * @brief get_real returns a real number between "a" and "b"
-     * @param a the
-     * @param b
-     * @return
+     * @brief Returns a real number between "a" and "b".
+     * @param a the start interval value.
+     * @param b the final interval value
+     * @return a random float between the interval "a" and "b".
      */
     float get_real(float a, float b);
     /**
-     * @brief get_int
-     * @param a
-     * @param b
-     * @return
+     * @brief Returns an integer number between the interval 
+     * "a" and "b".
+     * @param a the start interval value.
+     * @param b the final interval value
+     * @return a random int between the interval "a" and "b"
      */
-    int get_int(float a, float b);
+    int get_int(int a, int b);
 };
 
 #endif // RANDOM_HPP

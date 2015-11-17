@@ -1,6 +1,6 @@
 /* This class is just a prototype, not ready yet.
  *
- * Game: Pong Game.
+ * Pong Game.
  * Author: Rafael Campos Nunes.
  * License: Apache v2.
  *
@@ -27,8 +27,12 @@
 #include "texture.hpp"
 #include "random.hpp"
 
+/**
+ * @brief The game class represent the game itself, it wrappers all the other
+ * entities and intializes them in order to make the Pong work.
+ */
 class Game
-{   
+{
 private:
     struct players_score
     {
@@ -44,7 +48,7 @@ private:
 
     std::uint32_t current_time;
     // A texture representing the game paused.
-    Texture game_paused;
+    Texture m_pPauseTexture;
     // The desired FPS for the game.
     static unsigned int m_fps;
     // Represents the state of the game
@@ -52,8 +56,6 @@ private:
     // If the game is paused or no.
     static bool m_pause;
 
-    // The audio of the game
-    std::shared_ptr<Audio> audio;
     // The players.
     std::shared_ptr<Paddle> player1;
     std::shared_ptr<Paddle> player2;
@@ -66,19 +68,44 @@ public:
     // The variable which describes if we are in the debug mode.
     static bool debug_mode;
 
+    // The audio of the game
+    static std::shared_ptr<Audio> audio;
+
 public:
+    /**
+     * @brief Constructor of the game class. It initializes every game entity.
+     */
     Game();
     ~Game();
 
+    /**
+     * @brief Update all the game logic, such as a paddle movement request, or
+     * move the ball.
+     */
     void update_game();
+    /**
+     * @brief Render all the entities of the game.
+     */
     void render_game();
+    /**
+     * @brief Handle all the events of the game, such as key press.
+     */
     void handle_events();
 
+    /**
+     * @brief Returns the desired FPS for the game.
+     * @return An unsigned int as the desired FPS.
+     */
     static unsigned int get_fps();
 
-    static bool is_running();
     /**
-     * @brief pause
+     * @brief
+     * @return A boolean value determining the run state of the game.
+     */
+    static bool is_running();
+    
+    /**
+     * @brief Pause and unpause the game, toggling the m_pause variable.
      */
     void pause();
     /**
@@ -90,11 +117,13 @@ public:
      */
     void update_game_state();
     /**
-     * @brief restart_game
+     * @brief Restart the game state, setting values of ball, paddles position
+     * and score to default.
      */
     void restart_game();
     /**
-     * @brief reset_game
+     * @brief Reset the game state, i.e. setting the score player values to 
+     * default and hence the position of entities in the game.
      */
     void reset_game();
 };

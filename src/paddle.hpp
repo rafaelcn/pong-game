@@ -1,5 +1,5 @@
 /*
- * Game: Pong Game.
+ * Pong Game.
  * Author: Rafael Campos Nunes.
  * License: Apache v2.
  *
@@ -13,12 +13,13 @@
 #ifndef PADDLE_HPP
 #define PADDLE_HPP
 
-#include <array>
-
 #include <SDL2/SDL.h>
 
 #include "window.hpp"
 
+/**
+ * @brief 
+ */
 class Paddle {
 private:
     /**
@@ -43,31 +44,48 @@ private:
     SDL_Rect m_PRect;
 
 public:
+    /**
+     * @brief Constructor of the class that initializes the values
+     * of the private variables with the given parameters for the class.
+     * @param paddle_image The surface that carries the image of the paddle.
+     * @param coordinate_x
+     * @param coordinate_y
+     */
     Paddle(SDL_Surface *paddle_image, const float coordinate_x,
            const float coordinate_y);
     ~Paddle();
 
-    //getting the rect of the paddle.
+    /**
+     * @brief Returns the actual SDL_Rect* used to represent the
+     * paddle.
+     * @return The current SDL_Rect* used to represent the paddle
+     */
     SDL_Rect* get_rect();
 
+    /**
+     * @brief This function just "blit"(SDL 1.2) the texture on the
+     * renderer.
+     */
     void show();
+    
     void move_up();
+    
     void move_down();
 
     /**
-     * @brief velocity_y
-     * @return
+     * @brief A getter for the paddle velocity.
+     * @return The current velocity on the Y axis.
      */
     double velocity_y();
     /**
-     * @brief velocity_y
-     * @param velocity_y_
+     * @brief A setter for the paddle velocity.
+     * @param velocity_y The velocity of the paddle on the Y axis.
      */
     void velocity_y(const double velocity_y);
 
     /**
-     * @brief score
-     * @return
+     * @brief Get the actual score of the player.
+     * @return the actual score of the player.
      */
     int score();
     /**
@@ -97,7 +115,6 @@ public:
      */
     struct paddle_moviment {
         const std::uint8_t* key_state;
-        std::array<bool, 2> player_keys = {{ false, false }};
     } paddle_moviment;
 
 };

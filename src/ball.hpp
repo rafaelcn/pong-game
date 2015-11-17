@@ -1,5 +1,5 @@
 /*
- * Game: Pong Game.
+ * Pong Game.
  * Author: Rafael Campos Nunes.
  * License: Apache v2.
  *
@@ -46,7 +46,7 @@ private:
 private:
     void add_speed();
     /**
-     * @brief Ball::collision A function to test the collision between the
+     * @brief Function to test the collision between the
      * rectangle of the ball and the rectangle of the players.
      * @param rectangle The rectangle we wanna to test the collision.
      * @return If a collision occurs or not.
@@ -55,14 +55,14 @@ private:
 
 public:
     /**
-     * @brief last_ball_speed is the variable used in the pause game, it stores
+     * @brief Is the variable used when pause game is toggled, it stores
      * the last speed with the ball.
      */
     Vector2D m_last_ball_speed;
 
 public:
     /**
-     * @brief Ball::Ball The Ball implementation of the class Ball.
+     * @brief The Ball implementation of the class Ball.
      * @param ball_surface The surface that carries the image of the ball.
      * @param coordinate_x The actual position in X axis of the ball.
      * @param coordinate_y The actual position in Y axis of the ball.
@@ -72,13 +72,13 @@ public:
     ~Ball();
 
     /**
-     * @brief Ball::show This function just "blit" (SDL 1.2) the texture on the
-     * renderer.
+     * @brief Called to show the ball in the screen.
      */
     void show();
+    /**
+     * @brief
+     */
     void move(SDL_Rect* player1, SDL_Rect* player2);
-    void update_score(Paddle* player1, Paddle* player2);
-
 
     /**
      * @brief Ball::velocity_x A function to get the velocity of the ball on the

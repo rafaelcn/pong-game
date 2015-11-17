@@ -21,14 +21,19 @@
 class Debug {
 public:
     /**
-     * @brief logf
+     * @brief log_file
      * @param filename
      * @param message
      * @return
      */
-    static bool logf(const std::string& filename, const std::string& message);
+    static bool log_file(const std::string& filename,
+                         const std::string& message);
 
 
+    /**
+     * @brief log
+     * @param args
+     */
     template<typename... Ts>
     static void log(const Ts&... args)
     {
@@ -40,10 +45,14 @@ public:
         std::cout << std::endl;
     }
 
+    /**
+     * @brief log_warn
+     * @param args
+     */
     template<typename... Ts>
-    static void logwarn(const Ts&... args)
+    static void log_warn(const Ts&... args)
     {
-        std::cout << "Debug::logwarn: ";
+        std::cout << "Debug::log_warn: ";
 
         int expanded[] = { (std::cout << args, 0)... };
         (void)expanded;
@@ -51,15 +60,19 @@ public:
         std::cout << std::endl;
     }
 
+    /**
+     * @brief log_err
+     * @param args
+     */
     template<typename... Ts>
-    static void logerr(const Ts&... args)
+    static void log_err(const Ts&... args)
     {
-        std::cout << "Debug::logerr: ";
+        std::cerr << "Debug::log_err: ";
 
-        int expanded[] = { (std::cout << args, 0)... };
+        int expanded[] = { (std::cerr << args, 0)... };
         (void)expanded;
 
-        std::cout << std::endl;
+        std::cerr << std::endl;
     }
 };
 #endif // DEBUG_H

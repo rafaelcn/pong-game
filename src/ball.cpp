@@ -14,7 +14,8 @@ Ball::Ball(SDL_Surface* ball_surface, const float coordinate_x,
 {
     if(ball_surface == nullptr)
     {
-        Debug::logerr("The ball surface is null.");
+        Debug::log_err("The ball surface is null. Check if res folder is along",
+        "with the executable.");
     }
     else
     {
@@ -28,19 +29,17 @@ Ball::Ball(SDL_Surface* ball_surface, const float coordinate_x,
         m_BRect.w   = m_ball_size[0];
         m_BRect.h   = m_ball_size[1];
 
-
-
         m_pBTexture = SDL_CreateTextureFromSurface(Window::get_renderer(),
                                                    ball_surface);
 
         if(m_pBTexture == nullptr)
         {
-            Debug::logerr("Failed to create ball texture!", SDL_GetError());
+            Debug::log_err("Failed to create ball texture!", SDL_GetError());
         }
 
         if(m_pBTexture == nullptr)
         {
-            Debug::logerr("Failed to create ball renderer", SDL_GetError());
+            Debug::log_err("Failed to create ball renderer!", SDL_GetError());
         }
 
         SDL_FreeSurface(ball_surface);
@@ -85,7 +84,7 @@ void Ball::move(SDL_Rect* player1, SDL_Rect* player2)
     //Detecting the collision with the players.
     if(collision(player1))
     {
-        if(m_BRect.x+abs(velocity_x()) < player1->x + player1->w) {
+        if(m_BRect.x + abs(velocity_x()) < player1->x + player1->w) {
             velocity_y(-m_ball_speed.y());
         }
         else {
@@ -99,9 +98,9 @@ void Ball::move(SDL_Rect* player1, SDL_Rect* player2)
 
         m_last_ball_speed = m_ball_speed;
 
-        //if(audio->is_open()) {
-        //    audio->play_effect();
-        //}
+        if(Game::audio->is_open()) {
+            Game::audio->play_effect(Audio::EffectType::hit_paddle);
+        }
 
         Debug::log("Hit count: ", Paddle::get_hits());
         Paddle::add_hit();
@@ -123,9 +122,9 @@ void Ball::move(SDL_Rect* player1, SDL_Rect* player2)
 
         m_last_ball_speed = m_ball_speed;
 
-        //if(audio->is_open()) {
-        //    audio->play_effect();
-        //}
+        if(Game::audio->is_open()) {
+            Game::audio->play_effect(Audio::EffectType::hit_paddle);
+        }
 
         Debug::log("Hit count: ", Paddle::get_hits());
         Paddle::add_hit();
@@ -138,7 +137,7 @@ void Ball::add_speed()
     // to mutiply with the speed.
     if(velocity_x() < 0.0f)
     {
-        m_ball_speed += m_ball_speed() * m_random.get_real(0.1f, 0.3f);
+        m_ball_speed += m_ball_speed() * m_random.get_real(0.1f, 0.15f);
         m_last_ball_speed = m_ball_speed();
     }
     else
@@ -191,8 +190,6 @@ float Ball::velocity_y()
 float Ball::get_random_pos(float a, float b)
 {
     float position;
-
-    // I don't wanna slow speed!
 
     do
     {

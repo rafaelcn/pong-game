@@ -14,7 +14,7 @@ Window::Window(const std::string& title, int width, int height,
 
     if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) != 0)
     {
-        Debug::logerr("Couldn't initialize the video | audio.", SDL_GetError());
+        Debug::log_err("Couldn't initialize the video | audio.", SDL_GetError());
     }
     else
     {
@@ -32,7 +32,7 @@ Window::Window(const std::string& title, int width, int height,
 
         if(m_pWindow == nullptr)
         {
-            Debug::logerr("Window couldn't be created.", SDL_GetError());
+            Debug::log_err("Window couldn't be created.", SDL_GetError());
         }
         else
         {
@@ -44,7 +44,7 @@ Window::Window(const std::string& title, int width, int height,
 
             if(m_pRenderer == nullptr)
             {
-                Debug::logerr("Window renderer couldn't be created.",
+                Debug::log_err("Window renderer couldn't be created.",
                               SDL_GetError());
             }
             else {
@@ -56,10 +56,12 @@ Window::Window(const std::string& title, int width, int height,
 
 Window::~Window()
 {
-    if(m_pRenderer != nullptr)
+    if(m_pRenderer != nullptr) {
         SDL_DestroyRenderer(m_pRenderer);
-    if(m_pWindow != nullptr)
+    }
+    if(m_pWindow != nullptr) {
         SDL_DestroyWindow(m_pWindow);
+    }
 }
 
 

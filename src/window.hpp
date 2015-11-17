@@ -1,3 +1,15 @@
+/*
+ * Pong Game.
+ * Author: Rafael Campos Nunes.
+ * License: Apache v2.
+ *
+ * Fell free to contact me on
+ * Email: rafaelnunes737@hotmail.com
+ * Github: https://github.com/rafaelcn
+ *
+ * Also you can contact me on IRC(freenode.net server) my nickname is: ranu.
+ */
+
 #ifndef WINDOW_HPP
 #define WINDOW_HPP
 
@@ -8,6 +20,10 @@
 
 #include "debug.hpp"
 
+/**
+ * Class which has all the resources to create a window for the game by
+ * providing a clear API.
+ */
 class Window {
 private:
     // Private default constructor. I could write Window() = delete; as well.
@@ -32,7 +48,7 @@ public:
     ~Window();
 
     /**
-     * @brief get_window function that returns the pointer to the  
+     * @brief get_window function that returns the pointer to the
      * @return the game window.
      */
     static SDL_Window* get_window();

@@ -15,6 +15,10 @@
 
 #include <random>
 
+/**
+ * @brief The Random class is responsible to abstract methods in which the
+ * programmer will use to obtain random numbers.
+ */
 class Random {
 private:
     std::random_device m_random_device;

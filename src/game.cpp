@@ -30,7 +30,7 @@ std::shared_ptr<Audio> Game::audio;
 
 Game::Game()
 {
-    m_fps = 30;
+    m_fps = 60;
     m_pause = false;
     m_is_running = true;
     debug_mode = false;
@@ -165,9 +165,7 @@ void Game::handle_events()
 
             case SDLK_F5:
                 // active debug mode.
-                Debug::log("Before toggling debug mode: ", debug_mode);
                 debug_mode = !debug_mode;
-                Debug::log("After toggling debug mode: ", debug_mode);
                 break;
 
             // activate full screen mode.

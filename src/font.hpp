@@ -1,5 +1,5 @@
 /*
- * Game: Pong Game.
+ * Pong Game.
  * Author: Rafael Campos Nunes.
  * License: Apache v2.
  *
@@ -20,6 +20,9 @@
 
 #include "font_manager.hpp"
 
+/**
+ * @brief
+ */
 class Font : protected FontManager
 {
 private:

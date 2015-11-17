@@ -37,7 +37,7 @@ bool FontManager::initialize_sdl_ttf()
     {
         if(TTF_Init() != 0)
         {
-            Debug::logerr("Some problem ocurred trying to initialize Font \
+            Debug::log_err("Some problem ocurred trying to initialize Font \
                           system", TTF_GetError());
             return false;
         }

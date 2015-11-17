@@ -1,3 +1,15 @@
+/*
+ * Pong Game.
+ * Author: Rafael Campos Nunes.
+ * License: Apache v2.
+ *
+ * Fell free to contact me on
+ * Email: rafaelnunes737@hotmail.com
+ * Github: https://github.com/rafaelcn
+ *
+ * Also you can contact me on IRC(freenode.net server) my nickname is: ranu.
+ */
+
 #ifndef FONTMANAGER_HPP
 #define FONTMANAGER_HPP
 
@@ -12,7 +24,6 @@ private:
      * @return The state of TTF_Init.
      */
     bool initialize_sdl_ttf();
-
 protected:
     // Internal struct containing font information.
     TTF_Font* m_pFont;

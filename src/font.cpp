@@ -16,8 +16,9 @@ Font::~Font()
 
 void Font::open_font(FontType font_type, int size)
 {
-    if(!m_ttf_opened) {
-        Debug::logerr("Font system is not running, see the logs for any errors \
+    if(!m_ttf_opened)
+    {
+        Debug::log_err("Font system is not running, see the logs for any errors \
                       found in the initialization of it.");
         return;
     }
@@ -41,7 +42,7 @@ void Font::open_font(FontType font_type, int size)
 
     if(m_pFont == nullptr)
     {
-        Debug::logerr("Failed to load the font: ", font_name, " Due to: ",
+        Debug::log_err("Failed to load the font: ", font_name, " Due to: ",
                       TTF_GetError());
     }
     else
@@ -54,7 +55,7 @@ void Font::render_text_solid(const std::string &text)
 {
     if(m_pFont == nullptr)
     {
-        Debug::logerr("You haven't loaded a font to display it.");
+        Debug::log_err("You haven't loaded a font to display it.");
         return;
     }
 
@@ -62,7 +63,7 @@ void Font::render_text_solid(const std::string &text)
 
     if(m_pFSurface == nullptr)
     {
-        Debug::logerr("Failed to render the font: ", font_name);
+        Debug::log_err("Failed to render the font: ", font_name);
         return;
     }
 
@@ -73,7 +74,7 @@ void Font::render_text_solid(const std::string &text)
 
     if(m_pFTexture == nullptr)
     {
-        Debug::logerr("A texture could not be created from the surface, \
+        Debug::log_err("A texture could not be created from the surface, \
                       error: ", TTF_GetError());
         return;
     }
@@ -87,7 +88,7 @@ void Font::render_text_shaded(const std::string& text)
 {
     if(m_pFont == nullptr)
     {
-        Debug::logerr("You haven't loaded a font to display it.");
+        Debug::log_err("You haven't loaded a font to display it.");
         return;
     }
 
@@ -96,7 +97,7 @@ void Font::render_text_shaded(const std::string& text)
 
     if(m_pFSurface == nullptr)
     {
-        Debug::logerr("Failed to render the font: ", font_name);
+        Debug::log_err("Failed to render the font: ", font_name);
         return;
     }
 
@@ -107,7 +108,7 @@ void Font::render_text_shaded(const std::string& text)
 
     if(m_pFTexture == nullptr)
     {
-        Debug::logerr("A texture could not be created from the surface, \
+        Debug::log_err("A texture could not be created from the surface, \
                       error: ", TTF_GetError());
         return;
     }

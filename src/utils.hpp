@@ -19,7 +19,7 @@
 #include <SDL2/SDL.h>
 
 /**
- * @brief
+ * @brief This class wrappers a set of utils functions available for the game
  */
 class Utils {
 public:

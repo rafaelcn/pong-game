@@ -16,23 +16,16 @@
 #include <iostream>
 
 /**
- * @brief The Debug class is where debug functions are defined.
+ * @brief The Debug class is where debug functions are defined, using the power
+ * of variadic templates it .
  */
 class Debug {
 public:
-    /**
-     * @brief log_file
-     * @param filename
-     * @param message
-     * @return
-     */
-    static bool log_file(const std::string& filename,
-                         const std::string& message);
 
 
     /**
-     * @brief log
-     * @param args
+     * @brief log The default log, it prints args on the stdout.
+     * @param args The arguments to be printed on the terminal.
      */
     template<typename... Ts>
     static void log(const Ts&... args)
@@ -46,8 +39,9 @@ public:
     }
 
     /**
-     * @brief log_warn
-     * @param args
+     * @brief log_warn The warning log, it prints out args on the stdout
+     * which should be taken with care.
+     * @param args The arguments to be printed on the terminal.
      */
     template<typename... Ts>
     static void log_warn(const Ts&... args)
@@ -61,8 +55,9 @@ public:
     }
 
     /**
-     * @brief log_err
-     * @param args
+     * @brief log_err The error log, use this to print really bad things that
+     * happened with something.
+     * @param args The arguments to be printed on the terminal.
      */
     template<typename... Ts>
     static void log_err(const Ts&... args)

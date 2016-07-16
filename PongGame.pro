@@ -9,13 +9,13 @@ QMAKE_CXXFLAGS += -Wall -Wextra -std=c++11
 # Optimization flags depends on the build type.
 CONFIG(debug, debug|release)
 {
-    DESTDIR = $$OUT_PWD
+    DESTDIR = $$PWD/out/linux/debug-build
     OBJECTS_DIR = $$DESTDIR/obj
     QMAKE_CXXFLAGS += -O0
 }
 CONFIG(release, release|debug)
 {
-    DESTDIR = $$OUT_PWD
+    DESTDIR = $$PWD/out/linux/release-build
     OBJECTS_DIR = $$DESTDIR/obj
     QMAKE_CXXFLAGS += -O3
 }
@@ -53,7 +53,6 @@ SOURCES += src/main.cpp \
     src/texture.cpp \
     src/vector2d.cpp \
     src/random.cpp \
-    src/debug.cpp \
     src/image.cpp
 
 HEADERS += \

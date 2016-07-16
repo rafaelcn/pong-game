@@ -1,0 +1,10 @@
+#
+# Object directory resulted from Qt compilation
+#
+obj/
+
+#
+# Qt Makefile
+#
+out/linux/debug-build/Makefile
+out/linux/release-build/Makefile

@@ -5,8 +5,6 @@ Texture::Texture()
 {
     m_pTSurface = nullptr;
     m_pTTexture = nullptr;
-
-    image = std::make_shared<Image>();
 }
 
 Texture::~Texture()
@@ -16,21 +14,19 @@ Texture::~Texture()
     SDL_DestroyTexture(m_pTTexture);
 }
 
-void Texture::load_texture(const std::string &image_path, const int width,
-                             const int height, const int coordinate_x,
-                             const int coordinate_y)
+void Texture::load_texture(SDL_Surface* image_surface, const int width,
+                           const int height, const int coordinate_x,
+                           const int coordinate_y)
 {
     image_rect.h = height;
     image_rect.w = width;
     image_rect.x = coordinate_x;
     image_rect.y = coordinate_y;
 
-    m_pTSurface = image->load_png(image_path);
-
     m_pTTexture = SDL_CreateTextureFromSurface(Window::get_renderer(),
-                                               m_pTSurface);
+                                               image_surface);
 
-    SDL_FreeSurface(m_pTSurface);
+    SDL_FreeSurface(image_surface);
 
     if(m_pTTexture == nullptr)
     {

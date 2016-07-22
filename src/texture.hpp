@@ -26,28 +26,29 @@
  */
 class Texture {
 private:
-    //
-    SDL_Surface* m_pTSurface;
-    //
+    // A raw pointer to a SDL_Texture struct, it represents the actual texture.
     SDL_Texture* m_pTTexture;
     //
     SDL_Rect image_rect;
-    //
-    std::shared_ptr<Image> image;
 public:
     Texture();
     ~Texture();
-    
-    /**
-     * @brief
-     * 
-     */
-    void load_texture(const std::string& image_path, const int width,
-                        const int height, const int coordinate_x,
-                        const int coordinate_y);
 
     /**
-     * @brief
+     * @brief load_texture Create a texture from a SDL_Surface struct.
+     * @param image_surface The surface containing the image.
+     * @param width The width of the texture.
+     * @param height The height of the texture.
+     * @param coordinate_x The location of the texture on the x axis.
+     * @param coordinate_y The location of the texture on the y axis.
+     */
+    void load_texture(SDL_Surface* image_surface, const int width,
+                      const int height, const int coordinate_x,
+                      const int coordinate_y);
+
+    /**
+     * @brief This function just "blit"(SDL 1.2) the texture on the
+     * renderer.
      */
     void show();
 };

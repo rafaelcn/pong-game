@@ -37,8 +37,10 @@ Game::Game()
 
     std::string paddle("res/icons/paddle.bmp");
     std::string ball("res/icons/ball.png");
+    std::string pause_background("res/icons/pause-background.png");
+    std::string pause_message("res/icons/pause.png");
 
-    window = std::make_shared<Window>("Pong Game - Alpha 0.9.1", 800, 600,
+    window = std::make_shared<Window>("Pong Game - Alpha 0.9.2", 800, 600,
                                            SDL_WINDOW_SHOWN);
 
     image = std::make_shared<Image>();
@@ -93,12 +95,12 @@ Game::Game()
     m_pause_backgroud_texture = std::make_shared<Texture>();
     m_pause_texture = std::make_shared<Texture>();
 
-    m_pause_backgroud_texture->load_texture("res/icons/pause-background.png",
-                                           800, 600, 0, 0);
+    m_pause_backgroud_texture->load_texture(image->load_png(pause_background),
+                                            800, 600, 0, 0);
 
-    m_pause_texture->load_texture("res/icons/pause.png", 188, 34,
-                                       Window::get_width()/2-(188/2),
-                                       Window::get_height()/2-(34/2));
+    m_pause_texture->load_texture(image->load_png(pause_message), 188, 34,
+                                  Window::get_width()/2-(188/2),
+                                  Window::get_height()/2-(34/2));
 }
 
 Game::~Game()
@@ -112,8 +114,8 @@ void Game::update_game()
     ball->move(player1->get_rect(), player2->get_rect());
     update_game_state();
 
-    if(1000/get_fps() > (SDL_GetTicks() - current_time))
-    {
+    // Clamping FPS.
+    if (1000/get_fps() > (SDL_GetTicks() - current_time)) {
         m_actual_fps = 1000/get_fps()-(SDL_GetTicks() - current_time);
 
         SDL_Delay(m_actual_fps);

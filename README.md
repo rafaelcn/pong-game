@@ -45,7 +45,7 @@ This project is licensee on __[Apache v2](http://www.apache.org/licenses/LICENSE
 
 ===
 <b>Roadmap:</b>
-  - [ ] __Perfect__ collision detection.
+  - [X] __Perfect__ collision detection.
   - [X] Over each match of the game, a random direction for the ball.
   - [x] Ball speed increases over the course of hits in the paddles.
   - [X] Pause game

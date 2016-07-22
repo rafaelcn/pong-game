@@ -68,7 +68,7 @@ void Ball::move(SDL_Rect* player1, SDL_Rect* player2)
     m_BRect.x += velocity_x();
     m_BRect.y += velocity_y();
 
-    //Detecting the collision in the Y axis.
+    // Detecting the collision in the Y axis.
     if(m_BRect.y <= 0)
     {
         velocity_y(-m_ball_speed.y());
@@ -80,7 +80,7 @@ void Ball::move(SDL_Rect* player1, SDL_Rect* player2)
         m_last_ball_speed = m_ball_speed;
     }
 
-    //Detecting the collision with the players.
+    // Detecting the collision with the players.
     if(collision(player1))
     {
         if (m_BRect.x + abs(velocity_x()) < player1->x + player1->w) {
@@ -136,12 +136,16 @@ void Ball::move(SDL_Rect* player1, SDL_Rect* player2)
 void Ball::add_speed()
 {
     if (velocity_x() < 0.0f) {
-        m_ball_speed += m_ball_speed() * m_random.get_real(0.1f, 0.15f);
-        m_last_ball_speed = m_ball_speed;
+        if (m_ball_speed.x() >= -9 && m_ball_speed.y() >= -6) {
+            m_ball_speed += m_ball_speed() * m_random.get_real(0.1f, 0.15f);
+            m_last_ball_speed = m_ball_speed;
+        }
     }
     else {
-        m_ball_speed += m_ball_speed() * m_random.get_real(0.1f, 0.15f);
-        m_last_ball_speed = m_ball_speed;
+        if (m_ball_speed.x() <= 9 && m_ball_speed.y() <= 6) {
+            m_ball_speed += m_ball_speed() * m_random.get_real(0.1f, 0.15f);
+            m_last_ball_speed = m_ball_speed;
+        }
     }
 
     Debug::log("New speed is: x(", velocity_x(), ") y(", velocity_y(), ")");
@@ -187,11 +191,12 @@ float Ball::get_random_pos(float a, float b)
 {
     float position;
 
+    // conditional loop created to not receive a too low value.
     do
     {
         position = m_random.get_real(a, b);
-    }while((position >= 0.0f && position <= 3.0f) ||
-           (position <= -0.0f && position >= -2.0f));
+    } while ((position >= 0.0f && position <= 3.0f) ||
+            (position <= -0.0f && position >= -2.0f));
 
     return position;
 }

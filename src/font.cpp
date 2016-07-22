@@ -18,8 +18,8 @@ void Font::open_font(FontType font_type, int size)
 {
     if(!m_ttf_opened)
     {
-        Debug::log_err("Font system is not running, see the logs for any errors \
-                      found in the initialization of it.");
+        Debug::log_err("Font system is not running, see the logs for any errors\
+                       found in the initialization of it.");
         return;
     }
 

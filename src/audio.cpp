@@ -24,7 +24,7 @@ Audio::Audio()
     else
     {
         Debug::log("Audio system initialized.");
-        m_audio_opened   = true;
+        m_audio_opened = true;
 
         load_musics();
         load_effects();
@@ -44,8 +44,8 @@ void Audio::load_musics()
     if(m_musics[0] == nullptr)
     {
         Debug::log_warn("Loading the music " + m_music_path[0] +
-                      " has failed. :(",
-                      Mix_GetError());
+                        " has failed. :(",
+                        Mix_GetError());
     }
 }
 
@@ -57,8 +57,8 @@ void Audio::load_effects()
         if(m_effects[i] == nullptr)
         {
             Debug::log_warn("Loading the effect " + m_effects_paths[i] +
-                          " has failed. :(",
-                          Mix_GetError());
+                            " has failed, due to: ",
+                            Mix_GetError());
         }
     }
 }
@@ -79,7 +79,7 @@ void Audio::play_effect(EffectType effect_type)
         effect = m_effects[2];
         break;
     default:
-        Debug::log_warn();
+        Debug::log_warn("No play effect specified");
         break;
     }
 
@@ -131,7 +131,7 @@ void Audio::show_audio_drivers()
 
     for(int i = 0; i < 10; i++)
         std::cout << "Available on index[" << i << "]: "
-                  <<  SDL_GetAudioDriver(i) << std::endl;
+                  <<  SDL_GetAudioDriver(i) << "\n";
 
     std::cout << "\n" << std::endl;
 }

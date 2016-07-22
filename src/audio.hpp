@@ -26,9 +26,9 @@ class Audio {
 private:
     // A boolean to let us know if the audio is opened or not.
     bool m_audio_opened;
-    //
+    // Array of game effects
     std::array<Mix_Chunk*, 3> m_effects;
-    //
+    // Array of the game music
     std::array<Mix_Music*, 1> m_musics;
 
     // An array containing the path for each effect on the hard drive.

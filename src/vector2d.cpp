@@ -2,12 +2,6 @@
 
 #include <cmath>
 
-Vector2D::Vector2D(float x_, float y_) : X(x_), Y(y_)
-{}
-
-Vector2D::~Vector2D()
-{}
-
 Vector2D& Vector2D::operator ()()
 {
     return *this;

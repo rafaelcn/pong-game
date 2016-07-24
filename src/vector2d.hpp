@@ -1,3 +1,4 @@
+
 /*
  * Pong Game.
  * Author: Rafael Campos Nunes.
@@ -15,7 +16,7 @@
 
 /**
  * @brief This class abstract a vector behavior, so as with their mathematical
- * operations. 
+ * operations.
  */
 class Vector2D
 {
@@ -23,8 +24,8 @@ private:
     float X;
     float Y;
 public:
-    Vector2D(float x_, float y_);
-    ~Vector2D();
+    Vector2D(float x_, float y_) : X(x_), Y(y_) {}
+    ~Vector2D() {}
 
     Vector2D& operator ()();
     Vector2D operator +(const Vector2D& rhs) const;
@@ -48,7 +49,7 @@ public:
 
     void normalize();
 
-    
+
 };
 
 #endif // VECTOR2D_H

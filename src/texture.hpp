@@ -28,7 +28,7 @@ class Texture {
 private:
     // A raw pointer to a SDL_Texture struct, it represents the actual texture.
     SDL_Texture* m_pTTexture;
-    //
+    // Position and size of the texture on the renderer.
     SDL_Rect image_rect;
 public:
     Texture();

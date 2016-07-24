@@ -33,7 +33,6 @@ private:
      */
     std::array<int, 2> m_ball_size;
 
-    Random m_random;
     // The ball speed represented by a Vector2D.
     Vector2D m_ball_speed;
 
@@ -41,9 +40,11 @@ private:
      * (ball.bmp).
      */
     SDL_Surface* m_pBSurface;
-    //The texture of the ball(ball.bmp).
+    // The texture of the ball (ball.bmp).
     SDL_Texture* m_pBTexture;
-    //SDL_Rect that will represent the size of the ball on the screen.
+    /* SDL_Rect that will represent the size and position of the ball on the
+     * screen.
+     */
     SDL_Rect m_BRect;
 
 private:
@@ -98,7 +99,7 @@ public:
 
     /**
      * @brief get_random_pos function to return a float between @param a and
-     * @param b to be used as the start position of the ball.
+     * b to be used as the start position of the ball.
      * @param a the range of the random generator.
      * @param b the range of the random generator.
      * @return a random integer.

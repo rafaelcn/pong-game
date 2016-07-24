@@ -41,7 +41,7 @@ Game::Game()
     std::string pause_message("res/icons/pause.png");
 
     window = std::make_shared<Window>("Pong Game - Alpha 0.9.2", 800, 600,
-                                           SDL_WINDOW_SHOWN);
+                                      SDL_WINDOW_SHOWN);
 
     image = std::make_shared<Image>();
     audio = std::make_shared<Audio>();

@@ -51,7 +51,7 @@ public:
 
 public:
     Font(SDL_Rect& font_rect_);
-    ~Font();
+    ~Font() {}
 
     /**
      * @brief open_font, function to initialize a font to be used with

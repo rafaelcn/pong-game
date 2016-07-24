@@ -21,10 +21,11 @@
  */
 class Random {
 private:
-    std::random_device m_random_device;
+    Random() {}
+    ///
+    static std::random_device m_random_device;
 public:
-    Random();
-    ~Random();
+    ~Random() {}
 
     /**
      * @brief Returns a real number between "a" and "b".
@@ -32,15 +33,15 @@ public:
      * @param b the final interval value
      * @return a random float between the interval "a" and "b".
      */
-    float get_real(float a, float b);
+    static float get_real(float a, float b);
     /**
-     * @brief Returns an integer number between the interval 
+     * @brief Returns an integer number between the interval
      * "a" and "b".
      * @param a the start interval value.
      * @param b the final interval value
      * @return a random int between the interval "a" and "b"
      */
-    int get_int(int a, int b);
+    static int get_int(int a, int b);
 };
 
 #endif // RANDOM_HPP

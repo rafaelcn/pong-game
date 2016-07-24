@@ -10,10 +10,6 @@ Font::Font(SDL_Rect &font_rect_) : FontManager()
     m_pFTexture     = nullptr;
 }
 
-Font::~Font()
-{
-}
-
 void Font::open_font(FontType font_type, int size)
 {
     if(!m_ttf_opened)

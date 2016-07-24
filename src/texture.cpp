@@ -3,14 +3,12 @@
 
 Texture::Texture()
 {
-    m_pTSurface = nullptr;
     m_pTTexture = nullptr;
 }
 
 Texture::~Texture()
 {
     // To have sure that the things will be freed.
-    SDL_FreeSurface(m_pTSurface);
     SDL_DestroyTexture(m_pTTexture);
 }
 

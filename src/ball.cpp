@@ -7,17 +7,16 @@
 #include <cmath>
 
 Ball::Ball(SDL_Surface* ball_surface, const float coordinate_x,
-           const float coordinate_y) : m_ball_speed(get_random_pos(-5, 5),
-                                                    get_random_pos(-3, 3)),
-                                       m_last_ball_speed(m_ball_speed())
+           const float coordinate_y): m_ball_speed(get_random_pos(5, 7),
+                                                   get_random_pos(-3, 3)),
+                                      m_last_ball_speed(m_ball_speed())
 {
-    if(ball_surface == nullptr)
-    {
+
+    if(ball_surface == nullptr) {
         Debug::log_err("The ball surface is null. Check if res folder is along",
         "with the executable.");
     }
-    else
-    {
+    else {
         m_ball_size[0] = 10;
         m_ball_size[1] = 10;
 
@@ -31,20 +30,17 @@ Ball::Ball(SDL_Surface* ball_surface, const float coordinate_x,
         m_pBTexture = SDL_CreateTextureFromSurface(Window::get_renderer(),
                                                    ball_surface);
 
-        if(m_pBTexture == nullptr)
-        {
+        if(m_pBTexture == nullptr) {
             Debug::log_err("Failed to create ball texture!", SDL_GetError());
         }
 
-        if(m_pBTexture == nullptr)
-        {
+        if(m_pBTexture == nullptr) {
             Debug::log_err("Failed to create ball renderer!", SDL_GetError());
         }
 
         SDL_FreeSurface(ball_surface);
 
-        if(m_pBTexture != nullptr)
-        {
+        if(m_pBTexture != nullptr) {
             Debug::log("Ball created perfectly!");
         }
     }
@@ -52,8 +48,7 @@ Ball::Ball(SDL_Surface* ball_surface, const float coordinate_x,
 
 Ball::~Ball()
 {
-    if(m_pBTexture != nullptr)
-    {
+    if(m_pBTexture != nullptr) {
         SDL_DestroyTexture(m_pBTexture);
     }
 }
@@ -69,20 +64,17 @@ void Ball::move(SDL_Rect* player1, SDL_Rect* player2)
     m_BRect.y += velocity_y();
 
     // Detecting the collision in the Y axis.
-    if(m_BRect.y <= 0)
-    {
+    if(m_BRect.y <= 0) {
         velocity_y(-m_ball_speed.y());
         m_last_ball_speed = m_ball_speed;
     }
-    if(m_BRect.y+m_BRect.h > Window::get_height())
-    {
+    if(m_BRect.y+m_BRect.h > Window::get_height()) {
         velocity_y(-m_ball_speed.y());
         m_last_ball_speed = m_ball_speed;
     }
 
     // Detecting the collision with the players.
-    if(collision(player1))
-    {
+    if(collision(player1)) {
         if (m_BRect.x + abs(velocity_x()) < player1->x + player1->w) {
             velocity_y(-m_ball_speed.y());
         }
@@ -106,8 +98,7 @@ void Ball::move(SDL_Rect* player1, SDL_Rect* player2)
         Debug::log("Hit count: ", Paddle::get_hits());
         Paddle::add_hit();
     }
-    if(collision(player2))
-    {
+    if(collision(player2)) {
         if ((m_BRect.x + m_BRect.w)-velocity_x() > player2->x) {
             velocity_y(-m_ball_speed.y());
         }
@@ -136,14 +127,14 @@ void Ball::move(SDL_Rect* player1, SDL_Rect* player2)
 void Ball::add_speed()
 {
     if (velocity_x() < 0.0f) {
-        if (m_ball_speed.x() >= -9 && m_ball_speed.y() >= -6) {
-            m_ball_speed += m_ball_speed() * m_random.get_real(0.1f, 0.15f);
+        if (m_ball_speed.x() >= -8 && m_ball_speed.y() >= -6) {
+            m_ball_speed += m_ball_speed() * Random::get_real(0.1f, 0.15f);
             m_last_ball_speed = m_ball_speed;
         }
     }
     else {
-        if (m_ball_speed.x() <= 9 && m_ball_speed.y() <= 6) {
-            m_ball_speed += m_ball_speed() * m_random.get_real(0.1f, 0.15f);
+        if (m_ball_speed.x() <= 8 && m_ball_speed.y() <= 6) {
+            m_ball_speed += m_ball_speed() * Random::get_real(0.1f, 0.15f);
             m_last_ball_speed = m_ball_speed;
         }
     }
@@ -194,7 +185,7 @@ float Ball::get_random_pos(float a, float b)
     // conditional loop created to not receive a too low value.
     do
     {
-        position = m_random.get_real(a, b);
+        position = Random::get_real(a, b);
     } while ((position >= 0.0f && position <= 3.0f) ||
             (position <= -0.0f && position >= -2.0f));
 

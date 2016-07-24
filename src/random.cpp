@@ -1,12 +1,7 @@
 #include "random.hpp"
 
-Random::Random()
-{
-}
-
-Random::~Random()
-{
-}
+// Forward declaration to a static member.
+std::random_device Random::m_random_device;
 
 float Random::get_real(float a, float b)
 {

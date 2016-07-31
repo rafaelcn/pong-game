@@ -4,18 +4,32 @@ CONFIG -= app_bundle
 CONFIG -= qt
 
 # Flags
-QMAKE_CXXFLAGS += -Wall -Wextra -std=c++11
+QMAKE_CXXFLAGS += -Wall -Wextra -std=c++0x
 
 # Optimization flags depends on the build type.
 CONFIG(debug, debug|release)
 {
-    DESTDIR = $$PWD/out/linux/debug-build
+    win32 {
+        DESTDIR = $$PWD/out/windows/debug-build
+    }
+    unix {
+        DESTDIR = $$PWD/out/linux/debug-build
+    }
+
     OBJECTS_DIR = $$DESTDIR/obj
     QMAKE_CXXFLAGS += -O0
 }
+
 CONFIG(release, release|debug)
 {
-    DESTDIR = $$PWD/out/linux/release-build
+
+    win32 {
+        DESTDIR = $$PWD/out/windows/release-build
+    }
+    unix {
+        DESTDIR = $$PWD/out/linux/release-build
+    }
+
     OBJECTS_DIR = $$DESTDIR/obj
     QMAKE_CXXFLAGS += -O3
 }

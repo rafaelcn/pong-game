@@ -21,8 +21,6 @@
  */
 class Debug {
 public:
-
-
     /**
      * @brief log The default log, it prints args on the stdout.
      * @param args The arguments to be printed on the terminal.

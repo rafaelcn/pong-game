@@ -85,6 +85,12 @@ public:
     void move(SDL_Rect* player1, SDL_Rect* player2);
 
     /**
+     * @brief Ball::velocity A function that returns a Vector2D representing its
+     * velocity.
+     * @return The velocity as a Vector2D.
+     */
+    Vector2D velocity();
+    /**
      * @brief Ball::velocity_x A function to get the velocity of the ball on the
      * X axis.
      * @return the velocity of the ball on the X axis.

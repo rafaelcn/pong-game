@@ -40,7 +40,7 @@ Game::Game()
     std::string pause_background("res/icons/pause-background.png");
     std::string pause_message("res/icons/pause.png");
 
-    window = std::make_shared<Window>("Pong Game - Alpha 0.9.2", 800, 600,
+    window = std::make_shared<Window>("Pong Game - Alpha 0.9.3", 800, 600,
                                       SDL_WINDOW_SHOWN);
 
     image = std::make_shared<Image>();
@@ -131,16 +131,16 @@ void Game::handle_events()
      * moving at the same time.
      * Thanks to veQue on IRC!
      */
-    if(player1->key_state[SDL_SCANCODE_W]) {
+    if (player1->key_state[SDL_SCANCODE_W]) {
         player1->move_up();
     }
-    if(player1->key_state[SDL_SCANCODE_S]) {
+    if (player1->key_state[SDL_SCANCODE_S]) {
         player1->move_down();
     }
-    if(player2->key_state[SDL_SCANCODE_UP]) {
+    if (player2->key_state[SDL_SCANCODE_UP]) {
         player2->move_up();
     }
-    if(player2->key_state[SDL_SCANCODE_DOWN]) {
+    if (player2->key_state[SDL_SCANCODE_DOWN]) {
         player2->move_down();
     }
 
@@ -176,7 +176,7 @@ void Game::handle_events()
                 int fullscreenFlag = \
                         SDL_GetWindowFlags(Window::get_window());
 
-                if((fullscreenFlag & SDL_WINDOW_FULLSCREEN) ==
+                if ((fullscreenFlag & SDL_WINDOW_FULLSCREEN) ==
                         SDL_WINDOW_FULLSCREEN)
                     SDL_SetWindowFullscreen(Window::get_window(),
                                             0);
@@ -240,7 +240,7 @@ unsigned int Game::get_fps()
 
 void Game::pause()
 {
-    if(!m_pause)
+    if (!m_pause)
     {
         ball->velocity_x(0.0);
         ball->velocity_y(0.0);
@@ -263,13 +263,13 @@ void Game::update_game_state()
 {
     SDL_Rect* ball_rect = ball->get_rect();
 
-    if(ball_rect->x+ball_rect->w > Window::get_width())
+    if (ball_rect->x+ball_rect->w > Window::get_width())
     {
         player1->add_score();
         reset_game();
         Debug::log("Player 1 score: ", player1->score());
     }
-    if(ball_rect->x+ball_rect->w < 0)
+    if (ball_rect->x+ball_rect->w < 0)
     {
         player2->add_score();
         reset_game();
@@ -289,6 +289,9 @@ void Game::reset_game()
 
     ball->velocity_x(ball->get_random_pos(-5, 5));
     ball->velocity_y(ball->get_random_pos(-3, 3));
+
+    ball->m_last_ball_speed = ball->velocity();
+    
     ball_rect->x = Window::get_width()/2-(ball_rect->w);
     ball_rect->y = Window::get_height()/2-(ball_rect->h);
 

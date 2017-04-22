@@ -10,9 +10,8 @@ Ball::Ball(SDL_Surface* ball_surface, const float coordinate_x,
            const float coordinate_y): m_ball_speed(get_random_pos(5, 7),
                                                    get_random_pos(-3, 3)),
                                       m_last_ball_speed(m_ball_speed())
-{
-
-    if(ball_surface == nullptr) {
+{    
+    if (ball_surface == nullptr) {
         Debug::log_err("The ball surface is null. Check if res folder is along",
         "with the executable.");
     }
@@ -30,17 +29,17 @@ Ball::Ball(SDL_Surface* ball_surface, const float coordinate_x,
         m_pBTexture = SDL_CreateTextureFromSurface(Window::get_renderer(),
                                                    ball_surface);
 
-        if(m_pBTexture == nullptr) {
+        if (m_pBTexture == nullptr) {
             Debug::log_err("Failed to create ball texture!", SDL_GetError());
         }
 
-        if(m_pBTexture == nullptr) {
+        if (m_pBTexture == nullptr) {
             Debug::log_err("Failed to create ball renderer!", SDL_GetError());
         }
 
         SDL_FreeSurface(ball_surface);
 
-        if(m_pBTexture != nullptr) {
+        if (m_pBTexture != nullptr) {
             Debug::log("Ball created perfectly!");
         }
     }
@@ -48,7 +47,7 @@ Ball::Ball(SDL_Surface* ball_surface, const float coordinate_x,
 
 Ball::~Ball()
 {
-    if(m_pBTexture != nullptr) {
+    if (m_pBTexture != nullptr) {
         SDL_DestroyTexture(m_pBTexture);
     }
 }
@@ -64,17 +63,18 @@ void Ball::move(SDL_Rect* player1, SDL_Rect* player2)
     m_BRect.y += velocity_y();
 
     // Detecting the collision in the Y axis.
-    if(m_BRect.y <= 0) {
+    if (m_BRect.y <= 0) {
         velocity_y(-m_ball_speed.y());
         m_last_ball_speed = m_ball_speed;
     }
-    if(m_BRect.y+m_BRect.h > Window::get_height()) {
+    
+    if (m_BRect.y+m_BRect.h > Window::get_height()) {
         velocity_y(-m_ball_speed.y());
         m_last_ball_speed = m_ball_speed;
     }
 
     // Detecting the collision with the players.
-    if(collision(player1)) {
+    if (collision(player1)) {
         if (m_BRect.x + abs(velocity_x()) < player1->x + player1->w) {
             velocity_y(-m_ball_speed.y());
         }
@@ -91,20 +91,21 @@ void Ball::move(SDL_Rect* player1, SDL_Rect* player2)
 
         m_last_ball_speed = m_ball_speed;
 
-        if(Game::audio->is_open()) {
+        if (Game::audio->is_open()) {
             Game::audio->play_effect(Audio::EffectType::hit_paddle);
         }
 
         Debug::log("Hit count: ", Paddle::get_hits());
         Paddle::add_hit();
     }
-    if(collision(player2)) {
+    
+    if (collision(player2)) {
         if ((m_BRect.x + m_BRect.w)-velocity_x() > player2->x) {
             velocity_y(-m_ball_speed.y());
         }
         else {
             velocity_x(-m_ball_speed.x());
-            if(Paddle::get_hits() == 3) {
+            if (Paddle::get_hits() == 3) {
                 add_speed();
                 Paddle::reset_hit_count();
             }
@@ -166,6 +167,11 @@ bool Ball::collision(SDL_Rect* rectangle)
 SDL_Rect* Ball::get_rect()
 {
     return &m_BRect;
+}
+
+
+Vector2D Ball::velocity() {
+    return m_ball_speed;
 }
 
 float Ball::velocity_x()

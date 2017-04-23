@@ -3,6 +3,10 @@
 #
 obj/
 
+# Qt files
+PongGame.pro.user*
+.qmake.*
+
 #
 # Qt Makefile
 #

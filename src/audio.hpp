@@ -50,7 +50,7 @@ private:
 
 public:
     /**
-     * @brief The EffectType enum
+     * @brief The EffectType enum. Each enum corresponds to an effect.
      */
     enum class EffectType
     {

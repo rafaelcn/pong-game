@@ -1,3 +1,19 @@
+/**
+ * Copyright 2014 Rafael Campos Nunes.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may
+ * not use this file except in compliance with the License. You may obtain a
+ * copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations
+ * under the License.
+ */
+
 #include "ball.hpp"
 #include "game.hpp"
 #include "window.hpp"
@@ -10,7 +26,7 @@ Ball::Ball(SDL_Surface* ball_surface, const float coordinate_x,
            const float coordinate_y): m_ball_speed(get_random_pos(5, 7),
                                                    get_random_pos(-3, 3)),
                                       m_last_ball_speed(m_ball_speed())
-{    
+{
     if (ball_surface == nullptr) {
         Debug::log_err("The ball surface is null. Check if res folder is along",
         "with the executable.");
@@ -67,7 +83,7 @@ void Ball::move(SDL_Rect* player1, SDL_Rect* player2)
         velocity_y(-m_ball_speed.y());
         m_last_ball_speed = m_ball_speed;
     }
-    
+
     if (m_BRect.y+m_BRect.h > Window::get_height()) {
         velocity_y(-m_ball_speed.y());
         m_last_ball_speed = m_ball_speed;
@@ -98,7 +114,7 @@ void Ball::move(SDL_Rect* player1, SDL_Rect* player2)
         Debug::log("Hit count: ", Paddle::get_hits());
         Paddle::add_hit();
     }
-    
+
     if (collision(player2)) {
         if ((m_BRect.x + m_BRect.w)-velocity_x() > player2->x) {
             velocity_y(-m_ball_speed.y());

@@ -1,14 +1,17 @@
-/* This class is just a prototype, not ready yet.
+/**
+ * Copyright 2014 Rafael Campos Nunes.
  *
- * Pong Game.
- * Author: Rafael Campos Nunes.
- * License: Apache v2.
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may
+ * not use this file except in compliance with the License. You may obtain a
+ * copy of the License at
  *
- * Fell free to contact me on
- * Email: rafaelnunes737@hotmail.com
- * Github: https://github.com/rafaelcn
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- * Also you can contact me on IRC(freenode.net server) my nickname is: ranu.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations
+ * under the License.
  */
 
 #ifndef GAME_HPP
@@ -120,7 +123,7 @@ public:
      * @return A boolean value determining the run state of the game.
      */
     static bool is_running();
-    
+
     /**
      * @brief Pause and unpause the game, toggling the m_pause variable.
      */
@@ -139,7 +142,7 @@ public:
      */
     void restart_game();
     /**
-     * @brief Reset the game state, i.e. setting the score player values to 
+     * @brief Reset the game state, i.e. setting the score player values to
      * default and hence the position of entities in the game.
      */
     void reset_game();

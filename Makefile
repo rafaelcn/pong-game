@@ -30,13 +30,22 @@ OBJECTS_D = $(OBJECTS)
 OBJECTS_D := $(notdir $(OBJECTS_D))
 OBJECTS_D := $(addprefix $(DEBUG_BUILD)/$(OBJ_DIR)/, $(OBJECTS_D))
 
+all:
+	\mkdir -p $(RELEASE_BUILD)/$(OBJ_DIR)
+	$(CXX) $(CXXFLAGS) -c $(SOURCES) $(LIBS)
+	\mv -f *.o $(RELEASE_BUILD)/$(OBJ_DIR)
+	$(CXX) $(CXXFLAGS) -o $(EXEC) $(OBJECTS) $(LIBS)
+	\mv -f PongGame $(RELEASE_BUILD)/
+
 release:
+	\mkdir -p $(RELEASE_BUILD)/$(OBJ_DIR)
 	$(CXX) $(CXXFLAGS) -c $(SOURCES) $(LIBS)
 	\mv -f *.o $(RELEASE_BUILD)/$(OBJ_DIR)
 	$(CXX) $(CXXFLAGS) -o $(EXEC) $(OBJECTS) $(LIBS)
 	\mv -f PongGame $(RELEASE_BUILD)/
 
 debug:
+	\mkdir -p $(DEBUG_BUILD)/$(OBJ_DIR)
 	$(CXX) $(CXXFLAGS_D) -c $(SOURCES) $(LIBS)
 	\mv -f *.o $(DEBUG_BUILD)/$(OBJ_DIR)
 	$(CXX) $(CXXFLAGS_D) -o $(EXEC) $(OBJECTS_D) $(LIBS)

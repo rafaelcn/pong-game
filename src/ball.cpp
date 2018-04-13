@@ -1,5 +1,5 @@
 /**
- * Copyright 2014 Rafael Campos Nunes.
+ * Copyright 2014-2018 Rafael Campos Nunes.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may
  * not use this file except in compliance with the License. You may obtain a
@@ -161,6 +161,8 @@ void Ball::add_speed()
 
 bool Ball::collision(SDL_Rect* rectangle)
 {
+    // AABB method of collision
+
     if(m_BRect.y >= rectangle->y + rectangle->h)
     {
         return false;

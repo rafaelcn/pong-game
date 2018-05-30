@@ -12,7 +12,7 @@ CXXFLAGS = -Wall -Wextra -O3 -std=c++11
 # Flag used to generate a lower optimized version
 CXXFLAGS_D = -Wall -Wextra -O1 -std=c++11
 # Name of the executable
-EXEC = PongGame
+EXEC = PongGame.out
 # Build directories
 RELEASE_BUILD = out/linux/release-build
 DEBUG_BUILD = out/linux/debug-build

@@ -1,7 +1,7 @@
 __Pong Game__
 ===
 
-A remake of the __Pong Game__ of Atari(1972) with SDL2! The game has better graphics, but yet, is not so GOOD.    
+A remake of the __Pong Game__ of Atari(1972) with SDL2! The game has better graphics, but yet, is not so GOOD.
 **NOTE: This software is alpha, not all features are ready.**
 
 *Q: What looks like to play Pong?*
@@ -25,7 +25,7 @@ __There's also action keys!__
  F11  |  Fullscreen mode
  ESC  |  Exit game
  F5   |  Debug mode
- P    |	 Pause game 
+ P    |	 Pause game
  R    |	 Reset game
 
 
@@ -48,8 +48,3 @@ __Roadmap:__
   - [X] Over each match of the game, a random direction for the ball.
   - [x] Ball speed increases over the course of hits in the paddles.
   - [X] Pause game
-
-
-
-Contributors
- * Me (Rafael Campos Nunes).

@@ -12,3 +12,8 @@ PongGame.pro.user*
 #
 out/linux/debug-build/Makefile
 out/linux/release-build/Makefile
+
+#
+# Binaries 
+#
+*.out

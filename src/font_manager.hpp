@@ -46,8 +46,6 @@ protected:
 public:
     FontManager();
     ~FontManager();
-
-
 };
 
 #endif // FONTMANAGER_HPP

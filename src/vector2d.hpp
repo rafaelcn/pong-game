@@ -27,13 +27,13 @@ private:
     float X;
     float Y;
 public:
-    Vector2D(float x_, float y_) : X(x_), Y(y_) {}
+    Vector2D(float x, float y) : X(x), Y(y) {}
     ~Vector2D() {}
 
     Vector2D& operator ()();
     Vector2D operator +(const Vector2D& rhs) const;
-    Vector2D operator - ();
-    Vector2D operator - (const Vector2D& rhs) const;
+    Vector2D operator -();
+    Vector2D operator -(const Vector2D& rhs) const;
     Vector2D operator *(const float scalar);
     Vector2D& operator +=(const Vector2D &rhs);
 
@@ -42,8 +42,8 @@ public:
 
     float x() const;
     float y() const;
-    void x(float x_);
-    void y(float y_);
+    void x(float x);
+    void y(float y);
 
     float magnitude();
     float magnitude_squared();

@@ -18,6 +18,7 @@
 #define FONT_HPP
 
 #include <iostream>
+#include <cstdint>
 #include <array>
 
 #include <SDL2/SDL.h>

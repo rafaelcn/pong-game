@@ -17,6 +17,7 @@
 #ifndef WINDOW_HPP
 #define WINDOW_HPP
 
+#include <cstdint>
 #include <iostream>
 #include <array>
 

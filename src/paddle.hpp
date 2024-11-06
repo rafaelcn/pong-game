@@ -17,6 +17,8 @@
 #ifndef PADDLE_HPP
 #define PADDLE_HPP
 
+#include <cstdint>
+
 #include <SDL2/SDL.h>
 
 #include "window.hpp"

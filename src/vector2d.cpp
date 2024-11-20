@@ -51,6 +51,18 @@ Vector2D& Vector2D::operator +=(const Vector2D& rhs)
     return *this;
 }
 
+Vector2D& Vector2D::operator <(const Vector2D& rhs)
+{
+	auto first = this->magnitude();
+	auto second = rhs.magnitude();
+
+	if (first > second) {
+		return *this;
+	}
+	
+    return rhs;
+}
+
 float Vector2D::magnitude()
 {
     return sqrt((pow(X, 2) + pow(Y, 2)));

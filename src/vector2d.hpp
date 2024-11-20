@@ -1,3 +1,5 @@
+#pragma once
+
 /**
  * Copyright 2014-2018 Rafael Campos Nunes.
  *
@@ -14,12 +16,8 @@
  * under the License.
  */
 
-#ifndef VECTOR2D_H
-#define VECTOR2D_H
-
 /**
- * @brief This class abstract a vector behavior, so as with their mathematical
- * operations.
+ * @brief A representation of a vector of two float components.
  */
 class Vector2D
 {
@@ -36,6 +34,7 @@ public:
     Vector2D operator -(const Vector2D& rhs) const;
     Vector2D operator *(const float scalar);
     Vector2D& operator +=(const Vector2D &rhs);
+    Vector2D& operator <(const Vector2D &rhs);
 
     Vector2D cross(const Vector2D other) const;
     Vector2D normalized() const;
@@ -51,8 +50,4 @@ public:
     float dot(const Vector2D& other) const;
 
     void normalize();
-
-
 };
-
-#endif // VECTOR2D_H

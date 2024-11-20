@@ -4,13 +4,13 @@
 #
 
 # Compiler used
-CXX = g++
+CXX = clang++
 # Libs that are used to compile the game
 LIBS = -lSDL2 -lSDL2_mixer -lSDL2_image -lSDL2_ttf
 # Flag used by the compiler
-CXXFLAGS = -Wall -Wextra -O3 -std=c++11
+CXXFLAGS = -Wall -Wextra -O3 -std=c++14
 # Flag used to generate a lower optimized version
-CXXFLAGS_D = -Wall -Wextra -O1 -std=c++11
+CXXFLAGS_D = -Wall -Wextra -O1 -std=c++14
 # Name of the executable
 EXEC = pong-game.out
 # Build directories

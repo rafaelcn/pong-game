@@ -1,17 +1,7 @@
 #
-# Object directory resulted from Qt compilation
+# Compilation objects
 #
-obj/
-
-# Qt files
-PongGame.pro.user*
-.qmake.*
-
-#
-# Qt Makefile
-#
-out/linux/debug-build/Makefile
-out/linux/release-build/Makefile
+build/obj/*.o
 
 #
 # Binaries 

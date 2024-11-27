@@ -1,139 +1,110 @@
-/**
- * Copyright 2014-2018 Rafael Campos Nunes.
- *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may
- * not use this file except in compliance with the License. You may obtain a
- * copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations
- * under the License.
- */
+#pragma once
 
-#ifndef BALL_HPP
-#define BALL_HPP
-
-#include <memory>
 #include <array>
+#include <memory>
 
 #include <SDL2/SDL.h>
 
-#include "paddle.hpp"
-#include "audio.hpp"
-#include "vector2d.hpp"
-#include "random.hpp"
+#include "graphics/window.hpp"
+#include "math/vector2d.hpp"
 
 /**
  * @brief The Ball class abstracts the ball entity.
  */
 class Ball {
 private:
-    /* An array describing the size of the ball, index 0 is width and the 1 is
-     * the height.
-     */
-    std::array<int, 2> m_ball_size;
+  // An array describing the size of the ball, index 0 is width and the 1 is the height
+  std::array<int, 2> m_ball_size;
 
-    // The ball speed represented by a Vector2D.
-    Vector2D m_ball_speed;
+  // The current ball speed.
+  Vector2D m_ball_speed;
+  
+  // The texture of the ball (ball.bmp).
+  SDL_Texture* m_texture;
+  //SDL_Rect that will represent the size and position of the ball on the screen.
+  SDL_Rect m_rect;
 
-    /* The surface that will be used to be filled with the image of the ball
-     * (ball.bmp).
-     */
-    SDL_Surface* m_pBSurface;
-    // The texture of the ball (ball.bmp).
-    SDL_Texture* m_pBTexture;
-    /* SDL_Rect that will represent the size and position of the ball on the
-     * screen.
-     */
-    SDL_Rect m_BRect;
-
+  std::shared_ptr<Window> m_window;
 private:
-    void add_speed();
-    /**
-     * @brief Function to test the collision between the
-     * rectangle of the ball and the rectangle of the players.
-     * @param rectangle The rectangle we wanna to test the collision.
-     * @return If a collision occurs or not.
-     */
-    bool collision(SDL_Rect *rectangle);
+  void add_speed();
+  /**
+   * @brief Computes if the ball has collided with the given rectangle
+   * @param rectangle The rectangle we wanna to test the collision.
+   * @return If a collision occurs or not.
+   */
+  bool collide(SDL_Rect *rectangle);
+  void handle_collision(SDL_Rect *player);
+public:
+  /**
+   * @brief Is the variable used when pause game is toggled, it stores
+   * the last speed with the ball.
+   */
+  Vector2D m_last_ball_speed;
 
 public:
-    /**
-     * @brief Is the variable used when pause game is toggled, it stores
-     * the last speed with the ball.
-     */
-    Vector2D m_last_ball_speed;
+  /**
+   * @brief The implementation of the class Ball.
+   * @param window The root window of the application 
+   * @param image The surface that carries the image of the ball.
+   * @param x The start position of the ball in the x axis
+   * @param y The start position of the ball in the y axis
+   */
+  Ball(std::shared_ptr<Window> window, SDL_Surface* ball_surface, const float x, const float y);
+  ~Ball();
 
-public:
-    /**
-     * @brief The Ball implementation of the class Ball.
-     * @param ball_surface The surface that carries the image of the ball.
-     * @param coordinate_x The actual position in X axis of the ball.
-     * @param coordinate_y The actual position in Y axis of the ball.
-     */
-    Ball(SDL_Surface* ball_surface, const float coordinate_x,
-         const float coordinate_y);
-    ~Ball();
+  /**
+   * @brief Called to render the ball in the screen.
+   */
+  void render();
+  /**
+   * @brief
+   */
+  void move(SDL_Rect* player1, SDL_Rect* player2);
 
-    /**
-     * @brief Called to show the ball in the screen.
-     */
-    void show();
-    /**
-     * @brief
-     */
-    void move(SDL_Rect* player1, SDL_Rect* player2);
+  /**
+   * @brief Ball::velocity A function that returns a Vector2D representing its
+   * velocity.
+   * @return The velocity as a Vector2D.
+   */
+  Vector2D velocity();
+  /**
+   * @brief Ball::velocity_x A function to get the velocity of the ball on the
+   * X axis.
+   * @return the velocity of the ball on the X axis.
+   */
+  float velocity_x();
+  /**
+   * @brief Ball::velocity_y A function to get the velocity of the ball on the
+   * Y axis.
+   * @return the velocity of the ball on the Y axis.
+   */
+  float velocity_y();
 
-    /**
-     * @brief Ball::velocity A function that returns a Vector2D representing its
-     * velocity.
-     * @return The velocity as a Vector2D.
-     */
-    Vector2D velocity();
-    /**
-     * @brief Ball::velocity_x A function to get the velocity of the ball on the
-     * X axis.
-     * @return the velocity of the ball on the X axis.
-     */
-    float velocity_x();
-    /**
-     * @brief Ball::velocity_y A function to get the velocity of the ball on the
-     * Y axis.
-     * @return the velocity of the ball on the Y axis.
-     */
-    float velocity_y();
+  /**
+   * @brief get_random_pos function to return a float between @param a and
+   * b to be used as the start position of the ball.
+   * @param a the range of the random generator.
+   * @param b the range of the random generator.
+   * @return a random integer.
+   */
+  float get_random_pos(float a, float b);
 
-    /**
-     * @brief get_random_pos function to return a float between @param a and
-     * b to be used as the start position of the ball.
-     * @param a the range of the random generator.
-     * @param b the range of the random generator.
-     * @return a random integer.
-     */
-    float get_random_pos(float a, float b);
+  /**
+   * @brief Ball::velocity_x Function to set the velocity on the X axis of the
+   * ball.
+   * @param x_velocity The velocity on X axis.
+   */
+  void velocity_x(float velocity_x);
+  /**
+   * @brief Ball::velocity_y Function to set the velocity on the Y axis of the
+   * ball.
+   * @param velocity_y The velocity on Y axis.
+   */
+  void velocity_y(float velocity_y);
 
-    /**
-     * @brief Ball::velocity_x Function to set the velocity on the X axis of the
-     * ball.
-     * @param x_velocity The velocity on X axis.
-     */
-    void velocity_x(float velocity_x);
-    /**
-     * @brief Ball::velocity_y Function to set the velocity on the Y axis of the
-     * ball.
-     * @param velocity_y The velocity on Y axis.
-     */
-    void velocity_y(float velocity_y);
-
-    /**
-      * @brief Ball::get_rect() Function to return the SDL_Rect* of the ball.
-      * @return A pointer to the ballRect.
-      */
-    SDL_Rect* get_rect();
+  /**
+   * @brief Ball::get_rect() Function to return the SDL_Rect* of the ball.
+   * @return A pointer to the ballRect.
+   */
+  SDL_Rect* get_rect();
 };
-
-#endif // BALL_HPP

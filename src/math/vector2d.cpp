@@ -1,19 +1,3 @@
-/**
- * Copyright 2014-2018 Rafael Campos Nunes.
- *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may
- * not use this file except in compliance with the License. You may obtain a
- * copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations
- * under the License.
- */
-
 #include "vector2d.hpp"
 
 #include <cmath>
@@ -51,24 +35,22 @@ Vector2D& Vector2D::operator +=(const Vector2D& rhs)
     return *this;
 }
 
-Vector2D& Vector2D::operator <(const Vector2D& rhs)
+bool Vector2D::operator <(const Vector2D& rhs)
 {
-	auto first = this->magnitude();
-	auto second = rhs.magnitude();
-
-	if (first > second) {
-		return *this;
-	}
-	
-    return rhs;
+	return this->magnitude() > rhs.magnitude();
 }
 
-float Vector2D::magnitude()
+bool Vector2D::operator >=(const Vector2D& rhs)
+{
+  return !(*this < rhs); 
+}
+
+float Vector2D::magnitude() const
 {
     return sqrt((pow(X, 2) + pow(Y, 2)));
 }
 
-float Vector2D::magnitude_squared()
+float Vector2D::magnitude_squared() const
 {
     return pow(magnitude(), 2);
 }

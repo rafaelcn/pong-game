@@ -12,15 +12,15 @@ public:
    * @param args The arguments to be printed on the terminal.
    */
   template<typename... Ts>
-    static void log(const Ts&... args)
-    {
+  static void log(const Ts&... args)
+  {
       std::cout << "INFO: ";
 
       int expanded[] = { (std::cout << args << "", 0)... };
       (void)expanded;
 
       std::cout << std::endl;
-    }
+  }
 
   /**
    * @brief log_warn The warning log, it prints out args on the stdout
@@ -28,15 +28,15 @@ public:
    * @param args The arguments to be printed on the terminal.
    */
   template<typename... Ts>
-    static void log_warn(const Ts&... args)
-    {
+  static void log_warn(const Ts&... args)
+  {
       std::cout << "WARN: ";
 
       int expanded[] = { (std::cout << args, 0)... };
       (void)expanded;
 
       std::cout << std::endl;
-    }
+  }
 
   /**
    * @brief log_err The error log, use this to print really bad things that
@@ -44,13 +44,13 @@ public:
    * @param args The arguments to be printed on the terminal.
    */
   template<typename... Ts>
-    static void log_err(const Ts&... args)
-    {
-      std::cerr << "ERRO: ";
+  static void log_err(const Ts&... args)
+  {
+      std::cerr << "ERR : ";
 
       int expanded[] = { (std::cerr << args, 0)... };
       (void)expanded;
 
       std::cerr << std::endl;
-    }
+  }
 };

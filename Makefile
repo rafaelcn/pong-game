@@ -1,55 +1,43 @@
-#
-# PongGame makefile.
-# author: Rafael Campos Nunes.
-#
-
-# Compiler used
 CXX = clang++
-# Libs that are used to compile the game
-LIBS = -lSDL2 -lSDL2_mixer -lSDL2_image -lSDL2_ttf
-# Flag used by the compiler
-CXXFLAGS = -Wall -Wextra -O3 -std=c++14
-# Flag used to generate a lower optimized version
-CXXFLAGS_D = -Wall -Wextra -O1 -std=c++14
+
 # Name of the executable
 EXEC = pong-game.out
-# Build directories
-RELEASE_BUILD = out/linux/release-build
-DEBUG_BUILD = out/linux/debug-build
-OBJ_DIR = obj
-SOURCEDIR = src
 
-SOURCES = $(wildcard $(SOURCEDIR)/*.cpp)
+# Build directories
+BUILD		= build
+OBJ_DIR		= obj
+SRCDIR		= src
+SUBDIRS		:= $(shell find ${SRCDIR} -type d)
+
+CXXFLAGS   := -Wall -Wextra -O3 -std=c++14 $(addprefix -I, ${SUBDIRS})
+CXXFLAGS_D := -Wall -Wextra -O1 -fsanitize=address -g -std=c++14 $(addprefix -I, ${SUBDIRS})
+
+LIBS := -lSDL2 -lSDL2_mixer -lSDL2_image -lSDL2_ttf
+
+SOURCES = $(shell find ${SRCDIR} -name "*.cpp")
 
 OBJECTS = $(patsubst %.cpp,%.o,$(SOURCES))
 OBJECTS := $(notdir $(OBJECTS))
-OBJECTS := $(addprefix $(RELEASE_BUILD)/$(OBJ_DIR)/, $(OBJECTS))
+OBJECTS := $(addprefix $(BUILD)/$(OBJ_DIR)/, $(OBJECTS))
 
-OBJECTS_D = $(OBJECTS)
-# Without the line below, OBJECTS_D looks like out/debug-build/obj/out/rele...
-OBJECTS_D := $(notdir $(OBJECTS_D))
-OBJECTS_D := $(addprefix $(DEBUG_BUILD)/$(OBJ_DIR)/, $(OBJECTS_D))
+all: release debug
 
-all:
-	\mkdir -p $(RELEASE_BUILD)/$(OBJ_DIR)
-	$(CXX) $(CXXFLAGS) -c $(SOURCES) $(LIBS)
-	\mv -f *.o $(RELEASE_BUILD)/$(OBJ_DIR)
+compile:
+	$(CXX) $(CXXFLAGS) -c $(SOURCES)
+	@mv -f *.o $(BUILD)/$(OBJ_DIR)
+
+release: compile
 	$(CXX) $(CXXFLAGS) -o $(EXEC) $(OBJECTS) $(LIBS)
-	\mv -f $(EXEC) $(RELEASE_BUILD)/
+	@mv -f $(EXEC) $(BUILD)
 
-release:
-	\mkdir -p $(RELEASE_BUILD)/$(OBJ_DIR)
-	$(CXX) $(CXXFLAGS) -c $(SOURCES) $(LIBS)
-	\mv -f *.o $(RELEASE_BUILD)/$(OBJ_DIR)
-	$(CXX) $(CXXFLAGS) -o $(EXEC) $(OBJECTS) $(LIBS)
-	\mv -f $(EXEC) $(RELEASE_BUILD)/
+debug: compile
+	$(CXX) $(CXXFLAGS_D) -o $(EXEC) $(OBJECTS) $(LIBS)
+	@mv -f $(EXEC) $(BUILD)
 
-debug:
-	\mkdir -p $(DEBUG_BUILD)/$(OBJ_DIR)
-	$(CXX) $(CXXFLAGS_D) -c $(SOURCES) $(LIBS)
-	\mv -f *.o $(DEBUG_BUILD)/$(OBJ_DIR)
-	$(CXX) $(CXXFLAGS_D) -o $(EXEC) $(OBJECTS_D) $(LIBS)
-	\mv -f $(EXEC) $(DEBUG_BUILD)/
+vars:
+	@echo "sources: ${SOURCES}"
+	@echo "objects: ${OBJECTS}"
+	@echo "flags:   ${CXXFLAGS}"
 
 clean:
 	rm -f $(wildcard $(RELEASE_BUILD)/$(OBJ_DIR)/*.o)

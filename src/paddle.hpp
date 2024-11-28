@@ -17,7 +17,7 @@ private:
    * characteristics like it velocity, width and height.
    */
   struct paddle_characteristics {
-    float velocity_y    = 6.0f;
+    float velocity    = 8.0f;
     int width           = 10;
     int height          = 50;
   } paddle_characteristics;
@@ -69,38 +69,40 @@ public:
    * @brief A getter for the paddle velocity.
    * @return The current velocity on the Y axis.
    */
-  double velocity_y();
+  double velocity();
   /**
    * @brief A setter for the paddle velocity.
-   * @param velocity_y The velocity of the paddle on the Y axis.
+   * @param v The velocity of the paddle.
    */
-  void velocity_y(const double velocity_y);
+  void velocity(const double v);
 
   /**
    * @brief Get the actual score of the player.
    * @return the actual score of the player.
    */
   int score();
+  
   /**
-   * @brief add_score Add an score to the paddle.
+   * @brief Add  an score to the paddle.
    */
   void add_score();
+  
   /**
-   * @brief add_hit
+   * @brief Increase the inner hit counter
    */
   static void add_hit();
+  
   /**
-   * @brief get_hits get the total number of times that the ball has hitted
-   * the paddle.
-   * @return an integer representing the number of times that the ball has
-   * hitted the paddle.
+   * @brief Gets the total number of times that the ball has hit the paddle.
    */
   static int get_hits();
+  
   /**
-   * @brief reset_hit_count Set the number of times that the ball has hitted
+   * @brief Sets the number of times that the ball has hitted
    * the paddle to zero.
    */
   static void reset_hit_count();
+  
   /**
    * @brief reset_score set the score of the paddle to zero.
    */

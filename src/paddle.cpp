@@ -52,7 +52,7 @@ void Paddle::move_up()
    * the screen, I'm limiting the up movement of the paddle by doing the
    * following statement.
    */
-  if( m_rect.y > 0) {
+  if (m_rect.y > 0) {
     m_rect.y -=  paddle_characteristics.velocity_y;
   }
 }
@@ -63,7 +63,7 @@ void Paddle::move_down()
    * for (x, y) values, so we have to add (...).
    * The if statement is the same Debug::logic used on moveUp(); but here has a POG.
    */
-  if(m_rect.y + m_rect.h < m_window->get_height()) {
+  if (m_rect.y + m_rect.h < m_window->get_height()) {
     m_rect.y +=  paddle_characteristics.velocity_y;
   }
 }
@@ -73,14 +73,14 @@ SDL_Rect* Paddle::get_rect()
   return &m_rect;
 }
 
-double Paddle::velocity_y()
+double Paddle::velocity()
 {
-  return paddle_characteristics.velocity_y;
+  return paddle_characteristics.velocity;
 }
 
-void Paddle::velocity_y(const double velocity_y)
+void Paddle::velocity(const double v)
 {
-  paddle_characteristics.velocity_y = velocity_y;
+  paddle_characteristics.velocity = v;
 }
 
 int Paddle::score()

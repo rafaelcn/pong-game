@@ -26,7 +26,7 @@ private:
 
   std::shared_ptr<Window> m_window;
 private:
-  void add_speed();
+  void increase_speed();
   /**
    * @brief Computes if the ball has collided with the given rectangle
    * @param rectangle The rectangle we wanna to test the collision.
@@ -81,11 +81,11 @@ public:
   float velocity_y();
 
   /**
-   * @brief get_random_pos function to return a float between @param a and
-   * b to be used as the start position of the ball.
+   * @brief computes a random value to be used as speed vector for the ball
+   * whenever the game resets
    * @param a the range of the random generator.
    * @param b the range of the random generator.
-   * @return a random integer.
+   * @return a random float.
    */
   float get_random_pos(float a, float b);
 

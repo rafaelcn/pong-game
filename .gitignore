@@ -1,7 +1,7 @@
 #
 # Compilation objects
 #
-build/obj/*.o
+*.o
 
 #
 # Binaries 

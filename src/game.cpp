@@ -84,7 +84,6 @@ void Game::run() {
   update_game();
   handle_events();
   render_game();
-
   
   auto partition = 1000/m_target_fps;
   auto difference = SDL_GetTicks() - current_time;

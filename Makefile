@@ -20,17 +20,17 @@ OBJECTS = $(patsubst %.cpp,%.o,$(SOURCES))
 OBJECTS := $(notdir $(OBJECTS))
 OBJECTS := $(addprefix $(BUILD)/$(OBJ_DIR)/, $(OBJECTS))
 
-all: release debug
+all: release
 
-compile:
+release:
 	$(CXX) $(CXXFLAGS) -c $(SOURCES)
-	@mv -f *.o $(BUILD)/$(OBJ_DIR)
-
-release: compile
+	@mv -f *.o  $(BUILD)/$(OBJ_DIR)
 	$(CXX) $(CXXFLAGS) -o $(EXEC) $(OBJECTS) $(LIBS)
 	@mv -f $(EXEC) $(BUILD)
 
-debug: compile
+debug:
+	$(CXX) $(CXXFLAGS_D) -c $(SOURCES)
+	@mv -f *.o  $(BUILD)/$(OBJ_DIR)
 	$(CXX) $(CXXFLAGS_D) -o $(EXEC) $(OBJECTS) $(LIBS)
 	@mv -f $(EXEC) $(BUILD)
 
